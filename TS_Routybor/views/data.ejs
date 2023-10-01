@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TeamScript</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .data {
+      text-align: center;
+      font-size: 30px;
+    }
+    button {
+      display: flex;
+      width: 100%;
+      padding: 5px 10px;
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-left: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="data">
+    <ul>
+      <% users.forEach(user => { %>
+        <h1><%= user.id %></h1>
+      <% }); %>
+    </ul>
+  </div>
+  <div class="button-container">
+    <form action="/increment" method="get">
+      <button type="submit"><h3>Inc</h3></button>
+    </form>
+    <form action="/decrement" method="get">
+      <button type="submit"><h3>Dec</h3></button>
+    </form>
+  </div>
+</body>
+</html>
