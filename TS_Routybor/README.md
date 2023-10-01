@@ -1,2 +1,8 @@
-# npm install pg
-# node node .\main.js
+Установка библиотеки
+```
+npm install pg
+```
+Запуск сервера
+```
+node .\main.js
+```
