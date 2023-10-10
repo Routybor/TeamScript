@@ -1,8 +1,9 @@
-const express = require('express')
+const express = require('express') // Для создания сервера будем использовать express
 const app = express()
-const { Client } = require('pg');
-const port = 5000;
-const bodyParser = require('body-parser');
+const { Client } = require('pg'); // для работы с PostgreSQL db используем pg
+const port = 5000; 
+const bodyParser = require('body-parser');  // Для получения данных форм из запроса 
+                                            //необходимо использовать специальный пакет body-parser. 
 
 let id = 0
 const client = new Client({
