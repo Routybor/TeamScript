@@ -5,6 +5,7 @@
 npm i express
 npm i pg
 npm i body-parser
+npm install cors
 ```
 <h4>Запуск сервера</h4>
 

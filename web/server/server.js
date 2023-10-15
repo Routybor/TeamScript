@@ -1,9 +1,12 @@
 const express = require('express') // Для создания сервера будем использовать express
+const cors = require('cors'); //CORS для возможности постить со стороннего сервиса
 const app = express()
 const { Client } = require('pg'); // для работы с PostgreSQL db используем pg
 const port = 5000; 
 const bodyParser = require('body-parser');  // Для получения данных форм из запроса 
-                                            //необходимо использовать специальный пакет body-parser. 
+//необходимо использовать специальный пакет body-parser.
+
+app.use(cors()); //CORS для возможности постить со стороннего сервиса
 
 let id = 0
 const client = new Client({
