@@ -4,23 +4,25 @@ import './App.css';
 
 
 function App() {
-  const [name, setName] = useState("");
-  const [id, setID] = useState(0);
-  // const [isLoading, setIsLoading] = useState(true);
-
-  const setText = () => {
+  const [textFieldValue, setTextFieldValue] = useState('');
+  const handleTextFieldChange = (event) => {
+    const newText = event.target.value;
     fetch('/database/saveText', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ currentID: id }),
+      body: JSON.stringify({ textField: newText }),
     })
-      .then((response) => response.json())
+      .then((response) => { return response.json(); })
       .then((data) => {
-        setID(data.id);
+        setTextFieldValue(data.text_column);
+        console.log('Text saved successfully = ', data);
       })
-      .catch((error) => console.error('ERROR = ', error));
+      .catch((error) => {
+        console.error('Error saving text = ', error);
+      });
+      setTextFieldValue(newText);
   };
 
 
@@ -28,16 +30,13 @@ function App() {
     <div className="App">
       <div className="main-content">
       </div>
-      <TextField 
-        fullWidth 
-        value={name} 
-        id="standard-basic" 
-        label="Enter your text here" 
+      <TextField
+        fullWidth
+        value={textFieldValue}
+        id="standard-basic"
+        label="Enter your text here"
         multiline
-        onChange={(e) => {
-          setName(e.target.value);
-          setText();
-        }}/>
+        onChange={handleTextFieldChange}/>
     </div>
   );
 }
