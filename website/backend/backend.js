@@ -4,17 +4,23 @@ const { Client } = require('pg'); // Постгрес, база данных
 const bodyParser = require('body-parser'); // Парсер для запросов с фронтенда (они в формате джсона у нас)
 const socketIo = require('socket.io'); // Для управления сокетами пользователей из сервера. По сути двусторонняя связь между браузером(клиентом) и сервером(теперь запросы отправлять можно и из сервера)
 const http = require('http'); // Модуль для создания HTTP серверов, это всё для связи сервера и клиента (верхний модуль)
+const dotenv = require('dotenv');
 
+dotenv.config();
 const app = express() // Создание Express приложения, с которым и бкдем работать
 const port = 5000; // Обозначаем порт СЕРВЕРА
 const server = http.createServer(app);
 const io = socketIo(server);
+const pgUser = process.env.PGUSER;
+const pgPassword = process.env.PGPASSWORD;
+const pgHost = process.env.PGHOST;
+const pgDatabase = process.env.PGDATABASE;
 
 const client = new Client({ // Это база
-  user: 'teamscriptproj',
-  host: 'ep-rapid-morning-14341499.eu-central-1.aws.neon.tech',
-  database: 'Text_input',
-  password: 'Sv6q0diQZxfP',
+  user: pgUser,
+  host: pgHost,
+  database: pgDatabase,
+  password: pgPassword,
   port: 5432,
   ssl: {
     rejectUnauthorized: false, // Можно навести на первое слово и там написано
@@ -62,3 +68,8 @@ server.listen(port, () => { // Запуск сервера, вывод в кон
   console.log(`Server is running on port = ${port}`); // +- Бесполезная инфа
   console.log(`Backend link is = http://localhost:${port}`); // К этой ссылке можно приписать URL и если этот URL используется для GET запроса, это даже будет работать
 });
+
+// setTimeout
+// setInterval
+// debounce
+// throttling (могут работать в паре)

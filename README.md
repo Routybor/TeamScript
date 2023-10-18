@@ -1,29 +1,128 @@
+# Collaborative Project Management Redactor
 
-**Project vision. (TeamScript)✨***
+Welcome to the Collaborative Project Management Redactor! This application is designed to streamline and enhance project management by providing a platform for teams to collaboratively plan, track, and manage their projects in real-time. This README file provides an overview of the project, its features, and instructions for setting up and running the application.
 
-### Idea of the project:
+## Table of Contents
 
-Our goal is to create an editor that enables teamwork, project management, and project status monitoring. *Moreover, it allows people to work on the project at the same time.*
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
 
-Why is this important?
+## Features
 
-### Realization:
+The Collaborative Project Management Redactor offers a range of features to support effective project management:
 
-For the convenience of development, it was decided to divide frontend and backend into two different components.
+1. **User Authentication**: Users can create accounts, log in, and reset their passwords securely.
 
-Frontend will be written in (JavaScript), backend in (Java/Python) (maybe something else).
+2. **Project Creation**: Users can create new projects, assign project names, and provide descriptions.
 
-### Features:
+3. **Task Management**: Project participants can create tasks, assign them to team members, set deadlines, and track task progress.
 
-Main and most difficult goal for us is to allow users to use our product together. To implement that we will need to use functional DB and to create account
+4. **Real-time Collaboration**: Multiple users can collaborate in real time, making changes to tasks, project descriptions, and other project-related data.
 
-system.
+5. **Comments and Messaging**: Users can leave comments on tasks and send messages to other project participants for discussion and coordination.
 
-Also, we want to add a few useful features.
+6. **File Upload**: Participants can upload and share project-related files, documents, and assets.
 
-- Checking current status of every subproject.
-- Prioritizing tasks will help users to choose how relevant is the specific task at this moment.
-- Creating subtasks’ features will provide users to track big task progress more detailed.
-- *The participants of one project can use our service simultaneously, for example, make changes, add tasks.*
+7. **Notifications**: Users receive notifications about project updates, task assignments, and comments to stay informed.
 
-The number of features that can be added to such a project is large. Therefore, as we develop, we will implement more and more features.
+8. **Dashboard**: A project dashboard provides an overview of all projects, their statuses, and due dates.
+
+9. **Search and Filtering**: Users can easily search for projects, tasks, and filter project data to find what they need quickly.
+
+## Tech Stack
+
+The Collaborative Project Management Redactor is built using the following technologies:
+
+- **Frontend**: React.js
+- **Backend**: Node.js
+- **Database**: (Specify your choice of database, e.g., MongoDB, PostgreSQL)
+- **Real-time Communication**: (Specify your choice of real-time communication framework, e.g., WebSocket, Socket.io)
+- **Authentication**: (Specify your choice of authentication system, e.g., JWT, OAuth)
+
+## Getting Started
+
+Follow the instructions below to set up and run the Collaborative Project Management Redactor on your local development environment.
+
+### Prerequisites
+
+- Node.js and npm installed on your machine.
+- A database (e.g., MongoDB, PostgreSQL) set up and running.
+- (Specify any other prerequisites or dependencies here)
+
+### Installation
+
+1. Clone the repository to your local machine.
+
+   ```bash
+   git clone https://github.com/Routybor/TeamScript.git
+   ```
+
+2. Navigate to the project directory.
+
+   ```bash
+   cd website
+   ```
+
+3. Install the frontend dependencies.
+
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+4. Install the backend dependencies.
+
+   ```bash
+   cd ../backend
+   npm install
+   ```
+
+## Configuration
+
+Before running the application, you need to configure your environment variables and database settings. Here are the configuration steps:
+
+1. Create a `.env` file in the `backend` directory and set the following environment variables:
+
+   ```
+   PGUSER=your_posgreSQL_user
+   PGPASSWORD=your_posgreSQL_password
+   PGHOST=your_posgreSQL_host
+   PGDATABASE=your_posgreSQL_database_name
+   ```
+
+## Usage
+
+Now that you have set up the application and configured it, you can start it by following these steps:
+
+1. Start the backend server.
+
+   ```bash
+   cd backend
+   npm start
+   ```
+
+2. Start the frontend.
+
+   ```bash
+   cd frontend
+   npm start
+   ```
+
+The application should now be accessible in your web browser at `http://localhost:3000`.
+
+## Contributing
+
+We welcome contributions from the open-source community. If you want to contribute to this project, please follow our [contribution guidelines](CONTRIBUTING.md).
+
+## License
+
+This project is licensed under the [MIT License](LICENSE). Feel free to use and modify it according to your needs.
+
+Thank you for using the Collaborative Project Management Redactor! If you have any questions or encounter issues, please don't hesitate to reach out to our development team.
