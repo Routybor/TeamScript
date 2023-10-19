@@ -2,19 +2,25 @@
 const express = require('express') // Фреймворк для js, упрощает работу с HTTP запросами, маршрутизацией и бла бла бла
 const { Client } = require('pg'); // Постгрес, база данных
 const bodyParser = require('body-parser'); // Парсер для запросов с фронтенда (они в формате джсона у нас)
-const socketIo = require('socket.io'); // Для управления сокетами пользователей из сервера. По сути двусторонняя связь между браузером(клиентом) и сервером(теперь запросы отправлять можно и из сервера)
 const http = require('http'); // Модуль для создания HTTP серверов, это всё для связи сервера и клиента (верхний модуль)
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 dotenv.config();
 const app = express() // Создание Express приложения, с которым и бкдем работать
 const port = 5000; // Обозначаем порт СЕРВЕРА
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = require('socket.io')(server, { // CORS block socket.io!!! (https://stackoverflow.com/questions/24058157/socket-io-node-js-cross-origin-request-blocked)
+  cors: {
+    origin: '*',
+  }
+});
 const pgUser = process.env.PGUSER;
 const pgPassword = process.env.PGPASSWORD;
 const pgHost = process.env.PGHOST;
 const pgDatabase = process.env.PGDATABASE;
+
+app.use(cors());
 
 const client = new Client({ // Это база
   user: pgUser,

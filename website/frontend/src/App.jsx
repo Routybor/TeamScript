@@ -3,7 +3,7 @@ import { TextField } from "@mui/material";
 import './App.css';
 import io from 'socket.io-client';
 
-const socket = io('/'); // С помощью io создаём сокет, когда указываем / метод сам ищет бек, с которого запущен сайт
+const socket = io('http://localhost:5000'); // С помощью io создаём сокет, когда указываем / метод сам ищет бек, с которого запущен сайт
 
 function App() {
   const [textFieldValue, setTextFieldValue] = useState('');
@@ -22,7 +22,7 @@ function App() {
 
   const receiveData = () => { // Отправка на бек HTTP запроса и получение ответа(данных с БД)
     setIsLoading(true); // Пока выполняем объявляем загрузку
-    fetch('/database/', { // URL
+    fetch('http://localhost:5000/database', { // URL
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ function App() {
     if (!isLoading) {
       const newText = event.target.value;
       setIsLoading(true);
-      fetch('/database/saveText', { // URL
+      fetch('http://localhost:5000/database/saveText', { // URL
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
