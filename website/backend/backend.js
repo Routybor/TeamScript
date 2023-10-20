@@ -14,7 +14,7 @@ const client = new Client({ // Это база
   user: 'teamscriptproj',
   host: 'ep-rapid-morning-14341499.eu-central-1.aws.neon.tech',
   database: 'Text_input',
-  password: 'Sv6q0diQZxfP',
+  password: 'gjBJE57AGHiP',
   port: 5432,
   ssl: {
     rejectUnauthorized: false, // Можно навести на первое слово и там написано
