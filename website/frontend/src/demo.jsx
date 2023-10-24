@@ -9,7 +9,6 @@ const socket = io(host);
 function App() {
   const [textFieldValue, setTextFieldValue] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [pendingData, setPendingData] = useState('');
 
   useEffect(() => {
     receiveData();
@@ -21,16 +20,6 @@ function App() {
       socket.off('updateText');
     };
   }, []);
-
-  useEffect(() => {
-    const sendPendingData = () => {
-      sendUpdatedData(pendingData);
-    };
-    const sendToBackendTimer = setTimeout(sendPendingData, 200);
-    return () => {
-      clearTimeout(sendToBackendTimer);
-    };
-  }, [pendingData]);
 
   const receiveData = () => {
     setIsLoading(true);
@@ -72,7 +61,9 @@ function App() {
 
   const handleInputChange = (event) => {
     setTextFieldValue(event.target.value);
-    setPendingData(event.target.value);
+    setTimeout(() => {
+      sendUpdatedData(event.target.value);
+    }, 100);
   };
 
   return (
