@@ -8,14 +8,12 @@ const socket = io(host);
 
 function App() {
   const [textFieldValue, setTextFieldValue] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
   const [pendingData, setPendingData] = useState('');
 
   useEffect(() => {
     receiveData();
     socket.on('updateText', (data) => {
       setTextFieldValue(data.text_column);
-      setIsLoading(false);
     });
     return () => {
       socket.off('updateText');
@@ -33,7 +31,6 @@ function App() {
   }, [pendingData]);
 
   const receiveData = () => {
-    setIsLoading(true);
     fetch(`${host}/database`, {
       method: 'GET',
       headers: {
@@ -43,7 +40,6 @@ function App() {
       .then((response) => response.json())
       .then((data) => {
         setTextFieldValue(data.text_column);
-        setIsLoading(false);
         console.log('Data received =', data);
       })
       .catch((error) => {
@@ -52,7 +48,6 @@ function App() {
   };
 
   const sendUpdatedData = (newText) => {
-    setIsLoading(true);
     fetch(`${host}/database/saveText`, {
       method: 'POST',
       headers: {
@@ -62,7 +57,6 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setIsLoading(false);
         console.log('Text saved = ', data);
       })
       .catch((error) => {
