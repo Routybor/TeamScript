@@ -9,11 +9,14 @@ const socket = io(host);
 function App() {
   const [textFieldValue, setTextFieldValue] = useState('');
   const [pendingData, setPendingData] = useState('');
+  const [sendDataEnabled, setSendDataEnabled] = useState(false);
 
   useEffect(() => {
     receiveData();
     socket.on('updateText', (data) => {
-      setTextFieldValue(data.text_column);
+      if (data.text_column) {
+        setTextFieldValue(data.text_column);
+      }
     });
     return () => {
       socket.off('updateText');
@@ -22,13 +25,15 @@ function App() {
 
   useEffect(() => {
     const sendPendingData = () => {
-      sendUpdatedData(pendingData);
+      if (sendDataEnabled) {
+        sendUpdatedData(pendingData);
+      }
     };
     const sendToBackendTimer = setTimeout(sendPendingData, 200);
     return () => {
       clearTimeout(sendToBackendTimer);
     };
-  }, [pendingData]);
+  }, [pendingData, sendDataEnabled]);
 
   const receiveData = () => {
     fetch(`${host}/database`, {
@@ -67,6 +72,7 @@ function App() {
   const handleInputChange = (event) => {
     setTextFieldValue(event.target.value);
     setPendingData(event.target.value);
+    setSendDataEnabled(true);
   };
 
   return (
