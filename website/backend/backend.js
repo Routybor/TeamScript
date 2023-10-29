@@ -65,13 +65,29 @@ client.connect() // Подключаем БД
 
 // получаем json содержащий все таски текущего проекта
 app.get('/project/tasks', (req, res) => { // GET запрос для получения данных из базы
-  client.query('select * from projecttasks ', (err, result) => {
+  client.query('select * from alltasks ', (err, result) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'Error while getting data from database' });
     } else {
       res.json(result.rows); // [0] -> первая строка
       console.log(result.rows);
+    }
+  });
+});
+
+app.post('/project/createTask', (req, res) => { // Запись в базу данных
+  const newTaskName = req.body.taskname;
+  const newstate = req.body.newState;
+  console.log(newTaskName, newstate);
+  client.query(`insert into alltasks(taskname,curstate) 
+                values('${newTaskName}','${newstate}'); `, (err, result) => {
+    if (!err) {
+      // to do
+      // добавить синхронизацию
+      res.json({ Taskname: newTaskName,
+                 CurState: newstate });
+      
     }
   });
 });
