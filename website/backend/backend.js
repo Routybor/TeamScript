@@ -86,7 +86,7 @@ app.get('/project/tasks', (req, res) => {
 });
 
 app.post('/project/createTask', (req, res) => {
-  const newTaskName = req.body.taskname;
+  const newTaskName = req.body.taskName;
   const newstate = req.body.newState;
   console.log(newTaskName, newstate);
   pool.query(`insert into alltasks(taskname,curstate)
@@ -98,7 +98,35 @@ app.post('/project/createTask', (req, res) => {
         Taskname: newTaskName,
         CurState: newstate
       });
+    }
+  });
+});
 
+app.post('/project/changeState', (req, res) => {
+  const taskid = req.body.taskID;
+  const newstate = req.body.newState;
+  // console.log(taskid, newstate);
+  pool.query(`  UPDATE alltasks 
+                SET curstate = '${newstate}'
+                WHERE mytable_key = ${taskid} `, (err, result) => {
+    if (!err) {
+      //TODO
+      // добавить синхронизацию
+      res.json({
+        taskID: taskid,
+        CurState: newstate
+      });
+    }
+  });
+});
+
+app.post('/project/deleteTask', (req, res) => {
+  const taskid = req.body.taskID;
+  pool.query(`delete from alltasks 
+              WHERE mytable_key = ${taskid} `, (err, result) => {
+    if (!err) {
+      //TODO
+      // добавить синхронизацию
     }
   });
 });
