@@ -125,8 +125,7 @@ app.post('/project/changeState', (req, res) => {
 
 app.post('/project/deleteTask', (req, res) => {
   const taskid = req.body.taskID;
-  pool.query(`delete from alltasks 
-              WHERE mytable_key = ${taskid} `, (err, result) => {
+  pool.query('DELETE FROM alltasks WHERE mytable_key = $1', [taskid], (err, result) => {
     if (!err) {
       //TODO
       // добавить синхронизацию
