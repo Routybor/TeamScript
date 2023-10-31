@@ -7,12 +7,7 @@ const cors = require("cors");
 const app = express();
 const port = 5000;
 const server = http.createServer(app);
-
-const io = require("socket.io")(server, {
-  cors: {
-    origin: "*",
-  },
-});
+const RateLimit = require('express-rate-limit');
 dotenv.config({ path: "../../.env" });
 const pgUser = process.env.PGUSER;
 const pgPassword = process.env.PGPASSWORD;
@@ -20,6 +15,19 @@ const pgHost = process.env.PGHOST;
 const pgPort = process.env.PGPORT;
 const pgDatabase = process.env.PGDATABASE;
 const pgSsl = process.env.PGSSL === "true";
+
+const limiter = RateLimit({
+  windowMs: 60 * 1000,
+  max: 90,
+});
+
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+
 const pool = new Pool({
   user: pgUser,
   password: pgPassword,
@@ -30,6 +38,8 @@ const pool = new Pool({
 });
 
 app.use(cors());
+app.use(limiter);
+app.use(bodyParser.json());
 
 pool
   .connect()
@@ -51,7 +61,6 @@ app.get('/database', (req, res) => {
   });
 });
 
-app.use(bodyParser.json());
 
 const sendUpdateToClients = (newText) => {
   io.emit('updateText', { text_column: newText });
@@ -68,8 +77,6 @@ app.post('/database/saveText', (req, res) => {
     }
   });
 });
-
-
 
 // -------код для работы с тасками---------
 
@@ -88,9 +95,8 @@ app.get('/project/tasks', (req, res) => {
 app.post('/project/createTask', (req, res) => {
   const newTaskName = req.body.taskName;
   const newstate = req.body.newState;
-  console.log(newTaskName, newstate);
-  pool.query(`insert into alltasks(taskname,curstate)
-                values('${newTaskName}','${newstate}'); `, (err, result) => {
+  console.log("Task created = %s %s", newTaskName, newstate);
+  pool.query(`UPDATE alltasks SET curstate = $1 WHERE mytable_key = $2`, [newstate, taskid], (err, result) => {
     if (!err) {
       //TODO
       // добавить синхронизацию
@@ -106,12 +112,9 @@ app.post('/project/changeState', (req, res) => {
   const taskid = req.body.taskID;
   const newstate = req.body.newState;
   // console.log(taskid, newstate);
-  pool.query(`  UPDATE alltasks 
-                SET curstate = '${newstate}'
-                WHERE mytable_key = ${taskid} `, (err, result) => {
+  pool.query(`UPDATE alltasks SET curstate = $1 WHERE mytable_key = $2`, [newstate, taskid], (err, result) => {
     if (!err) {
-      //TODO
-      // добавить синхронизацию
+      //TODO добавить синхронизацию
       res.json({
         taskID: taskid,
         CurState: newstate
