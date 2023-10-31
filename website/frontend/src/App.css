@@ -1,21 +1,21 @@
 .App {
-    text-align: center;
-    padding: 20px;
-  }
+  text-align: center;
+  padding: 20px;
+}
 
 .main-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 10%;
-    /* min-height: 50vh; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10%;
+  /* min-height: 50vh; */
 }
 
 button {
-    /* display: ce; */
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin: 5px;
+  /* display: ce; */
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
 }
