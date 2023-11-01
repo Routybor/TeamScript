@@ -8,7 +8,7 @@ function TextFieldComponent(props) {
       id="standard-basic"
       label="Enter your text here"
       multiline
-      onChange={props.updateData}
+      onChange={props.handleInputChange}
     />
   );
 }
