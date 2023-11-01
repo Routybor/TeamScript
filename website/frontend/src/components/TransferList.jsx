@@ -8,9 +8,15 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
+// import CardActions from '@mui/material/CardActions';
+// import CardContent from '@mui/material/CardContent';
+// import Typography from '@mui/material/Typography';
+// import { ToggleButton } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { IconButton } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import CardComponent from './CardComponent';
+
 
 function TransferList() {
     function not(a, b) {
@@ -25,9 +31,10 @@ function TransferList() {
 
     const [checked, setChecked] = useState([]);
     const [toDo, setToDo] = useState([0, 1, 2]);
-    const [inProgress, setInProgress] = useState([4, 5, 6]);
+    const [inProgress, setInProgress] = useState([40, 41, 42]);
     const toDoChecked = intersection(checked, toDo);
     const inProgressChecked = intersection(checked, inProgress);
+    const [activePopup, setActivePopup] = useState(false);
 
     const handleToggle = (value) => () => {
         const currentIndex = checked.indexOf(value);
@@ -57,13 +64,26 @@ function TransferList() {
         setInProgress(not(inProgress, inProgressChecked));
         setChecked(not(checked, inProgressChecked));
     };
+
+    const addCardToDo = () => {
+        toDo.push(toDo.at(toDo.length - 1) + 1);
+        setToDo(toDo);
+        handleCheckedToDo();
+    }
+
+    const addCardInProgress = () => {
+        inProgress.push(inProgress.at(inProgress.length - 1) + 1);
+        setToDo(inProgress);
+        handleCheckedInProgress();
+    }
+
     const customList = (title, items) => (
         <Card>
             <CardHeader
                 sx={{ px: 2, py: 1 }}
                 avatar={
                     <Checkbox
-                        onClick={handleToggleAll(items)}
+                        onClick={activePopup ? undefined : handleToggleAll(items)}
                         checked={numberOfChecked(items) === items.length && items.length !== 0}
                         indeterminate={
                             numberOfChecked(items) !== items.length && numberOfChecked(items) !== 0
@@ -76,8 +96,15 @@ function TransferList() {
                 }
                 title={title}
                 subheader={`${numberOfChecked(items)}/${items.length} selected`}
+                action={
+                    // <a href="" onclick="window.open(this.href,'_self','width=100,height=50,popup=yes')">
+                    <IconButton aria-label="settings">
+                        <MoreVertIcon />
+                    </IconButton>
+                    // </a>
+                }
             />
-            <Divider />
+            < Divider />
 
             <List
                 sx={{
@@ -98,10 +125,11 @@ function TransferList() {
                             key={value}
                             role="listitem"
                             button
-                            onClick={handleToggle(value)}
+
                         >
                             <ListItemIcon>
                                 <Checkbox
+                                    onClick={activePopup ? undefined : handleToggle(value)}
                                     checked={checked.indexOf(value) !== -1}
                                     tabIndex={-1}
                                     disableRipple
@@ -110,8 +138,11 @@ function TransferList() {
                                     }}
                                 />
                             </ListItemIcon>
+                            <CardComponent taskName={"Task"} taskDescr={"Task description"}>
+
+                            </CardComponent>
                             {/* <ListItemText id={labelId} primary={`List item ${value + 1}`} /> */}
-                            <Card sx={{ minWidth: 150 }}>
+                            {/* <Card sx={{ minWidth: 150 }}>
                                 <CardContent>
                                     <Typography variant="h5" component="div">
                                         Задача
@@ -121,26 +152,38 @@ function TransferList() {
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
-                                    <Button size="small">Открыть задачу</Button>
+                                    <Button onClick={activePopup ? undefined : () => setActivePopup(true)}>Смотреть задачу</Button>
+                                    <PopupComponent active={activePopup} setActive={setActivePopup}>
+                                        <p>Text</p>
+                                    </PopupComponent>
+                                    <IconButton aria-label="settings">
+                                        <MoreVertIcon />
+                                    </IconButton>
                                 </CardActions>
-                            </Card>
+                            </Card> */}
 
                         </ListItem>
                     );
                 })}
             </List>
-        </Card>
+        </Card >
     );
     return (
-        <Grid container spacing={2} justifyContent="center" alignItems="center">
-            <Grid item>{customList('in progress', toDo)}</Grid>
+        <Grid container spacing={1} direction="row" justifyContent="center" alignItems="center" >
+            <Grid direction="column" alignItems="center">
+
+                <IconButton aria-label="settings" onClick={activePopup ? undefined : addCardToDo}>
+                    <AddIcon></AddIcon>
+                </IconButton>
+                <Grid item>{customList('to do', toDo)}</Grid>
+            </Grid>
             <Grid item>
-                <Grid container direction="column" alignItems="center">
+                <Grid container spacing={1} direction="column" alignItems="center">
                     <Button
                         sx={{ my: 0.5 }}
                         variant="outlined"
                         size="small"
-                        onClick={handleCheckedInProgress}
+                        onClick={activePopup ? undefined : handleCheckedInProgress}
                         disabled={toDoChecked.length === 0}
                         aria-label="move selected right"
                     >
@@ -150,7 +193,7 @@ function TransferList() {
                         sx={{ my: 0.5 }}
                         variant="outlined"
                         size="small"
-                        onClick={handleCheckedToDo}
+                        onClick={activePopup ? undefined : handleCheckedToDo}
                         disabled={inProgressChecked.length === 0}
                         aria-label="move selected left"
                     >
@@ -158,7 +201,12 @@ function TransferList() {
                     </Button>
                 </Grid>
             </Grid>
-            <Grid item>{customList('done', inProgress)}</Grid>
+            <Grid direction="column" alignItems="center">
+                <IconButton aria-label="settings" onClick={activePopup ? undefined : addCardInProgress}>
+                    <AddIcon></AddIcon>
+                </IconButton>
+                <Grid item>{customList('in progress', inProgress)}</Grid>
+            </Grid>
         </Grid>
     );
 }

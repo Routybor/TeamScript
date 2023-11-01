@@ -11,6 +11,7 @@ function App() {
   const [textFieldValue, setTextFieldValue] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
+
   useEffect(() => {
     receiveData();
     socket.on('updateText', (data) => {
@@ -30,15 +31,15 @@ function App() {
         'Content-Type': 'application/json',
       },
     })
-    .then((response) => response.json())
-    .then((data) => {
-      setTextFieldValue(data.text_column);
-      setIsLoading(false);
-      console.log('Data received =', data);
-    })
-    .catch((error) => {
-      console.error('ERROR receiving data = ', error);
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        setTextFieldValue(data.text_column);
+        setIsLoading(false);
+        console.log('Data received =', data);
+      })
+      .catch((error) => {
+        console.error('ERROR receiving data = ', error);
+      });
   };
 
   const updateData = (event) => {
@@ -71,5 +72,5 @@ function App() {
     </div>
   );
 
-  }
+}
 export default App;
