@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import Card from '@mui/material/Card';
@@ -18,23 +18,93 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CardComponent from './CardComponent';
 
 
-function TransferList() {
-    function not(a, b) {
-        return a.filter((value) => b.indexOf(value) === -1);
-    }
-    function intersection(a, b) {
-        return a.filter((value) => b.indexOf(value) !== -1);
-    }
-    function union(a, b) {
-        return [...a, ...not(b, a)];
-    }
-
+function TransferList(props) {
     const [checked, setChecked] = useState([]);
-    const [toDo, setToDo] = useState([0, 1, 2]);
-    const [inProgress, setInProgress] = useState([40, 41, 42]);
+    const [toDo, setToDo] = useState([]);
+    const [inProgress, setInProgress] = useState([]);
     const toDoChecked = intersection(checked, toDo);
     const inProgressChecked = intersection(checked, inProgress);
     const [activePopup, setActivePopup] = useState(false);
+
+
+    useEffect(() => {
+        receiveData();
+        props.socket.on('updateTask', (data) => {
+            //TODO = try to use data, change list of tasks instead of request
+            receiveData();
+        });
+        return () => {
+            props.socket.off('updateTask');
+        };
+    }, []);
+
+
+    function not(a, b) {
+        return a.filter((value) => b.indexOf(value) === -1);
+    };
+    function intersection(a, b) {
+        return a.filter((value) => b.indexOf(value) !== -1);
+    };
+    function union(a, b) {
+        return [...a, ...not(b, a)];
+    };
+
+
+    const receiveData = () => {
+        fetch(`${props.host}/project/tasks`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                const todo_list = data
+                    .filter(item => item.curstate === 'todo')
+                const progress_list = data
+                    .filter(item => item.curstate === 'prog')
+                setToDo(todo_list)
+                setInProgress(progress_list)
+            })
+            .catch((error) => {
+                console.error('ERROR receiving data = ', error);
+            });
+    };
+
+    const updateTask = (task, newstate) => {
+        fetch(`${props.host}/project/changeState`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ taskID: task.id, newState: newstate }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Task saved = ', data);
+            })
+            .catch((error) => {
+                console.error('ERROR saving text = ', error);
+            });
+    };
+
+    const createTask = (name, newstate) => {
+        fetch(`${props.host}/project/createTask`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ taskName: name, newState: newstate }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Task created = ', data);
+            })
+            .catch((error) => {
+                console.error('ERROR saving text = ', error);
+            });
+    };
+
 
     const handleToggle = (value) => () => {
         const currentIndex = checked.indexOf(value);
@@ -45,8 +115,13 @@ function TransferList() {
             newChecked.splice(currentIndex, 1);
         }
         setChecked(newChecked);
+        for (const task of checked) {
+            console.log(task)
+        }
     };
+
     const numberOfChecked = (items) => intersection(checked, items).length;
+
     const handleToggleAll = (items) => () => {
         if (numberOfChecked(items) === items.length) {
             setChecked(not(checked, items));
@@ -54,28 +129,33 @@ function TransferList() {
             setChecked(union(checked, items));
         }
     };
+
     const handleCheckedInProgress = () => {
         setInProgress(inProgress.concat(toDoChecked));
         setToDo(not(toDo, toDoChecked));
+        checked.forEach(task => updateTask(task, 'prog'));
         setChecked(not(checked, toDoChecked));
     };
+
     const handleCheckedToDo = () => {
         setToDo(toDo.concat(inProgressChecked));
         setInProgress(not(inProgress, inProgressChecked));
+        checked.forEach(task => updateTask(task, 'todo'));
         setChecked(not(checked, inProgressChecked));
     };
 
     const addCardToDo = () => {
+        createTask('Default', 'todo');
         toDo.push(toDo.at(toDo.length - 1) + 1);
         setToDo(toDo);
         handleCheckedToDo();
-    }
+    };
 
     const addCardInProgress = () => {
         inProgress.push(inProgress.at(inProgress.length - 1) + 1);
         setToDo(inProgress);
         handleCheckedInProgress();
-    }
+    };
 
     const customList = (title, items) => (
         <Card>
@@ -138,36 +218,16 @@ function TransferList() {
                                     }}
                                 />
                             </ListItemIcon>
-                            <CardComponent taskName={"Task"} taskDescr={"Task description"}>
+                            <CardComponent taskName={value.taskname} taskDescr={"Описание задачи"}>
 
                             </CardComponent>
-                            {/* <ListItemText id={labelId} primary={`List item ${value + 1}`} /> */}
-                            {/* <Card sx={{ minWidth: 150 }}>
-                                <CardContent>
-                                    <Typography variant="h5" component="div">
-                                        Задача
-                                    </Typography>
-                                    <Typography variant="body2">
-                                        краткое описание задачи
-                                    </Typography>
-                                </CardContent>
-                                <CardActions>
-                                    <Button onClick={activePopup ? undefined : () => setActivePopup(true)}>Смотреть задачу</Button>
-                                    <PopupComponent active={activePopup} setActive={setActivePopup}>
-                                        <p>Text</p>
-                                    </PopupComponent>
-                                    <IconButton aria-label="settings">
-                                        <MoreVertIcon />
-                                    </IconButton>
-                                </CardActions>
-                            </Card> */}
-
                         </ListItem>
                     );
                 })}
             </List>
         </Card >
     );
+
     return (
         <Grid container spacing={1} direction="row" justifyContent="center" alignItems="center" >
             <Grid direction="column" alignItems="center">
@@ -209,6 +269,6 @@ function TransferList() {
             </Grid>
         </Grid>
     );
-}
+};
 
 export default TransferList;

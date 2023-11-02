@@ -1,3 +1,4 @@
+// ------------------------- IMPORT SETION ---------------------------
 const express = require("express");
 const { Pool } = require("pg");
 const bodyParser = require("body-parser");
@@ -8,6 +9,8 @@ const app = express();
 const port = 5000;
 const server = http.createServer(app);
 const RateLimit = require('express-rate-limit');
+
+// ------------------------- DOTENV SETION ---------------------------
 dotenv.config({ path: "../../.env" });
 const pgUser = process.env.PGUSER;
 const pgPassword = process.env.PGPASSWORD;
@@ -16,9 +19,10 @@ const pgPort = process.env.PGPORT;
 const pgDatabase = process.env.PGDATABASE;
 const pgSsl = process.env.PGSSL === "true";
 
+// ------------------------- MAIN SETION ---------------------------
 const limiter = RateLimit({
   windowMs: 60 * 1000,
-  max: 90,
+  max: 50000,
 });
 
 const io = require("socket.io")(server, {
@@ -26,7 +30,6 @@ const io = require("socket.io")(server, {
     origin: "*",
   },
 });
-
 
 const pool = new Pool({
   user: pgUser,
@@ -50,6 +53,16 @@ pool
     console.error("Error connecting to PostgreSQL db = ", error);
   });
 
+const sendTextToClients = (newText) => {
+  io.emit('updateText', { text_column: newText });
+};
+
+const sendStateToClients = (task_id, task_state) => {
+  io.emit('updateTask', { taskID: task_id, CurState: task_state });
+};
+
+
+// ------------------------- TEXT SETION ---------------------------
 app.get('/database', (req, res) => {
   pool.query('select text_column from text_table', (err, result) => {
     if (err) {
@@ -61,80 +74,77 @@ app.get('/database', (req, res) => {
   });
 });
 
-
-const sendUpdateToClients = (newText) => {
-  io.emit('updateText', { text_column: newText });
-};
-
 app.post('/database/saveText', (req, res) => {
   const newText = req.body.textField;
-  pool.query(`UPDATE text_table
-                SET text_column = '${newText}'
-                WHERE id = 1 `, (err, result) => {
+  pool.query(`UPDATE text_table SET text_column = '${newText}' WHERE id = 1 `, (err, result) => {
     if (!err) {
-      sendUpdateToClients(newText);
+      sendTextToClients(newText);
       res.json({ text_column: newText });
+    } else {
+      console.log(err);
+      res.status(500).json({ error: 'Error while getting data from database' });
     }
   });
 });
 
-// -------код для работы с тасками---------
-
+// ------------------------- TASK SETION ---------------------------
 app.get('/project/tasks', (req, res) => {
-  pool.query('select * from alltasks ', (err, result) => {
-    if (err) {
+  pool.query('select * from user_tasks ', (err, result) => {
+    if (!err) {
+      res.json(result.rows);
+    } else {
       console.error(err);
       res.status(500).json({ error: 'Error while getting data from database' });
-    } else {
-      res.json(result.rows);
-      console.log(result.rows);
     }
   });
 });
 
 app.post('/project/createTask', (req, res) => {
   const newTaskName = req.body.taskName;
-  const newstate = req.body.newState;
-  console.log("Task created = %s %s", newTaskName, newstate);
-  pool.query(`UPDATE alltasks SET curstate = $1 WHERE mytable_key = $2`, [newstate, taskid], (err, result) => {
+  const newState = req.body.newState;
+  pool.query(`INSERT INTO user_tasks(taskname, curstate) values($1, $2)`, [newTaskName, newState], (err, result) => {
     if (!err) {
-      //TODO
-      // добавить синхронизацию
       res.json({
         Taskname: newTaskName,
-        CurState: newstate
+        CurState: newState
       });
+    } else {
+      console.log(err);
+      res.status(500).json({ error: 'Error while getting data from database' });
     }
   });
 });
 
 app.post('/project/changeState', (req, res) => {
-  const taskid = req.body.taskID;
-  const newstate = req.body.newState;
-  // console.log(taskid, newstate);
-  pool.query(`UPDATE alltasks SET curstate = $1 WHERE mytable_key = $2`, [newstate, taskid], (err, result) => {
+  const taskId = req.body.taskID;
+  const newState = req.body.newState;
+  pool.query(`UPDATE user_tasks SET curstate = $1 WHERE id = $2`, [newState, taskId], (err, result) => {
     if (!err) {
-      //TODO добавить синхронизацию
+      sendStateToClients(taskId, newState);
       res.json({
-        taskID: taskid,
-        CurState: newstate
+        taskID: taskId,
+        CurState: newState
       });
+    } else {
+      console.log(err);
+      res.status(500).json({ error: 'Error while getting data from database' });
     }
   });
 });
 
 app.post('/project/deleteTask', (req, res) => {
-  const taskid = req.body.taskID;
-  pool.query('DELETE FROM alltasks WHERE mytable_key = $1', [taskid], (err, result) => {
+  const taskId = req.body.taskID;
+  pool.query('DELETE FROM user_tasks WHERE id = $1', [taskId], (err, result) => {
     if (!err) {
-      //TODO
-      // добавить синхронизацию
+      //TODO добавить синхронизацию
+    } else {
+      console.log(err);
+      res.status(500).json({ error: 'Error while getting data from database' });
     }
   });
 });
 
-// ----------------------------------------
-
+// ------------------------- RUNSERVER SETION ---------------------------
 server.listen(port, () => {
   console.log(`Backend link is = http://localhost:${port}`);
 });
