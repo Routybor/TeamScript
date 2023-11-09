@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import io from 'socket.io-client';
-import TransferList from './components/TransferList';
+import TransferListComponent from './components/TransferListComponent';
 import TextFieldComponent from './components/TextFieldComponent';
 
 const host = 'http://localhost:5000'
@@ -82,7 +82,7 @@ function App() {
     <div className="App">
       <TextFieldComponent value={textFieldValue} handleInputChange={handleInputChange} />
       <h1> Задачи </h1>
-      <TransferList />
+      <TransferListComponent />
     </div>
   );
 
