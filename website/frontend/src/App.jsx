@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import io from 'socket.io-client';
-import TransferListComponent from './components/TransferListComponent';
+import TransferList from './components/TransferList';
 import TextFieldComponent from './components/TextFieldComponent';
 
 const host = 'http://localhost:5000'
