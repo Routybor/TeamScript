@@ -21,7 +21,19 @@ const getUserFromTable = (req, res) => {
 // Саша
 // запрос на создание новой записи о пользователе
 
-
+const addNewUser = (req, res) => {
+    const name = req.body.userName;
+    const paswd = req.body.password;
+    pool.query('INSERT INTO users (username, passwd) values($1, $2)', [name, paswd],
+    (err, result) => {
+      if (!err) {
+        res.json(result.rows);
+      } else {
+        console.error(err);
+        res.status(500).json({ error: 'Error while getting data from database' });
+      }
+    });
+  };
 
 // ------------------------------------------------
 // возможно потом изменение пароля
