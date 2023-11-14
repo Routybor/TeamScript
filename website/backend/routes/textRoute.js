@@ -17,7 +17,7 @@ const getTextFromDatabase = (req, res) => {
 
 const saveTextToDatabase = (req, res, io) => {
   const newText = req.body.textField;
-  pool.query(`UPDATE text_table SET text_column = '${newText}' WHERE id = 1 `, (err, result) => {
+  pool.query(`UPDATE text_table SET text_column = $1 WHERE id = 1 `, [newText], (err, result) => {
     if (!err) {
       sendTextToClients(newText, io);
       res.json({ text_column: newText });
