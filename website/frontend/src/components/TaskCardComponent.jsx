@@ -6,10 +6,10 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import PopupComponent from './PopupComponent';
 
-import "./CardComponent.css";
+import "./TaskCardComponent.css";
 
 
-const CardComponent = ({ taskName, taskDescr }) => {
+const TaskCardComponent = ({ taskName, taskDescr }) => {
     const [activePopup, setActivePopup] = useState(false);
 
     return (
@@ -31,4 +31,4 @@ const CardComponent = ({ taskName, taskDescr }) => {
     );
 }
 
-export default CardComponent;
+export default TaskCardComponent;

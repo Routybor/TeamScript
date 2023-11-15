@@ -8,12 +8,20 @@ const host = 'http://localhost:5000'
 const socket = io(host);
 
 function App() {
+  const [token, setToken] = useState();
+  if (!token) {
+    return <AuthorizationComponent setToken={setToken} />
+  }
   return (
-    <div className="App">
-      <TextFieldComponent socket={socket} host={host}/>
-      <h1> Задачи </h1>
-      <TransferList socket={socket} host={host}/>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<h1>HI</h1>} />
+        {/* <Route path="/authorization" element={<h1>HI</h1>}>
+        </Route> */}
+        <Route path="/taskboard" element={<TransferListComponent socket={socket} host={host} />}>
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 
 }
