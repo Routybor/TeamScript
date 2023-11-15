@@ -1,54 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import CustomInputComponent from './CustomInputComponent';
 import "./AuthorizationComponent.css";
-import { Button } from '@mui/material';
 
-
-async function loginUser(credentials) {
-    return fetch('http://localhost:8080/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    })
-        .then(data => data.json())
-}
-
-const AuthorizationComponent = ({ setToken }) => {
-    // state = {
-    //     email: "",
-    //     password: ""
-    // };
-
-    // handleChange = e => {
-    //     setState({ [e.currentTarget.id]: e.currentTarget.value });
-    // };
-    const [username, setUserName] = useState("");
-    const [password, setPassword] = useState("");
-
-    const handleSubmit = async e => {
-        e.preventDefault();
-        const token = await loginUser({
-            username,
-            password
-        });
-        setToken(token);
-    }
+const AuthorizationComponent = () => {
 
     return (
         <div className='authorization'>
-            <form className="form" onSubmit={handleSubmit}>
+            <form className="form">
                 <CustomInputComponent
                     labelText="Email"
                     id="email"
-                    handleChange={e => setUserName(e.target.value)}
+                    // handleChange={e => setUserName(e.target.value)}
                     type="text"
                 />
                 <CustomInputComponent
                     labelText="Password"
                     id="password"
-                    handleChange={e => setPassword(e.target.value)}
+                    // handleChange={e => setPassword(e.target.value)}
                     type="password"
                 />
                 {/* <Button className='logInButton'>LOG IN</Button> */}

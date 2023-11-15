@@ -19,7 +19,7 @@ const CustomInputComponent = (props) => {
                 ) : null}
                 <Input
                     id={props.id}
-                    onChange={props.handleChange}
+                    // onChange={props.handleChange}
                     type={props.type}
                 />
             </FormControl>

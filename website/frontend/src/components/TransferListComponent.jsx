@@ -1,34 +1,109 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+// import CardActions from '@mui/material/CardActions';
+// import CardContent from '@mui/material/CardContent';
+// import Typography from '@mui/material/Typography';
+// import { ToggleButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { IconButton } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import TaskCardComponent from './TaskCardComponent';
 
-
-function TransferListComponent() {
-
-    const not = (a, b) => {
-        return a.filter((value) => b.indexOf(value) === -1);
-    }
-    const intersection = (a, b) => {
-        return a.filter((value) => b.indexOf(value) !== -1);
-    }
-    const union = (a, b) => {
-        return [...a, ...not(b, a)];
-    }
-
+function TransferListComponent(props) {
     const [checked, setChecked] = useState([]);
-    const [toDo, setToDo] = useState([0, 1, 2]);
-    const [inProgress, setInProgress] = useState([40, 41, 42]);
+    const [toDo, setToDo] = useState([]);
+    const [inProgress, setInProgress] = useState([]);
     const toDoChecked = intersection(checked, toDo);
     const inProgressChecked = intersection(checked, inProgress);
+    const [activePopup, setActivePopup] = useState(false);
+
+
+    useEffect(() => {
+        receiveData();
+        props.socket.on('updateTask', (data) => {
+            //TODO = try to use data, change list of tasks instead of request
+            receiveData();
+        });
+        return () => {
+            props.socket.off('updateTask');
+        };
+    }, []);
+
+
+    function not(a, b) {
+        return a.filter((value) => b.indexOf(value) === -1);
+    };
+    function intersection(a, b) {
+        return a.filter((value) => b.indexOf(value) !== -1);
+    };
+    function union(a, b) {
+        return [...a, ...not(b, a)];
+    };
+
+
+    const receiveData = () => {
+        fetch(`${props.host}/project/tasks`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                const todo_list = data
+                    .filter(item => item.curstate === 'todo')
+                const progress_list = data
+                    .filter(item => item.curstate === 'prog')
+                setToDo(todo_list)
+                setInProgress(progress_list)
+            })
+            .catch((error) => {
+                console.error('ERROR receiving data = ', error);
+            });
+    };
+
+    const updateTask = (task, newstate) => {
+        fetch(`${props.host}/project/changeState`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ taskID: task.id, newState: newstate }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Task saved = ', data);
+            })
+            .catch((error) => {
+                console.error('ERROR saving text = ', error);
+            });
+    };
+
+    const createTask = (name, newstate) => {
+        fetch(`${props.host}/project/createTask`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ taskName: name, newState: newstate }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Task created = ', data);
+            })
+            .catch((error) => {
+                console.error('ERROR saving text = ', error);
+            });
+    };
+
 
     const handleToggle = (value) => () => {
         const currentIndex = checked.indexOf(value);
@@ -39,8 +114,13 @@ function TransferListComponent() {
             newChecked.splice(currentIndex, 1);
         }
         setChecked(newChecked);
+        for (const task of checked) {
+            console.log(task)
+        }
     };
+
     const numberOfChecked = (items) => intersection(checked, items).length;
+
     const handleToggleAll = (items) => () => {
         if (numberOfChecked(items) === items.length) {
             setChecked(not(checked, items));
@@ -48,28 +128,36 @@ function TransferListComponent() {
             setChecked(union(checked, items));
         }
     };
+
     const handleCheckedInProgress = () => {
         setInProgress(inProgress.concat(toDoChecked));
         setToDo(not(toDo, toDoChecked));
+        checked.forEach(task => updateTask(task, 'prog'));
         setChecked(not(checked, toDoChecked));
     };
+
     const handleCheckedToDo = () => {
         setToDo(toDo.concat(inProgressChecked));
         setInProgress(not(inProgress, inProgressChecked));
+        checked.forEach(task => updateTask(task, 'todo'));
         setChecked(not(checked, inProgressChecked));
     };
 
     const addCardToDo = () => {
-        toDo.push(toDo.at(toDo.length - 1) + 1);
+        createTask('Default', 'todo');
+        // toDo.push(toDo.at(toDo.length - 1) + 1);
+        toDo.push(toDo.length + 1);
         setToDo(toDo);
         handleCheckedToDo();
-    }
+    };
 
     const addCardInProgress = () => {
-        inProgress.push(inProgress.at(inProgress.length - 1) + 1);
-        setToDo(inProgress);
+        // inProgress.push(inProgress.at(inProgress.length - 1) + 1);
+        inProgress.push(inProgress.length + 100);
+        setInProgress(inProgress);
         handleCheckedInProgress();
-    }
+    };
+
 
     const customList = (title, items) => (
         <Card>
@@ -91,17 +179,18 @@ function TransferListComponent() {
                 title={title}
                 subheader={`${numberOfChecked(items)}/${items.length} selected`}
                 action={
+                    // <a href="" onclick="window.open(this.href,'_self','width=100,height=50,popup=yes')">
                     <IconButton aria-label="settings">
                         <MoreVertIcon />
                     </IconButton>
+                    // </a>
                 }
             />
-
-            <Divider />
+            < Divider />
 
             <List
                 sx={{
-                    width: 300,
+                    width: 400,
                     height: 500,
                     bgcolor: 'background.paper',
                     overflow: 'auto',
@@ -111,7 +200,7 @@ function TransferListComponent() {
                 role="list"
             >
                 {items.map((value) => {
-                    const labelId = `transfer-list-all-item-${value}-label`;
+                    const labelId = `${value}-label`;
 
                     return (
                         <ListItem
@@ -131,22 +220,21 @@ function TransferListComponent() {
                                     }}
                                 />
                             </ListItemIcon>
-                            <TaskCardComponent taskName={"Task"} taskDescr={"Task description"}>
+                            <TaskCardComponent taskName={"Имя задачи"} taskDescr={"Описание задачи"}>
 
                             </TaskCardComponent>
-
-
                         </ListItem>
                     );
                 })}
             </List>
         </Card >
     );
+
     return (
         <Grid container spacing={1} direction="row" justifyContent="center" alignItems="center" >
             <Grid direction="column" alignItems="center">
 
-                <IconButton aria-label="settings" onClick={addCardToDo()}>
+                <IconButton aria-label="settings" onClick={addCardToDo}>
                     <AddIcon></AddIcon>
                 </IconButton>
                 <Grid item>{customList('to do', toDo)}</Grid>
@@ -157,7 +245,7 @@ function TransferListComponent() {
                         sx={{ my: 0.5 }}
                         variant="outlined"
                         size="small"
-                        onClick={handleCheckedInProgress()}
+                        onClick={handleCheckedInProgress}
                         disabled={toDoChecked.length === 0}
                         aria-label="move selected right"
                     >
@@ -183,6 +271,6 @@ function TransferListComponent() {
             </Grid>
         </Grid>
     );
-}
+};
 
 export default TransferListComponent;
