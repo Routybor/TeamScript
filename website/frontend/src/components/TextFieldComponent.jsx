@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TextField } from "@mui/material";
 
+
 function TextFieldComponent(props) {
   const [textFieldValue, setTextFieldValue] = useState('');
   const [pendingData, setPendingData] = useState('');
@@ -70,14 +71,16 @@ function TextFieldComponent(props) {
     setSendDataEnabled(true);
   };
   return (
-    <TextField
-      fullWidth
-      value={textFieldValue}
-      id="standard-basic"
-      label="Enter your text here"
-      multiline
-      onChange={handleInputChange}
-    />
+    
+      <TextField
+        fullWidth
+        value={textFieldValue}
+        id="standard-basic"
+        variant="standard"
+        label={props.name}
+        multiline
+        onChange={handleInputChange}
+      />
   );
 }
 

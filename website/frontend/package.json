@@ -15,9 +15,11 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.16",
     "@mui/material": "^5.14.16",
+    "classnames": "^2.3.2",
     "material-icons": "^1.13.12",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.18.0",
     "socket.io-client": "^4.7.2"
   },
   "devDependencies": {

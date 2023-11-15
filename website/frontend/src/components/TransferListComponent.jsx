@@ -15,10 +15,9 @@ import Divider from '@mui/material/Divider';
 import AddIcon from '@mui/icons-material/Add';
 import { IconButton } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import CardComponent from './CardComponent';
+import TaskCardComponent from './TaskCardComponent';
 
-
-function TransferList(props) {
+function TransferListComponent(props) {
     const [checked, setChecked] = useState([]);
     const [toDo, setToDo] = useState([]);
     const [inProgress, setInProgress] = useState([]);
@@ -146,16 +145,19 @@ function TransferList(props) {
 
     const addCardToDo = () => {
         createTask('Default', 'todo');
-        toDo.push(toDo.at(toDo.length - 1) + 1);
+        // toDo.push(toDo.at(toDo.length - 1) + 1);
+        toDo.push(toDo.length + 1);
         setToDo(toDo);
         handleCheckedToDo();
     };
 
     const addCardInProgress = () => {
-        inProgress.push(inProgress.at(inProgress.length - 1) + 1);
-        setToDo(inProgress);
+        // inProgress.push(inProgress.at(inProgress.length - 1) + 1);
+        inProgress.push(inProgress.length + 100);
+        setInProgress(inProgress);
         handleCheckedInProgress();
     };
+
 
     const customList = (title, items) => (
         <Card>
@@ -163,7 +165,7 @@ function TransferList(props) {
                 sx={{ px: 2, py: 1 }}
                 avatar={
                     <Checkbox
-                        onClick={activePopup ? undefined : handleToggleAll(items)}
+                        onClick={handleToggleAll(items)}
                         checked={numberOfChecked(items) === items.length && items.length !== 0}
                         indeterminate={
                             numberOfChecked(items) !== items.length && numberOfChecked(items) !== 0
@@ -188,7 +190,7 @@ function TransferList(props) {
 
             <List
                 sx={{
-                    width: 300,
+                    width: 400,
                     height: 500,
                     bgcolor: 'background.paper',
                     overflow: 'auto',
@@ -198,7 +200,7 @@ function TransferList(props) {
                 role="list"
             >
                 {items.map((value) => {
-                    const labelId = `transfer-list-all-item-${value}-label`;
+                    const labelId = `${value}-label`;
 
                     return (
                         <ListItem
@@ -209,7 +211,7 @@ function TransferList(props) {
                         >
                             <ListItemIcon>
                                 <Checkbox
-                                    onClick={activePopup ? undefined : handleToggle(value)}
+                                    onClick={handleToggle(value)}
                                     checked={checked.indexOf(value) !== -1}
                                     tabIndex={-1}
                                     disableRipple
@@ -218,9 +220,9 @@ function TransferList(props) {
                                     }}
                                 />
                             </ListItemIcon>
-                            <CardComponent taskName={value.taskname} taskDescr={"Описание задачи"}>
+                            <TaskCardComponent taskName={"Имя задачи"} taskDescr={"Описание задачи"}>
 
-                            </CardComponent>
+                            </TaskCardComponent>
                         </ListItem>
                     );
                 })}
@@ -232,7 +234,7 @@ function TransferList(props) {
         <Grid container spacing={1} direction="row" justifyContent="center" alignItems="center" >
             <Grid direction="column" alignItems="center">
 
-                <IconButton aria-label="settings" onClick={activePopup ? undefined : addCardToDo}>
+                <IconButton aria-label="settings" onClick={addCardToDo}>
                     <AddIcon></AddIcon>
                 </IconButton>
                 <Grid item>{customList('to do', toDo)}</Grid>
@@ -243,7 +245,7 @@ function TransferList(props) {
                         sx={{ my: 0.5 }}
                         variant="outlined"
                         size="small"
-                        onClick={activePopup ? undefined : handleCheckedInProgress}
+                        onClick={handleCheckedInProgress}
                         disabled={toDoChecked.length === 0}
                         aria-label="move selected right"
                     >
@@ -253,7 +255,7 @@ function TransferList(props) {
                         sx={{ my: 0.5 }}
                         variant="outlined"
                         size="small"
-                        onClick={activePopup ? undefined : handleCheckedToDo}
+                        onClick={handleCheckedToDo}
                         disabled={inProgressChecked.length === 0}
                         aria-label="move selected left"
                     >
@@ -262,7 +264,7 @@ function TransferList(props) {
                 </Grid>
             </Grid>
             <Grid direction="column" alignItems="center">
-                <IconButton aria-label="settings" onClick={activePopup ? undefined : addCardInProgress}>
+                <IconButton aria-label="settings" onClick={addCardInProgress}>
                     <AddIcon></AddIcon>
                 </IconButton>
                 <Grid item>{customList('in progress', inProgress)}</Grid>
@@ -271,4 +273,4 @@ function TransferList(props) {
     );
 };
 
-export default TransferList;
+export default TransferListComponent;
