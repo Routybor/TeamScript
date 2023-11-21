@@ -99,6 +99,42 @@ const userExistsDB = async (name) => {
     });
 };
 
+const getProjectNameDB = async (projectId) => {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT project_name FROM projects where project_id = $1', [projectId], (err, result) => {
+            if (!err) {
+                resolve(result.rows[0]);
+            } else {
+                reject(new Error('Error while getting project name from database'));
+            }
+        });
+    });
+};
+
+const getUsersProjectsDB = async (userId) => {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT project_id FROM user_projects where user_id = $1', [userId], (err, result) => {
+            if (!err) {
+                resolve(result.rows[0]);
+            } else {
+                reject(new Error('Error while getting all users projects from database'));
+            }
+        });
+    });
+};
+
+const addRelationUserProjectDB = async (userId, projectId) => {
+    return new Promise((resolve, reject) => {
+        pool.query('INSERT INTO user_projects (project_id, user_id) values($1, $2)', [projectId, userId], (err, result) => {
+            if (!err) {
+                resolve(result.rows[0]);
+            } else {
+                reject(new Error('Error while adding relation between user_id and project_id'));
+            }
+        });
+    });
+};
+
 module.exports = {
     getTextDB,
     saveTextDB,
@@ -108,4 +144,7 @@ module.exports = {
     deleteTaskDB,
     insertUserDB,
     userExistsDB,
+    getProjectNameDB,
+    getUsersProjectsDB,
+    addRelationUserProjectDB,
 };
