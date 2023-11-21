@@ -2,9 +2,8 @@ import { useState } from 'react';
 
 export default function useToken() {
     const getToken = () => {
-        const tokenString = localStorage.getItem('token');
-        const userToken = JSON.parse(tokenString);
-        return userToken?.token
+        const token = localStorage.getItem('token');
+        return token != null
     };
 
     const [token, setToken] = useState(getToken());

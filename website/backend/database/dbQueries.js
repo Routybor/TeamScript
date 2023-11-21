@@ -74,11 +74,11 @@ const deleteTaskDB = async (taskId) => {
     });
 };
 
-const insertUserDB = async (name, paswd) => {
+const insertUserDB = async (name, paswd, token) => {
     return new Promise((resolve, reject) => {
-        pool.query('INSERT INTO users (username, passwd) values($1, $2)', [name, paswd], (err, result) => {
+        pool.query('INSERT INTO users (username, passwd, token) values($1, $2, $3) RETURNING *', [name, paswd, token], (err, result) => {
             if (!err) {
-                resolve(result.rows);
+                resolve(result.rows[0]);
             } else {
                 console.error(err);
                 reject(new Error('Error while getting data from database'));

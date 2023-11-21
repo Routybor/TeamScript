@@ -22,8 +22,6 @@ async function loginUser(credentials) {
     }
 }
 
-
-
 const AuthorizationComponent = ({ setToken }) => {
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
