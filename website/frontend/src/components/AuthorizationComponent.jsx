@@ -5,7 +5,6 @@ import config from '../config';
 // import { authAPI } from '../ApiCalls';
 
 async function loginUser(credentials) {
-    console.log(credentials)
     try {
         const response = await fetch(`${config.host}/auth/addNewUser`, {
             method: 'POST',

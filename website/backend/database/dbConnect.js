@@ -1,3 +1,5 @@
+//? DATA-ACCESS LAYER - операции с бд
+
 const { Pool } = require("pg");
 const dotenv = require("dotenv");
 
