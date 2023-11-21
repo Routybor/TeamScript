@@ -8,10 +8,27 @@ import PopupComponent from './PopupComponent';
 import { IconButton } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
 import "./TaskCardComponent.css";
+import config from '../config';
 
-
-const TaskCardComponent = ({ taskName, taskDescr }) => {
+const TaskCardComponent = ({ taskName, taskDescr, taskId }) => {
     const [activePopup, setActivePopup] = useState(false);
+
+    const deleteTask = () => {
+        fetch(`${config.host}/project/deleteTask`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ taskID: taskId }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Task saved = ', data);
+            })
+            .catch((error) => {
+                console.error('ERROR saving text = ', error);
+            });
+    };
 
     return (
         <Card
@@ -23,7 +40,7 @@ const TaskCardComponent = ({ taskName, taskDescr }) => {
 
             <CardContent>
                 <Grid container justifyContent="right" alignItems="right">
-                    <IconButton aria-label="settings">
+                    <IconButton aria-label="settings" onClick={deleteTask}>
                         <RemoveIcon />
                     </IconButton>
                 </Grid>

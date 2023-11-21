@@ -1,18 +1,28 @@
 import React, { useState } from 'react';
 import CustomInputComponent from './CustomInputComponent';
 import "./AuthorizationComponent.css";
-
+import config from '../config';
+// import { authAPI } from '../ApiCalls';
 
 async function loginUser(credentials) {
-    return fetch('http://localhost:5000/users', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    })
-        .then(data => data.json())
+    console.log(credentials)
+    try {
+        const response = await fetch(`${config.host}/auth/addNewUser`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(credentials)
+        });
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error logging in:', error);
+        throw error;
+    }
 }
+
 
 
 const AuthorizationComponent = ({ setToken }) => {

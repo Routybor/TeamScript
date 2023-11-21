@@ -16,8 +16,10 @@ import AddIcon from '@mui/icons-material/Add';
 import { IconButton } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import TaskCardComponent from './TaskCardComponent';
+import config from '../config';
+import { taskAPI } from '../ApiCalls';
 
-function TransferListComponent(props) {
+function TransferListComponent() {
     const [checked, setChecked] = useState([]);
     const [toDo, setToDo] = useState([]);
     const [inProgress, setInProgress] = useState([]);
@@ -25,18 +27,27 @@ function TransferListComponent(props) {
     const inProgressChecked = intersection(checked, inProgress);
     const [activePopup, setActivePopup] = useState(false);
 
+    const receiveTasks = async () => {
+        try {
+            const data = await taskAPI.getTasksDB();
+            const todo_list = data.filter((item) => item.curstate === 'todo');
+            const progress_list = data.filter((item) => item.curstate === 'prog');
+            setToDo(todo_list);
+            setInProgress(progress_list);
+        } catch (error) {
+            console.error('Error in receive function:', error);
+        }
+    };
 
     useEffect(() => {
-        receiveData();
-        props.socket.on('updateTask', (data) => {
-            //TODO = try to use data, change list of tasks instead of request
-            receiveData();
+        receiveTasks();
+        config.socket.on('updateTask', (data) => {
+            receiveTasks();
         });
         return () => {
-            props.socket.off('updateTask');
+            config.socket.off('updateTask');
         };
     }, []);
-
 
     function not(a, b) {
         return a.filter((value) => b.indexOf(value) === -1);
@@ -47,63 +58,6 @@ function TransferListComponent(props) {
     function union(a, b) {
         return [...a, ...not(b, a)];
     };
-
-
-    const receiveData = () => {
-        fetch(`${props.host}/project/tasks`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                const todo_list = data
-                    .filter(item => item.curstate === 'todo')
-                const progress_list = data
-                    .filter(item => item.curstate === 'prog')
-                setToDo(todo_list)
-                setInProgress(progress_list)
-            })
-            .catch((error) => {
-                console.error('ERROR receiving data = ', error);
-            });
-    };
-
-    const updateTask = (task, newstate) => {
-        fetch(`${props.host}/project/changeState`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ taskID: task.id, newState: newstate }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log('Task saved = ', data);
-            })
-            .catch((error) => {
-                console.error('ERROR saving text = ', error);
-            });
-    };
-
-    const createTask = (name, newstate) => {
-        fetch(`${props.host}/project/createTask`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ taskName: name, newState: newstate }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log('Task created = ', data);
-            })
-            .catch((error) => {
-                console.error('ERROR saving text = ', error);
-            });
-    };
-
 
     const handleToggle = (value) => () => {
         const currentIndex = checked.indexOf(value);
@@ -132,19 +86,19 @@ function TransferListComponent(props) {
     const handleCheckedInProgress = () => {
         setInProgress(inProgress.concat(toDoChecked));
         setToDo(not(toDo, toDoChecked));
-        checked.forEach(task => updateTask(task, 'prog'));
+        checked.forEach(task => taskAPI.updateTaskDB(task, 'prog'));
         setChecked(not(checked, toDoChecked));
     };
 
     const handleCheckedToDo = () => {
         setToDo(toDo.concat(inProgressChecked));
         setInProgress(not(inProgress, inProgressChecked));
-        checked.forEach(task => updateTask(task, 'todo'));
+        checked.forEach(task => taskAPI.updateTaskDB(task, 'todo'));
         setChecked(not(checked, inProgressChecked));
     };
 
     const addCardToDo = () => {
-        createTask('Default', 'todo');
+        taskAPI.createTaskDB('Default', 'todo');
         // toDo.push(toDo.at(toDo.length - 1) + 1);
         toDo.push(toDo.length + 1);
         setToDo(toDo);
@@ -152,6 +106,7 @@ function TransferListComponent(props) {
     };
 
     const addCardInProgress = () => {
+        taskAPI.createTaskDB('Default', 'prog');
         // inProgress.push(inProgress.at(inProgress.length - 1) + 1);
         inProgress.push(inProgress.length + 100);
         setInProgress(inProgress);
@@ -220,7 +175,7 @@ function TransferListComponent(props) {
                                     }}
                                 />
                             </ListItemIcon>
-                            <TaskCardComponent taskName={"Имя задачи"} taskDescr={"Описание задачи"}>
+                            <TaskCardComponent taskName={value.taskname} taskDescr={value.description} taskId={value.id}>
 
                             </TaskCardComponent>
                         </ListItem>

@@ -11,21 +11,21 @@ const pgDatabase = process.env.PGDATABASE;
 const pgSsl = process.env.PGSSL === "true";
 
 const pool = new Pool({
-  user: pgUser,
-  password: pgPassword,
-  host: pgHost,
-  port: pgPort,
-  database: pgDatabase,
-  ssl: pgSsl,
+    user: pgUser,
+    password: pgPassword,
+    host: pgHost,
+    port: pgPort,
+    database: pgDatabase,
+    ssl: pgSsl,
 });
 
 pool
-  .connect()
-  .then(() => {
-    console.log("Connected to PostgreSQL db");
-  })
-  .catch((error) => {
-    console.error("Error connecting to PostgreSQL db = ", error);
-  });
+    .connect()
+    .then(() => {
+        console.log("Connected to PostgreSQL db");
+    })
+    .catch((error) => {
+        console.error("Error connecting to PostgreSQL db = ", error);
+    });
 
 module.exports = pool;
