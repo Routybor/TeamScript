@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 
 import { Button, Grid } from "@mui/material";
+import { Link } from "react-router-dom";
+
 
 const ProjectsPage = () => {
 
     const [inputList, setInputList] = useState([]);
 
-    const addProject = event => {
-        setInputList(inputList.concat(<h3 key={inputList.length}>Project {inputList.length + 1}</h3>));
+    const addProject = () => {
+        setInputList(inputList.concat(<Link key={inputList.length} to={"./taskboard"}><h3>Project {inputList.length + 1}</h3> </Link>));
     };
 
     return (
