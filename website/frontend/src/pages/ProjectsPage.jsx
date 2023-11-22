@@ -7,22 +7,49 @@ import { Link } from "react-router-dom";
 const ProjectsPage = () => {
 
     const [inputList, setInputList] = useState([]);
+    const [count, setCount] = useState(0);
+
+    const deleteProject = id => {
+        setInputList(oldValues => {
+            return oldValues.filter(inputList => inputList.id !== id)
+        })
+    }
 
     const addProject = () => {
-        setInputList(inputList.concat(<Link key={inputList.length} to={"./taskboard"}><h3>Project {inputList.length + 1}</h3> </Link>));
+        setInputList(inputList.concat({
+            id: count,
+            body:
+                <Link to={"./taskboard"}>
+                    <h3>Project {count + 1}</h3>
+                </Link>
+
+        }
+        ))
+        setCount(count + 1);
     };
 
     return (
-        <div id="projects-page">
+        <div>
             <h1>
                 Projects
             </h1>
-            <Button id="add-project" onClick={addProject}>
+            <Button onClick={addProject}>
                 + New Project
             </Button>
-            <Grid id="grid-projects" container direction="column" justifyContent="start" alignItems="start">
-                {inputList}
-            </Grid>
+            {inputList.map(project => {
+                return (
+                    <div id={project.id}>
+                        <Grid container direction="row" justifyContent="center" alignItems="center">
+                            {project.body}
+                            <Button onClick={() => deleteProject(project.id)}>
+                                delete
+                            </Button>
+                        </Grid>
+                    </div>
+                )
+            }
+
+            )}
         </div>
     );
 }
