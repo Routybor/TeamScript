@@ -8,15 +8,12 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-// import CardActions from '@mui/material/CardActions';
-// import CardContent from '@mui/material/CardContent';
-// import Typography from '@mui/material/Typography';
-// import { ToggleButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { IconButton } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import TaskCardComponent from './TaskCardComponent';
 import config from '../config';
+import './TransferListComponent.css';
 import { taskAPI } from '../ApiCalls';
 
 function TransferListComponent() {

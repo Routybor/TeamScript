@@ -17,7 +17,7 @@ async function loginUser(credentials) {
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error logging in:', error);
+        console.error('Error logging in:', error.response);
         throw error;
     }
 }
@@ -32,12 +32,16 @@ const AuthorizationComponent = ({ setToken }) => {
             username,
             password
         });
+
         setToken(token);
+        const now = new Date();
+        localStorage.setItem('expiryTime', JSON.stringify(now.getTime() + 15000));
     }
 
     return (
         <div className='authorization'>
-            <form className="form" onSubmit={handleSubmit}>
+
+            <form className="form" >
                 <CustomInputComponent
                     labelText="Login"
                     id="login"
@@ -51,7 +55,7 @@ const AuthorizationComponent = ({ setToken }) => {
                     type="password"
                 />
                 {/* <Button className='logInButton'>LOG IN</Button> */}
-                <button type="submit">Submit</button>
+                <button type="submit" onClick={handleSubmit}>Submit</button>
             </form>
         </div>
     );
