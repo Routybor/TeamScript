@@ -17,7 +17,7 @@ async function loginUser(credentials) {
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error logging in:', error.response);
+        console.error('Error logging in:', error);
         throw error;
     }
 }
@@ -35,7 +35,7 @@ const AuthorizationComponent = ({ setToken }) => {
 
         setToken(token);
         const now = new Date();
-        localStorage.setItem('expiryTime', JSON.stringify(now.getTime() + 15000));
+        localStorage.setItem('expiryTime', JSON.stringify(now.getTime()));
     }
 
     return (

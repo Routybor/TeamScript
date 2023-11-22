@@ -8,6 +8,7 @@ import AuthorizationComponent from './components/AuthorizationComponent';
 import AuthorizationPage from "./pages/AuthorizationPage";
 import TaskBoardPage from './pages/TaskBoardPage';
 import useToken from './helper/useToken';
+import ProjectsPage from './pages/ProjectsPage';
 
 function App() {
   const { token, setToken } = useToken();
@@ -25,10 +26,9 @@ function App() {
     <div className='App'>
       <BrowserRouter>
         <Routes>
-          {/* <Route path="/" element={<AuthorizationComponent setToken={setToken} />} /> */}
-          {/* <Route path="/authorization" element={<h1>HI</h1>}>
-        </Route> */}
-          <Route path="/" element={<TaskBoardPage />}>
+          <Route path="/" element={<ProjectsPage />}>
+          </Route>
+          <Route path="/taskboard" element={<TaskBoardPage />}>
           </Route>
         </Routes>
       </BrowserRouter >
