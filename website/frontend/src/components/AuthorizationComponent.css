@@ -10,19 +10,38 @@
     align-items: center;
     justify-content: center;
 } */
+
 body {
     background: #e0e0e0;
+    
 }
 
-.form {
-    max-width: 330px;
+.form {    
+    max-width: 700px;
+    height: 448px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     background: white;
-    padding: 20px;
-    margin-top: 30px;
-    border: 3px solid gray;
+    padding: 0px;
+    margin-top: 100px;
+    border: 1px solid gray;
+}
+
+.topTriangle {
+    width: 0;
+	height: 0;
+	border-top: 60px solid grey; 
+	border-left: 60px solid transparent;
+    margin-left: 641px;
+}
+
+.bottomTriangle {
+    width: 0px;
+	height: 0px;
+	border-bottom: 100px solid grey; 
+	border-right: 130px solid transparent;
+    margin-bottom: 100px;
 }
 
 .logInButton {
