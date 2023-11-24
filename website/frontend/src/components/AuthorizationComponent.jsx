@@ -32,7 +32,10 @@ const AuthorizationComponent = ({ setToken }) => {
             username,
             password
         });
+
         setToken(token);
+        const now = new Date();
+        localStorage.setItem('expiryTime', JSON.stringify(now.getTime()));
     }
 
     return (
