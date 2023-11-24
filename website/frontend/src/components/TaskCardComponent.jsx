@@ -7,28 +7,19 @@ import { Grid } from "@mui/material";
 import PopupComponent from './PopupComponent';
 import { IconButton } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
+import CustomInputComponent from "./CustomInputComponent";
 import "./TaskCardComponent.css";
 import config from '../config';
 
-const TaskCardComponent = ({ taskName, taskDescr, taskId }) => {
+const TaskCardComponent = (props) => {
+    const {
+        taskName,
+        taskDescr,
+        deleteTask
+    } = props;
     const [activePopup, setActivePopup] = useState(false);
 
-    const deleteTask = () => {
-        fetch(`${config.host}/project/deleteTask`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ taskID: taskId }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log('Task saved = ', data);
-            })
-            .catch((error) => {
-                console.error('ERROR saving text = ', error);
-            });
-    };
+
 
     return (
         <Card
@@ -44,14 +35,30 @@ const TaskCardComponent = ({ taskName, taskDescr, taskId }) => {
                         <RemoveIcon />
                     </IconButton>
                 </Grid>
-                <h3>{taskName}</h3>
-                <p>{taskDescr}</p>
+                <div className="task-name">
+                    <CustomInputComponent
+                        defaultValue={taskName}
+                        bigInput={true}
+                    />
+                </div>
+
+                <CustomInputComponent
+                    defaultValue={taskDescr}
+                    bigInput={false}
+                />
             </CardContent>
             <CardActions>
 
                 <Button onClick={activePopup ? undefined : () => setActivePopup(true)}>Смотреть задачу</Button>
                 <PopupComponent active={activePopup} setActive={setActivePopup}>
-                    <p>Text</p>
+                    <CustomInputComponent
+                        defaultValue={taskName}
+                        bigInput={true}
+                    />
+                    <CustomInputComponent
+                        defaultValue={taskDescr}
+                    />
+
                 </PopupComponent>
 
             </CardActions>

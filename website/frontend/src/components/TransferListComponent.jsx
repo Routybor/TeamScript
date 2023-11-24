@@ -36,6 +36,24 @@ function TransferListComponent() {
         }
     };
 
+    const deleteTask = () => {
+        fetch(`${config.host}/project/deleteTask`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ taskID: taskId }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Task saved = ', data);
+            })
+            .catch((error) => {
+                console.error('ERROR saving text = ', error);
+            });
+
+    };
+
     useEffect(() => {
         receiveTasks();
         config.socket.on('updateTask', (data) => {
@@ -172,7 +190,9 @@ function TransferListComponent() {
                                     }}
                                 />
                             </ListItemIcon>
-                            <TaskCardComponent taskName={value.taskname} taskDescr={value.description} taskId={value.id}>
+                            <TaskCardComponent taskName={value.taskname}
+                                taskDescr={value.description}
+                                deleteTask={deleteTask}>
 
                             </TaskCardComponent>
                         </ListItem>

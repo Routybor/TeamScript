@@ -36,6 +36,7 @@ const AuthorizationComponent = ({ setToken }) => {
         setToken(token);
         const now = new Date();
         localStorage.setItem('expiryTime', JSON.stringify(now.getTime()));
+        window.location.reload();
     }
 
     return (
@@ -45,12 +46,18 @@ const AuthorizationComponent = ({ setToken }) => {
                 <CustomInputComponent
                     labelText="Login"
                     id="login"
+                    formControlProps={{
+                        fullWidth: true
+                    }}
                     handleChange={e => setUserName(e.target.value)}
                     type="text"
                 />
                 <CustomInputComponent
                     labelText="Password"
                     id="password"
+                    formControlProps={{
+                        fullWidth: true
+                    }}
                     handleChange={e => setPassword(e.target.value)}
                     type="password"
                 />

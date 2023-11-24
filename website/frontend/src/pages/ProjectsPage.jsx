@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { Button, Grid } from "@mui/material";
 import { Link } from "react-router-dom";
 
+import "./ProjectsPage.css";
+
 
 const ProjectsPage = () => {
 
@@ -28,8 +30,19 @@ const ProjectsPage = () => {
         setCount(count + 1);
     };
 
+
+    const logOut = () => {
+        localStorage.clear();
+        window.location.reload();
+    }
+
     return (
         <div>
+            <div className="log-out-button">
+                <Button onClick={logOut}>
+                    Log Out
+                </Button>
+            </div>
             <h1>
                 Projects
             </h1>

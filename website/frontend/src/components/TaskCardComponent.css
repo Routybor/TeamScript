@@ -3,3 +3,9 @@
     position: relative;
     z-index: 0;
 }
+
+.task-name {
+    display: flex;
+    margin: 0%;
+    padding-top: 0;
+}
