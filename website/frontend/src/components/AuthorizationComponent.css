@@ -13,35 +13,31 @@
 
 body {
     background: #e0e0e0;
-    
 }
 
 .form {    
-    max-width: 700px;
-    height: 448px;
+    max-width: 'auto !important';
+    height: 'auto !important';
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    background: white;
-    padding: 0px;
-    margin-top: 100px;
-    border: 1px solid gray;
 }
 
 .topTriangle {
     width: 0;
 	height: 0;
-	border-top: 60px solid grey; 
-	border-left: 60px solid transparent;
-    margin-left: 641px;
+    margin-left: auto;
+	border-top: 100px solid grey; 
+	border-left: 100px solid transparent;
 }
 
 .bottomTriangle {
     width: 0px;
-	height: 0px;
-	border-bottom: 100px solid grey; 
-	border-right: 130px solid transparent;
-    margin-bottom: 100px;
+	height: 140px;
+	border-bottom: 150px solid grey; 
+	border-right: 180px solid transparent;
+    margin-right: auto;
+    bottom: auto;
 }
 
 .logInButton {
