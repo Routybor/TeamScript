@@ -15,7 +15,7 @@ body {
     background: #e0e0e0;
 }
 
-.form {    
+.form {
     max-width: 'auto !important';
     height: 'auto !important';
     margin: 0 auto;
@@ -23,21 +23,21 @@ body {
     flex-direction: column;
 }
 
+
 .topTriangle {
-    width: 0;
-	height: 0;
-    margin-left: auto;
-	border-top: 100px solid grey; 
-	border-left: 100px solid transparent;
+    position: fixed;
+    top: 0;
+    right: 0;
+    border-top: 100px solid grey;
+    border-left: 100px solid transparent;
 }
 
 .bottomTriangle {
-    width: 0px;
-	height: 140px;
-	border-bottom: 150px solid grey; 
-	border-right: 180px solid transparent;
-    margin-right: auto;
-    bottom: auto;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    border-bottom: 150px solid grey;
+    border-right: 180px solid transparent;
 }
 
 .logInButton {
