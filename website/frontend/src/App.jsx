@@ -19,7 +19,7 @@ function App() {
     return (
       <div>
         <AuthorizationPage setToken={setToken} />
-      </div>)
+      </div>);
   }
   return (
 
