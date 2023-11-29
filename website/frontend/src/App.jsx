@@ -14,8 +14,14 @@ import PrimaryPage from './pages/PrimaryPage';
 function App() {
   const { token, setToken } = useToken();
   // const { token, setToken } = useState();
-  const {buttonClicked, setButtonClicked } = useState(false);
-  
+  const [buttonClicked, setButtonClicked] = useState(false);
+
+  if (!token && !buttonClicked) {
+    return (
+      <PrimaryPage setButtonClicked={setButtonClicked} />
+
+    );
+  }
 
   if (!token && buttonClicked) {
     return (
@@ -29,15 +35,13 @@ function App() {
         <Routes>
           <Route path="/authorization" element={<AuthorizationPage />}>
           </Route>
-          <Route path="/" element={<PrimaryPage setButtonClicked={setButtonClicked}/>}>
-          </Route>
-          <Route path="/projects" element={<ProjectsPage />}>
+          <Route path="/" element={<ProjectsPage />}>
           </Route>
           <Route path="/taskboard" element={<TaskBoardPage />}>
           </Route>
         </Routes>
       </BrowserRouter>
-    </div>
+    </div >
   );
 
 }
