@@ -23,7 +23,7 @@ const PrimaryPage = ({ setButtonClicked }) => {
                 <div className="wrapper">
                     <div className="text">Where ideas come together</div>
                 </div>
-                <Button onClick={buttonClickedFunc}>Sign In</Button>
+                <button onClick={buttonClickedFunc}>Sign In</button>
 
             </form>
         </div>
