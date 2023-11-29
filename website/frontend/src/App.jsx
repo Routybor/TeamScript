@@ -1,40 +1,59 @@
 import React, { useState } from 'react';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Button } from '@mui/material';
-import TransferListComponent from './components/TransferListComponent';
-import TextFieldComponent from './components/TextFieldComponent';
-import AuthorizationComponent from './components/AuthorizationComponent';
 import AuthorizationPage from "./pages/AuthorizationPage";
 import TaskBoardPage from './pages/TaskBoardPage';
 import useToken from './helper/useToken';
 import ProjectsPage from './pages/ProjectsPage';
 import PrimaryPage from './pages/PrimaryPage';
+import RegistrationPage from './pages/RegistrationPage';
 
 function App() {
   const { token, setToken } = useToken();
   // const { token, setToken } = useState();
-  const [buttonClicked, setButtonClicked] = useState(false);
 
-  if (!token && !buttonClicked) {
+
+  // if (!token && !RegButtonClicked && !AuthButtonClicked) {
+  //   return (
+  //     <PrimaryPage setRegButtonClicked={setRegButtonClicked} setAuthButtonClicked={setAuthButtonClicked} />
+  //   );
+  // }
+
+  // if (!token && AuthButtonClicked) {
+  //   return (
+  //     <div>
+  //       <AuthorizationPage setToken={setToken} />
+  //     </div>);
+  // }
+
+  // if (!token && RegButtonClicked) {
+  //   return (
+  //     <div>
+  //       <RegistrationPage />
+  //     </div>);
+  // }
+
+  if (!token) {
     return (
-      <PrimaryPage setButtonClicked={setButtonClicked} />
-
+      <div className='App'>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<PrimaryPage />}>
+            </Route>
+            <Route path="/authorization" element={<AuthorizationPage setToken={setToken} />}>
+            </Route>
+            <Route path="/registration" element={<RegistrationPage />}>
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </div >
     );
   }
 
-  if (!token && buttonClicked) {
-    return (
-      <div>
-        <AuthorizationPage setToken={setToken} />
-      </div>);
-  }
   return (
     <div className='App'>
       <BrowserRouter>
         <Routes>
-          <Route path="/authorization" element={<AuthorizationPage />}>
-          </Route>
           <Route path="/" element={<ProjectsPage />}>
           </Route>
           <Route path="/taskboard" element={<TaskBoardPage />}>
@@ -43,6 +62,7 @@ function App() {
       </BrowserRouter>
     </div >
   );
+
 
 }
 

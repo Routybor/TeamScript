@@ -5,6 +5,7 @@ import config from '../config';
 // import { authAPI } from '../ApiCalls';
 
 async function loginUser(credentials) {
+
     try {
         const response = await fetch(`${config.host}/auth/addNewUser`, {
             method: 'POST',
@@ -37,6 +38,7 @@ const AuthorizationComponent = ({ setToken }) => {
         const now = new Date();
         localStorage.setItem('expiryTime', JSON.stringify(now.getTime()));
         window.location.reload();
+        window.location.assign(window.location.origin);
     }
 
     return (

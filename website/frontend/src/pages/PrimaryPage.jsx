@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import "./PrimaryPage.css";
 import { Button, Link } from "@mui/material";
 
-const PrimaryPage = ({ setButtonClicked }) => {
-    const buttonClickedFunc = () => {
-        setButtonClicked(true);
+const PrimaryPage = () => {
+    const RegButtonClickedFunc = () => {
+        window.location.assign("./registration");
+    }
+    const AuthButtonClickedFunc = () => {
+        window.location.assign("./authorization");
     }
 
     return (
@@ -23,8 +26,8 @@ const PrimaryPage = ({ setButtonClicked }) => {
                 <div className="wrapper">
                     <div className="text">Where ideas come together</div>
                 </div>
-                <button onClick={buttonClickedFunc}>Sign In</button>
-
+                <Button onClick={AuthButtonClickedFunc}>Sign In</Button>
+                <p onClick={RegButtonClickedFunc}>Create account</p>
             </form>
         </div>
     );
