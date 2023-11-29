@@ -15,6 +15,7 @@ async function addUserController(req, res) {
     } else {
         res.status(500).json({ error: 'Error while getting data from database' });
     }
+    
 }
 
 async function checkUserController(req, res) {

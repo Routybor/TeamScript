@@ -6,7 +6,7 @@ export default function useToken() {
 
         const expiryTime = localStorage.getItem('expiryTime');
         const now = new Date();
-        if (now.getTime() > Number(expiryTime) + 60000000) {
+        if (now.getTime() > Number(expiryTime) + 600000) {
             localStorage.removeItem('token');
             localStorage.removeItem('expiryTime');
         }

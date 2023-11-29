@@ -147,6 +147,46 @@ const createNewProjectDB = async (projectName) => {
     });
 };
 
+// запрос на создание новой таблицы для проекта
+// название будет формироваться как "Project + UniqueId"
+// Пока не совсем ясен вопрос с безопастностью в данном моменте
+// но скорее всего придется при каждом действии связанном с каким либо проекто
+// проверять явлется ли user его участником, а в будущем также и роль - прописать в servise
+
+const createTableProjectDB = async (projectName) => {
+    return new Promise((resolve, reject) => {
+        pool.query(`CREATE TABLE $1
+        (
+            task_id    serial primary key,
+            task_name        VARCHAR(40) not null,
+            task_state VARCHAR(40) not null,
+            person    int
+            
+        );`, [projectName], (err, result) => {
+            if (!err) {
+                resolve(result.rows[0]);
+            } else {
+                reject(new Error('Error while creating new tasks table'));
+            }
+        });
+    });
+};
+
+// запрос на удаление новой таблицы для проекта
+// вопросы безопастни как и функции выше
+
+const deleteTableProjectDB = async (projectName) => {
+    return new Promise((resolve, reject) => {
+        pool.query('drop TABLE $1', [projectName], (err, result) => {
+            if (!err) {
+                resolve(result.rows[0]);
+            } else {
+                reject(new Error('Error while deleting table'));
+            }
+        });
+    });
+};
+
 module.exports = {
     getTextDB,
     saveTextDB,
@@ -160,4 +200,6 @@ module.exports = {
     getUsersProjectsDB,
     addRelationUserProjectDB,
     createNewProjectDB,
+    createTableProjectDB,
+    deleteTableProjectDB
 };
