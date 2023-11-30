@@ -27,7 +27,7 @@ const PrimaryPage = () => {
                     <div className="text">Where ideas come together</div>
                 </div>
                 <Button onClick={AuthButtonClickedFunc}>Sign In</Button>
-                <p onClick={RegButtonClickedFunc}>Create account</p>
+                <p onClick={RegButtonClickedFunc} style={{marginTop: '1%'}}>Create account</p>
             </form>
         </div>
     );
