@@ -42,7 +42,7 @@ function App() {
             </Route>
             <Route path="/authorization" element={<AuthorizationPage setToken={setToken} />}>
             </Route>
-            <Route path="/registration" element={<RegistrationPage />}>
+            <Route path="/registration" element={<RegistrationPage setToken = {setToken}/>}>
             </Route>
           </Routes>
         </BrowserRouter>

@@ -1,16 +1,48 @@
-import React from "react";
+import React, {useState} from "react";
 import CustomInputComponent from '../components/CustomInputComponent';
 import { Button } from "@mui/material";
+import config from '../config';
 
-const RegistrationPage = () => {
-    const TaskBoardButtonClickedFunc = () => {
+const RegistrationPage = ({setToken}) => {
+        const [username, setUserName] = useState();
+        const [email, setEmail] = useState();
+        const [password, setPassword] = useState();
+
+        async function loginUser(credentials) {
+            try {
+                const response = await fetch(`${config.host}/auth/addNewUser`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(credentials)
+                });
+        
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error logging in:', error);
+                throw error;
+            }
+        }
+
+        const handleSubmit = async e => {
+        e.preventDefault();
+        const token = await loginUser({
+            username,
+            email,
+            password
+        });
+
+        setToken(token);
+        const now = new Date();
+        localStorage.setItem('expiryTime', JSON.stringify(now.getTime()));
         window.location.reload();
         window.location.assign(window.location.origin);
     }
     
+    
     return (
-        
-
         <div className="registration">
             <div className="topTriangle" style={{}}></div>
             <table>
@@ -34,15 +66,16 @@ const RegistrationPage = () => {
                 handleChange={e => setUserName(e.target.value)}
                 type="text"
             />
+
             <CustomInputComponent
                 labelText="Email"
                 id="email"
                 formControlProps={{
                     fullWidth: true
                 }}
-                handleChange={e => setUserName(e.target.value)}
+                handleChange={e => setEmail(e.target.value)}
                 type="text"
-            />
+            />  
 
             <CustomInputComponent
                 labelText="Password"
@@ -50,11 +83,11 @@ const RegistrationPage = () => {
                 formControlProps={{
                     fullWidth: true
                 }}
-                handleChange={e => setUserName(e.target.value)}
+                handleChange={e => setPassword(e.target.value)}
                 type="text"
             />
 
-            <Button onClick = {TaskBoardButtonClickedFunc}>Sign Up</Button>
+            <Button onClick = {handleSubmit} style={{marginTop: '3%'}}>Sign Up</Button>
 
             <div className="bottomTriangle"></div>
         </div>
