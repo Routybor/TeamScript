@@ -80,7 +80,7 @@ const insertUserDB = async (name, paswd, token) => {
             if (!err) {
                 resolve(result.rows[0]);
             } else {
-                console.error(err);
+                // console.error(err);
                 reject(new Error('Error while getting data from database'));
             }
         });
@@ -91,9 +91,37 @@ const userExistsDB = async (name) => {
     return new Promise((resolve, reject) => {
         pool.query('SELECT exists (SELECT FROM users where username = $1)', [name], (err, result) => {
             if (!err) {
+                console.log(result.rows[0].exists);
                 resolve(result.rows[0].exists);
             } else {
                 reject(new Error('Error while checking user existence in the database'));
+            }
+        });
+    });
+};
+
+const checkPasswordDB = async (name) => {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT passwd FROM users where username = $1 limit 1', [name], (err, result) => {
+            if (!err) {
+                // console.log(result.rows[0]);
+                resolve(result.rows[0]);
+            } else {
+                // console.log(err.message);
+                reject(new Error('Error while checking password'));
+            }
+        });
+    });
+};
+
+const checkTokenDB = async (name) => {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT token FROM users where username = $1 limit 1', [name], (err, result) => {
+            if (!err) {
+                // console.log(result.rows[0]);
+                resolve(result.rows[0]);
+            } else {
+                reject(new Error('Error while checking token'));
             }
         });
     });
@@ -201,5 +229,7 @@ module.exports = {
     addRelationUserProjectDB,
     createNewProjectDB,
     createTableProjectDB,
-    deleteTableProjectDB
+    deleteTableProjectDB,
+    checkPasswordDB,
+    checkTokenDB
 };
