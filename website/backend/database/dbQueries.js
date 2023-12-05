@@ -215,6 +215,20 @@ const deleteTableProjectDB = async (projectName) => {
     });
 };
 
+const getUserIdByTokenDB = async (token) => {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT mytable_key FROM users where token = $1 limit 1', [token], (err, result) => {
+            if (!err) {
+                // console.log(result.rows[0]);
+                resolve(result.rows[0]);
+            } else {
+                // console.log(err.message);
+                reject(new Error('Error while getting user id'));
+            }
+        });
+    });
+};
+
 module.exports = {
     getTextDB,
     saveTextDB,
@@ -231,5 +245,6 @@ module.exports = {
     createTableProjectDB,
     deleteTableProjectDB,
     checkPasswordDB,
-    checkTokenDB
+    checkTokenDB,
+    getUserIdByTokenDB,
 };
