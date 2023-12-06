@@ -169,11 +169,11 @@ const addRelationUserProjectDB = async (userId, projectId) => {
 
 const createNewProjectDB = async (projectName) => {
     return new Promise((resolve, reject) => {
-        pool.query('INSERT INTO projects (project_name) VALUES ($1); SELECT LASTVAL() AS project_id', [projectName], (err, result) => {
+        pool.query('INSERT INTO projects (project_name) VALUES ($1) returning project_id', [projectName], (err, result) => {
             if (!err) {
                 resolve(result.rows[0]);
             } else {
-                reject(new Error('Error while adding relation between user_id and project_id'));
+                reject(new Error('Error while creating project'));
             }
         });
     });
