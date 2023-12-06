@@ -10,28 +10,6 @@ import RegistrationPage from './pages/RegistrationPage';
 
 function App() {
   const { token, setToken } = useToken();
-  // const { token, setToken } = useState();
-
-
-  // if (!token && !RegButtonClicked && !AuthButtonClicked) {
-  //   return (
-  //     <PrimaryPage setRegButtonClicked={setRegButtonClicked} setAuthButtonClicked={setAuthButtonClicked} />
-  //   );
-  // }
-
-  // if (!token && AuthButtonClicked) {
-  //   return (
-  //     <div>
-  //       <AuthorizationPage setToken={setToken} />
-  //     </div>);
-  // }
-
-  // if (!token && RegButtonClicked) {
-  //   return (
-  //     <div>
-  //       <RegistrationPage />
-  //     </div>);
-  // }
 
   if (!token) {
     return (
