@@ -7,7 +7,7 @@ import config from '../config';
 async function loginUser(credentials) {
 
     try {
-        const response = await fetch(`${config.host}/auth/addNewUser`, {
+        const response = await fetch(`${config.host}/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -15,7 +15,11 @@ async function loginUser(credentials) {
             body: JSON.stringify(credentials)
         });
 
-        const data = await response.json();
+        const dataBD = await response.json();
+        const strData = JSON.stringify(dataBD);
+        const data = JSON.parse(strData).Token;
+
+
         return data;
     } catch (error) {
         console.error('Error logging in:', error);
@@ -24,14 +28,14 @@ async function loginUser(credentials) {
 }
 
 const AuthorizationComponent = ({ setToken }) => {
-    const [username, setUserName] = useState();
-    const [password, setPassword] = useState();
+    const [Username, setUserName] = useState();
+    const [Password, setPassword] = useState();
 
     const handleSubmit = async e => {
         e.preventDefault();
         const token = await loginUser({
-            username,
-            password
+            Username,
+            Password
         });
 
         setToken(token);
