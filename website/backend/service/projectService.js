@@ -3,7 +3,8 @@ const {getUsersProjectsDB, getUserIdByTokenDB} = require('../database/dbQueries'
 async function getProjectsHandler(token) {
     try {
         const userId = await getUserIdByTokenDB(token);
-        const allProjects = await getUsersProjectsDB(userId);
+        // console.log(userId);
+        const allProjects = await getUsersProjectsDB(userId.mytable_key);
         return allProjects;
     } catch (error) {
         console.error(error);

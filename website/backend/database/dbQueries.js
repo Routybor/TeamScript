@@ -141,9 +141,13 @@ const getProjectNameDB = async (projectId) => {
 
 const getUsersProjectsDB = async (userId) => {
     return new Promise((resolve, reject) => {
-        pool.query('SELECT project_id FROM user_projects where user_id = $1', [userId], (err, result) => {
+        pool.query(`SELECT user_projects.project_id,  projects.project_name 
+                    FROM user_projects, projects 
+                    where user_projects.user_id = $1 and
+                    user_projects.project_id = projects.project_id`, [userId], (err, result) => {
             if (!err) {
-                resolve(result.rows[0]);
+                // console.log(result);
+                resolve(result.rows);
             } else {
                 reject(new Error('Error while getting all users projects from database'));
             }

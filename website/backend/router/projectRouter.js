@@ -9,23 +9,14 @@ async function getProjectsController(req, res) {
     if (result) {
         // res.json(result);
         const allProjects = await getProjectsHandler(result);
-        console.log(result);
-        console.log(allProjects);
+        // console.log(result);
+        // console.log(allProjects);
         res.json(allProjects);
     } else {
         res.status(500).json({ error: 'Something wrong while getting task list' });
     }
 }
 
-// async function checkUserController(req, res) {
-//     const username = req.body.username;
-//     const result = await checkUserHandler(username);
 
-//     if (result) {
-//         res.json(result);
-//     } else {
-//         res.status(500).json({ error: 'Error while getting data from database' });
-//     }
-// }
 
 module.exports = router
