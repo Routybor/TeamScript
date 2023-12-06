@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./PrimaryPage.css";
-import { Button, Link } from "@mui/material";
-
+import RegularButton from "../components/CustomButtonComponent";
 const PrimaryPage = () => {
     const RegButtonClickedFunc = () => {
         window.location.assign("./registration");
@@ -26,8 +25,11 @@ const PrimaryPage = () => {
                 <div className="wrapper">
                     <div className="text">Where ideas come together</div>
                 </div>
-                <Button onClick={AuthButtonClickedFunc}>Sign In</Button>
-                <p onClick={RegButtonClickedFunc} style={{marginTop: '1%'}}>Create account</p>
+                {/* <Button onClick={AuthButtonClickedFunc}>Sign In</Button> */}
+                <RegularButton onClick={AuthButtonClickedFunc}>
+                    Sign In
+                </RegularButton>
+                <p onClick={RegButtonClickedFunc}>Create account</p>
             </form>
         </div>
     );
