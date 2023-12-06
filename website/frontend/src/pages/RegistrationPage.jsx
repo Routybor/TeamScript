@@ -24,7 +24,7 @@ const RegistrationPage = ({setToken}) => {
                 console.error('Error logging in:', error);
                 throw error;
             }
-        }
+        } 
 
         const handleSubmit = async e => {
         e.preventDefault();

@@ -1,13 +1,10 @@
 import React, { useState } from "react";
-
-import { Button, Grid } from "@mui/material";
-import { Link } from "react-router-dom";
-
+import { Button } from "@mui/material";
+import { Link } from "react-router-dom"
 import "./ProjectsPage.css";
-
+import DataGrid from "../components/DataGridComponent";
 
 const ProjectsPage = () => {
-
     const [inputList, setInputList] = useState([]);
     const [count, setCount] = useState(0);
 
@@ -46,23 +43,25 @@ const ProjectsPage = () => {
             <h1>
                 Projects
             </h1>
-            <Button onClick={addProject}>
-                + New Project
-            </Button>
-            {inputList.map(project => {
-                return (
-                    <div id={project.id}>
-                        <Grid container direction="row" justifyContent="center" alignItems="center">
+            
+            <DataGrid container direction="row" justifyContent="center" alignItems="center">
+                {inputList.map(project => {
+                    return (
+                        <div id={project.id}>
                             {project.body}
-                            <Button onClick={() => deleteProject(project.id)}>
-                                delete
-                            </Button>
-                        </Grid>
-                    </div>
-                )
-            }
-
-            )}
+                        
+                            
+                        </div>
+                    )
+                    })
+                }
+            </DataGrid>
+            <Button onClick={addProject}>
+                    + New Project
+            </Button>
+            {/*<Button onClick={() => deleteProject(project.id)}>
+                delete
+            </Button>*/} 
         </div>
     );
 }
