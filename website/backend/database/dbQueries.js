@@ -189,7 +189,6 @@ const createTableProjectDB = async (projectName) => {
             task_name        VARCHAR(40) not null,
             task_state VARCHAR(40) not null,
             person    int
-            
         );`, [projectName], (err, result) => {
             if (!err) {
                 resolve(result.rows[0]);

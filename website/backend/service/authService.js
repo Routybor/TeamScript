@@ -16,7 +16,7 @@ async function addUserHandler(name, password) {
     }
 }
 
-async function checkUserHandler(username) { //! FIX
+async function checkUserHandler(username) {
     try {
         const exists = await userExistsDB(username);
         return exists;
@@ -26,27 +26,31 @@ async function checkUserHandler(username) { //! FIX
     }
 }
 
-async function loginHandler(username, password) { 
+async function loginHandler(username, password) {
     try {
         const exists = await userExistsDB(username);
-        if(exists){
+        if (exists) {
             const passwdDb = await checkPasswordDB(username);
-            if(passwdDb.passwd == password){
+            if (passwdDb.passwd == password) {
                 const tokenDb = await checkTokenDB(username);
-                return {Token : tokenDb.token};
-            }else{
+                return { Token: tokenDb.token };
+            } else {
                 return false;
             }
-        }else{
+        } else {
             const userWithKey = username + secretKey;
             const token = crypto.createHash('sha256').update(userWithKey).digest('hex');
             await insertUserDB(username, password, token);
-            return {Token : token};
+            return { Token: token };
         }
     } catch (error) {
         console.error(error);
         return null;
     }
+}
+
+async function registerHandler(username, password) {
+    return null;
 }
 
 module.exports = {

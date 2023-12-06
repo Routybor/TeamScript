@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./PrimaryPage.css";
 import RegularButton from "../components/CustomButtonComponent";
+import Grid from '@mui/material/Grid';
+
 const PrimaryPage = () => {
     const RegButtonClickedFunc = () => {
         window.location.assign("./registration");
@@ -25,11 +27,18 @@ const PrimaryPage = () => {
                 <div className="wrapper">
                     <div className="text">Where ideas come together</div>
                 </div>
-                {/* <Button onClick={AuthButtonClickedFunc}>Sign In</Button> */}
-                <RegularButton onClick={AuthButtonClickedFunc}>
-                    Sign In
-                </RegularButton>
-                <p onClick={RegButtonClickedFunc}>Create account</p>
+                <Grid container spacing={2} justifyContent="center" marginTop={10}>
+                    <Grid item>
+                        <RegularButton onClick={AuthButtonClickedFunc} style={{ color: 'black' }}>
+                            Sign In
+                        </RegularButton>
+                    </Grid>
+                    <Grid item>
+                        <RegularButton onClick={RegButtonClickedFunc} style={{ color: 'black' }}>
+                            Sign Up
+                        </RegularButton>
+                    </Grid>
+                </Grid>
             </form>
         </div>
     );
