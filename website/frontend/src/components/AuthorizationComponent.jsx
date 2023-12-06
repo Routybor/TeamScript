@@ -76,7 +76,7 @@ const AuthorizationComponent = ({ setToken }) => {
                 />
                 <button onClick={handleSubmit} type="submit">Log In</button>
             </form>
-            {<div className="bottomTriangle"></div>}
+            <div className="bottomTriangle"></div>
         </div>
     );
 }
