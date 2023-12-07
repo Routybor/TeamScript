@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./PrimaryPage.css";
 import RegularButton from "../components/CustomButtonComponent";
+import Grid from '@mui/material/Grid';
+
 const PrimaryPage = () => {
     const RegButtonClickedFunc = () => {
         window.location.assign("./registration");
