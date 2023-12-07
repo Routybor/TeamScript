@@ -8,6 +8,7 @@ const PrimaryPage = () => {
         window.location.assign("./registration");
     }
     const AuthButtonClickedFunc = () => {
+        console.log("ADADAD")
         window.location.assign("./authorization");
     }
 
@@ -27,11 +28,18 @@ const PrimaryPage = () => {
                 <div className="wrapper">
                     <div className="text">Where ideas come together</div>
                 </div>
-                {/* <Button onClick={AuthButtonClickedFunc}>Sign In</Button> */}
-                <RegularButton onClick={AuthButtonClickedFunc} color="google">
-                    Sign In
-                </RegularButton>
-                <p onClick={RegButtonClickedFunc}>Create account</p>
+                <Grid container spacing={2} justifyContent="center" marginTop={10}>
+                    <Grid item>
+                        <RegularButton onClick={AuthButtonClickedFunc} color="google">
+                            Sign In
+                        </RegularButton>
+                    </Grid>
+                    <Grid item>
+                        <RegularButton onClick={RegButtonClickedFunc} color="google">
+                            Sign Up
+                        </RegularButton>
+                    </Grid>
+                </Grid>
             </form>
         </div>
     );

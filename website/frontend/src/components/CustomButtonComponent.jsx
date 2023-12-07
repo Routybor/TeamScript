@@ -1,14 +1,7 @@
 import React from "react";
-// nodejs library to set properties for components
 import PropTypes from "prop-types";
-// nodejs library that concatenates classes
 import classNames from "classnames";
-
-// @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import { Button } from "@mui/material";
-// core components
-
 import buttonStyle from "../assets/CustomButtonStyle.jsx";
 
 const makeComponentStyles = makeStyles(() => ({
@@ -28,6 +21,7 @@ const RegularButton = React.forwardRef((props, ref) => {
         link,
         justIcon,
         className,
+        onClick,
         ...rest
     } = props;
 
@@ -46,8 +40,16 @@ const RegularButton = React.forwardRef((props, ref) => {
         [classes.justIcon]: justIcon,
         [className]: className
     });
+
+    const handleClick = (event) => {
+        event.preventDefault();
+        if (onClick) {
+            onClick(event);
+        }
+    };
+
     return (
-        <button className={btnClasses}>
+        <button {...rest} className={btnClasses} onClick={handleClick}>
             {children}
         </button>
     );
@@ -77,7 +79,8 @@ RegularButton.propTypes = {
     link: PropTypes.bool,
     justIcon: PropTypes.bool,
     children: PropTypes.node,
-    className: PropTypes.string
+    className: PropTypes.string,
+    onClick: PropTypes.func,
 };
 
 export default RegularButton;

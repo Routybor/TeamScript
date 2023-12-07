@@ -3,7 +3,7 @@ import CustomInputComponent from './CustomInputComponent';
 import "./AuthorizationComponent.css";
 import config from '../config';
 import { Link } from 'react-router-dom';
-// import { authAPI } from '../ApiCalls';
+import RegularButton from "../components/CustomButtonComponent";
 
 async function loginUser(credentials) {
 
@@ -83,7 +83,9 @@ const AuthorizationComponent = ({ setToken }) => {
                     handleChange={e => setPassword(e.target.value)}
                     type="password"
                 />
-                <button onClick={handleSubmit} type="submit">Log In</button>
+                <RegularButton onClick={handleSubmit} color="google">
+                    Log In
+                </RegularButton>
             </form>
             <div className="bottomTriangle"></div>
         </div>

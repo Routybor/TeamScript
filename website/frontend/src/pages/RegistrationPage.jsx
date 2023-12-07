@@ -3,6 +3,7 @@ import CustomInputComponent from '../components/CustomInputComponent';
 import { Button } from "@mui/material";
 import { Link } from 'react-router-dom';
 import config from '../config';
+import RegularButton from "../components/CustomButtonComponent";
 
 const RegistrationPage = ({ setToken }) => {
     const [username, setUserName] = useState();
@@ -89,9 +90,11 @@ const RegistrationPage = ({ setToken }) => {
                 handleChange={e => setPassword(e.target.value)}
                 type="text"
             />
-
-            <Button onClick={handleSubmit} style={{ marginTop: '3%' }}>Sign Up</Button>
-
+            <form className="formm">
+                <RegularButton onClick={handleSubmit} color="google">
+                    Register
+                </RegularButton>
+            </form>
             <div className="bottomTriangle"></div>
         </div>
     );
