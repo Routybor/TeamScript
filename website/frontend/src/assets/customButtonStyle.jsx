@@ -8,21 +8,21 @@ import {
     dangerColor
 } from "./material-kit-react.jsx";
 
-const gray = "#C0C0C0";
+const gray = "#fcfcfc";
 
 const buttonStyle = {
     button: {
         minHeight: "auto",
         minWidth: "auto",
-        backgroundColor: grayColor,
-        color: "#E0E0E0",
+        background: "#fcfcfc",
+        color: "#fcfcfc",
         boxShadow:
             "0 2px 2px 0 rgba(153, 153, 153, 0.14), 0 3px 1px -2px rgba(153, 153, 153, 0.2), 0 1px 5px 0 rgba(153, 153, 153, 0.12)",
         border: "none",
         borderRadius: "3px",
         position: "relative",
-        padding: "12px 30px",
-        margin: ".3125rem 1px",
+        // padding: "12px 30px",
+        // margin: ".3125rem 1px",
         fontSize: "12px",
         fontWeight: "400",
         // textTransform: "uppercase",
@@ -38,7 +38,7 @@ const buttonStyle = {
         cursor: "pointer",
         "&:hover,&:focus": {
             color: "#A0A0A0",
-            backgroundColor: grayColor,
+            background: "#fcfcfc",
             boxShadow: `0 14px 26px -12px ${primaryColor}, 0 4px 23px 0px ${primaryColor}, 0 8px 10px -5px ${primaryColor}`
         },
         "& .fab,& .fas,& .far,& .fal,& .material-icons": {
@@ -76,11 +76,12 @@ const buttonStyle = {
         width: "100%"
     },
     primary: {
-        backgroundColor: primaryColor,
+        color: "#A0A0A0",
+        background: `${gray}`,
         boxShadow:
             "0 2px 2px 0 rgba(156, 39, 176, 0.14), 0 3px 1px -2px rgba(156, 39, 176, 0.2), 0 1px 5px 0 rgba(156, 39, 176, 0.12)",
         "&:hover,&:focus": {
-            backgroundColor: `${gray}`,
+            background: `${gray}`,
             boxShadow: `0 5px 10px -6px ${gray}`
         }
     },

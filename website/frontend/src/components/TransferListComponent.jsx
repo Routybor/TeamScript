@@ -20,8 +20,10 @@ function TransferListComponent() {
     const [checked, setChecked] = useState([]);
     const [toDo, setToDo] = useState([]);
     const [inProgress, setInProgress] = useState([]);
-    const toDoChecked = intersection(checked, toDo);
-    const inProgressChecked = intersection(checked, inProgress);
+    const [done, setDone] = useState([]);
+    const toDoChecked = intersection(intersection(checked, toDo), done);
+    const inProgressChecked = intersection(intersection(checked, inProgress), done);
+    const doneChecked = intersection(intersection(checked, toDo), inProgress);
     const [activePopup, setActivePopup] = useState(false);
 
     const receiveTasks = async () => {
@@ -29,8 +31,10 @@ function TransferListComponent() {
             const data = await taskAPI.getTasksDB();
             const todo_list = data.filter((item) => item.curstate === 'todo');
             const progress_list = data.filter((item) => item.curstate === 'prog');
+            const done_list = data.filter((item) => item.curstate === 'done');
             setToDo(todo_list);
             setInProgress(progress_list);
+            setDone(done_list);
         } catch (error) {
             console.error('Error in receive function:', error);
         }
@@ -67,11 +71,14 @@ function TransferListComponent() {
     function not(a, b) {
         return a.filter((value) => b.indexOf(value) === -1);
     };
+    function not3(a, b,) {
+        return a.filter((value) => b.indexOf(value) === -1 && c.indexOf(value));
+    };
     function intersection(a, b) {
         return a.filter((value) => b.indexOf(value) !== -1);
     };
-    function union(a, b) {
-        return [...a, ...not(b, a)];
+    function union(a, b, c) {
+        return [...a, ...not(b, a), ...not(c, a)];
     };
 
     const handleToggle = (value) => () => {
@@ -99,17 +106,27 @@ function TransferListComponent() {
     };
 
     const handleCheckedInProgress = () => {
-        setInProgress(inProgress.concat(toDoChecked));
+        setInProgress(inProgress.concat(toDoChecked, doneChecked));
         setToDo(not(toDo, toDoChecked));
+        setDone(not(done, doneChecked));
         checked.forEach(task => taskAPI.updateTaskDB(task, 'prog'));
-        setChecked(not(checked, toDoChecked));
+        setChecked(not3(checked, toDoChecked, doneChecked));
     };
 
     const handleCheckedToDo = () => {
-        setToDo(toDo.concat(inProgressChecked));
+        setToDo(toDo.concat(inProgressChecked, doneChecked));
         setInProgress(not(inProgress, inProgressChecked));
+        setDone(not(done, doneChecked));
         checked.forEach(task => taskAPI.updateTaskDB(task, 'todo'));
-        setChecked(not(checked, inProgressChecked));
+        setChecked(not3(checked, inProgressChecked, doneChecked));
+    };
+
+    const handleCheckedDone = () => {
+        setDone(done.concat(doneChecked));
+        setInProgress(not(inProgress, inProgressChecked));
+        setToDo(not(toDo, toDoChecked));
+        checked.forEach(task => taskAPI.updateTaskDB(task, 'done'));
+        setChecked(not3(checked, inProgressChecked, toDoChecked));
     };
 
     const addCardToDo = () => {
@@ -128,11 +145,19 @@ function TransferListComponent() {
         handleCheckedInProgress();
     };
 
+    const addCardDone = () => {
+        taskAPI.createTaskDB('Default', 'done');
+        // inProgress.push(inProgress.at(inProgress.length - 1) + 1);
+        done.push(done.length + 100);
+        setInProgress(done);
+        handleCheckedDone();
+    };
+
 
     const customList = (title, items) => (
-        <Card>
+        <Card className='card'>
             <CardHeader
-                sx={{ px: 2, py: 1 }}
+
                 avatar={
                     <Checkbox
                         onClick={handleToggleAll(items)}
@@ -240,6 +265,37 @@ function TransferListComponent() {
                     <AddIcon></AddIcon>
                 </IconButton>
                 <Grid item>{customList('in progress', inProgress)}</Grid>
+            </Grid>
+            <Grid item>
+                <Grid container spacing={1} direction="column" alignItems="center">
+                    <Button
+                        sx={{ my: 0.5 }}
+                        variant="outlined"
+                        size="small"
+                        onClick={handleCheckedInProgress}
+                        disabled={toDoChecked.length === 0}
+                        aria-label="move selected right"
+                    >
+                        &gt;
+                    </Button>
+                    <Button
+                        sx={{ my: 0.5 }}
+                        variant="outlined"
+                        size="small"
+                        onClick={handleCheckedToDo}
+                        disabled={inProgressChecked.length === 0}
+                        aria-label="move selected left"
+                    >
+                        &lt;
+                    </Button>
+                </Grid>
+            </Grid>
+            <Grid direction="column" alignItems="center">
+
+                <IconButton aria-label="settings" onClick={addCardDone}>
+                    <AddIcon></AddIcon>
+                </IconButton>
+                <Grid item>{customList('done', done)}</Grid>
             </Grid>
         </Grid>
     );

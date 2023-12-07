@@ -1,32 +1,9 @@
 import React, { useState } from "react";
 import { Button } from "@mui/material";
-import { Link } from "react-router-dom"
 import "./ProjectsPage.css";
-import DataGrid from "../components/DataGridComponent";
+import ProjectTable from "../components/ProjectTable";
 
 const ProjectsPage = () => {
-    const [inputList, setInputList] = useState([]);
-    const [count, setCount] = useState(0);
-
-    const deleteProject = id => {
-        setInputList(oldValues => {
-            return oldValues.filter(inputList => inputList.id !== id)
-        })
-    }
-
-    const addProject = () => {
-        setInputList(inputList.concat({
-            id: count,
-            body:
-                <Link to={"./taskboard"}>
-                    <h3>Project {count + 1}</h3>
-                </Link>
-
-        }
-        ))
-        setCount(count + 1);
-    };
-
 
     const logOut = () => {
         localStorage.clear();
@@ -43,25 +20,12 @@ const ProjectsPage = () => {
             <h1>
                 Projects
             </h1>
-            
-            <DataGrid container direction="row" justifyContent="center" alignItems="center">
-                {inputList.map(project => {
-                    return (
-                        <div id={project.id}>
-                            {project.body}
-                        
-                            
-                        </div>
-                    )
-                    })
-                }
-            </DataGrid>
-            <Button onClick={addProject}>
-                    + New Project
-            </Button>
+
+            <ProjectTable></ProjectTable>
+
             {/*<Button onClick={() => deleteProject(project.id)}>
                 delete
-            </Button>*/} 
+            </Button>*/}
         </div>
     );
 }

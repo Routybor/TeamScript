@@ -5,7 +5,7 @@ const {getProjectsHandler} = require('../service/projectService')
 router.get('/getProjects', getProjectsController);
 
 async function getProjectsController(req, res) {
-    const result = req.headers.token;
+    const result = req.body.token;
     if (result) {
         // res.json(result);
         const allProjects = await getProjectsHandler(result);

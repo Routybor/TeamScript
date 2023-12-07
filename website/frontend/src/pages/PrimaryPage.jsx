@@ -26,7 +26,7 @@ const PrimaryPage = () => {
                     <div className="text">Where ideas come together</div>
                 </div>
                 {/* <Button onClick={AuthButtonClickedFunc}>Sign In</Button> */}
-                <RegularButton onClick={AuthButtonClickedFunc}>
+                <RegularButton onClick={AuthButtonClickedFunc} color="google">
                     Sign In
                 </RegularButton>
                 <p onClick={RegButtonClickedFunc}>Create account</p>
