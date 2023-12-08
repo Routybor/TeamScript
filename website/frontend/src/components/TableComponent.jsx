@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const TableComponent = (props) => {
     const {
@@ -12,18 +13,16 @@ const TableComponent = (props) => {
         <table className="table" style={{ cursor: "pointer" }}>
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Name</th>
-
 
                 </tr>
             </thead>
             <tbody>
                 {data.map(item => (
-                    <tr
-
-                    >
-                        <td>{item.ProjectName}</td>
-
+                    <tr>
+                        <td>{item.project_id}</td>
+                        <td><Link to="./taskboard">{item.project_name}</Link></td>
                     </tr>
                 ))}
             </tbody>

@@ -10,24 +10,27 @@ import _ from 'lodash';
 const ProjectTable = () => {
   const [state, setState] = useState({ isLoad: true, data: [], sort: "asc", sortField: 'id' });
 
-  async function componentDidMounth(credential) {
-    const response = await fetch(`${config.host}/projects/getProjects`, {
-      method: 'POST',
+  async function componentDidMounth(Token) {
+    const response = await fetch(`${config.host}/project/getProjects`, {
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(credential)
+        'Content-Type': 'application/json',
+        'Token': Token
+      }
     });
-    const data = await response.json()
-    console.log(data)
+    const data = await response.json();
+    console.log(data);
+    // const strData = JSON.stringify(dataBD);
+    // const data = JSON.parse(strData).Token;
     setState({
-      isLoading: false,
+      isLoad: false,
       data: data
     })
   }
-  const [token, setToken] = useState();
-  setToken(localStorage.getItem("token"));
-  componentDidMounth(token);
+
+  if (state.isLoad) {
+    componentDidMounth(localStorage.getItem('token'));
+  }
   return (
     <div className="container">
       {
