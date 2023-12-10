@@ -232,6 +232,21 @@ const getUserIdByTokenDB = async (token) => {
     });
 };
 
+const checkUserPermissionDB = async (userId, project_id) => {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT exists(SELECT project_id  from user_projects where project_id = $1 and user_id = $2) ', [project_id, userId], (err, result) => {
+            if (!err) {
+                // console.log(result.rows[0]);
+                resolve(result.rows[0]);
+            } else {
+                // console.log(err.message);
+                reject(new Error('Error while check permission'));
+            }
+        });
+    });
+};
+
+
 module.exports = {
     getTextDB,
     saveTextDB,
@@ -250,4 +265,5 @@ module.exports = {
     checkPasswordDB,
     checkTokenDB,
     getUserIdByTokenDB,
+    checkUserPermissionDB,
 };

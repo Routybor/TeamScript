@@ -20,12 +20,12 @@ app.use(bodyParser.json());
 // --------------------------------------------------------------------------------------------------
 const projectRouter = require("./router/projectRouter");
 // const textRouter = require("./router/textRouter");
-// const taskRouter = require("./router/taskRouter");
+const taskRouter = require("./router/taskRouter");
 const authRouter = require("./router/authRouter");
 
 app.use('/project', projectRouter)
 // app.use('/text', textRouter);
-// app.use('/project', taskRouter);
+app.use('/taskboard', taskRouter);
 app.use('/auth', authRouter)
 
 server.listen(port, () => {

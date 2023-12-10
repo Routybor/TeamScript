@@ -2,16 +2,17 @@ const express = require('express')
 const router = express.Router()
 const { getTasksHandler, createTaskHandler, setTaskStateHandler, deleteTaskHandler } = require('../service/taskService')
 
-router.get('/tasks', getTasksController);
+router.post('/getTasks', getTasksController);
 router.post('/createTask', createTaskController);
 router.post('/changeState', setTaskStateController);
 router.post('/deleteTask', deleteTaskController);
 
 async function getTasksController(req, res) {
-    const result = await getTasksHandler();
-
+    const curToken = req.headers.token;
+    const projectId = req.body.ProjectName;
+    const result = await getTasksHandler(projectId, curToken);
     if (result) {
-        res.json(result);
+        res.json(null);
     } else {
         res.status(500).json({ error: 'Error while getting tasks from the database' });
     }
