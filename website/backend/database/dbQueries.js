@@ -186,14 +186,21 @@ const createNewProjectDB = async (projectName) => {
 // проверять явлется ли user его участником, а в будущем также и роль - прописать в servise
 
 const createTableProjectDB = async (projectName) => {
+    if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(projectName)) {
+        throw new Error('Invalid project name.');
+    }
     return new Promise((resolve, reject) => {
-        pool.query(`CREATE TABLE $1
-        (
-            task_id    serial primary key,
-            task_name        VARCHAR(40) not null,
-            task_state VARCHAR(40) not null,
-            person    int
-        );`, [projectName], (err, result) => {
+        const tableName = String(projectName);
+        const query = `
+            CREATE TABLE ${tableName}
+            (
+                task_id    serial primary key,
+                task_name  VARCHAR(40) not null,
+                task_state VARCHAR(40) not null,
+                person     int
+            );
+        `;
+        pool.query(query, (err, result) => {
             if (!err) {
                 resolve(result.rows[0]);
             } else {
@@ -202,6 +209,7 @@ const createTableProjectDB = async (projectName) => {
         });
     });
 };
+
 
 // запрос на удаление новой таблицы для проекта
 // вопросы безопастни как и функции выше

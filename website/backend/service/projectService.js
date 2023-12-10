@@ -22,7 +22,7 @@ async function createProjectHandler(token, projectName) {
         const userId = await getUserIdByTokenDB(token);
         const newProjectID = await createNewProjectDB(projectName);
         await addRelationUserProjectDB(userId.mytable_key, newProjectID.project_id);
-        await createTableProjectDB("Project" + newProjectID);
+        await createTableProjectDB("Project" + newProjectID.project_id);
         return newProjectID;
     } catch (error) {
         console.error(error);
