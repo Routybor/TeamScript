@@ -11,7 +11,6 @@ const textAPI = {
                 },
             });
             const data = await response.json();
-            console.log('Data received: ', data);
             return data;
         } catch (error) {
             console.error('ERROR receiving data = ', error);
@@ -28,7 +27,6 @@ const textAPI = {
                 body: JSON.stringify({ textField: newText }),
             });
             const data = await response.json();
-            console.log('Text saved = ', data);
         } catch (error) {
             console.error('ERROR saving text = ', error);
         }
@@ -37,16 +35,16 @@ const textAPI = {
 
 
 const taskAPI = {
-    getTasksDB: async () => {
+    getTasksDB: async (userToken, projectToken) => {
         try {
-            const response = await fetch(`${config.host}/project/tasks`, {
-                method: 'GET',
+            const response = await fetch(`${config.host}/taskboard/getTasks`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                body: JSON.stringify({ userToken: userToken, projectToken: projectToken }),
             });
             const data = await response.json();
-            console.log('Data received: ', data);
             return data;
         } catch (error) {
             console.error('ERROR receiving data = ', error);
@@ -54,51 +52,48 @@ const taskAPI = {
         }
     },
 
-    updateTaskDB: async (task, newstate) => {
+    updateTaskDB: async (task, newstate, projectToken) => {
         try {
-            const response = await fetch(`${config.host}/project/changeState`, {
+            const response = await fetch(`${config.host}/taskboard/changeState`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ taskID: task.id, newState: newstate }),
+                body: JSON.stringify({ taskID: task.id, newState: newstate, projectToken: projectToken }),
             });
             const data = await response.json();
-            console.log('Task saved = ', data);
         } catch (error) {
             console.error('ERROR saving text = ', error);
             throw error;
         }
     },
 
-    createTaskDB: async (name, newstate) => {
+    createTaskDB: async (name, newstate, projectToken) => {
         try {
-            const response = await fetch(`${config.host}/project/createTask`, {
+            const response = await fetch(`${config.host}/taskboard/createTask`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ taskName: name, newState: newstate }),
+                body: JSON.stringify({ taskName: name, newState: newstate, projectToken: projectToken }),
             });
             const data = await response.json();
-            console.log('Task created = ', data);
         } catch (error) {
             console.error('ERROR saving text = ', error);
             throw error;
         }
     },
 
-    deleteTaskDB: async (taskId) => {
+    deleteTaskDB: async (taskId, projectToken) => {
         try {
-            const response = await fetch(`${config.host}/project/deleteTask`, {
+            const response = await fetch(`${config.host}/taskboard/deleteTask`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ taskID: taskId }),
+                body: JSON.stringify({ taskID: taskId, projectToken: projectToken }),
             });
             const data = await response.json();
-            console.log('Task deleted:', data);
             return data;
         } catch (error) {
             console.error('Error deleting task:', error);

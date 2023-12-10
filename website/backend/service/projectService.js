@@ -1,9 +1,10 @@
-const { getUsersProjectsDB, 
-        getUserIdByTokenDB, 
-        createNewProjectDB, 
-        addRelationUserProjectDB,
-        createTableProjectDB,
-        } = require('../database/dbQueries');
+const { updateProjects } = require("../socket");
+const { getUsersProjectsDB,
+    getUserIdByTokenDB,
+    createNewProjectDB,
+    addRelationUserProjectDB,
+    createTableProjectDB,
+} = require('../database/dbQueries');
 
 
 async function getProjectsHandler(token) {
@@ -23,6 +24,7 @@ async function createProjectHandler(token, projectName) {
         const newProjectID = await createNewProjectDB(projectName);
         await addRelationUserProjectDB(userId.mytable_key, newProjectID.project_id);
         await createTableProjectDB("Project" + newProjectID.project_id);
+        updateProjects();
         return newProjectID;
     } catch (error) {
         console.error(error);

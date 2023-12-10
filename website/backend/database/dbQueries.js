@@ -26,9 +26,9 @@ const saveTextDB = async (newText) => {
     });
 };
 
-const getTasksDB = async () => {
+const getTasksDB = async (project_id) => {
     return new Promise((resolve, reject) => {
-        pool.query('SELECT * FROM user_tasks', (err, result) => {
+        pool.query(`SELECT * FROM project${project_id}`, (err, result) => {
             if (!err) {
                 resolve(result.rows);
             } else {
@@ -38,21 +38,22 @@ const getTasksDB = async () => {
     });
 };
 
-const createTaskDB = async (newTaskName, newState) => {
+const createTaskDB = async (newTaskName, newState, project_id) => {
     return new Promise((resolve, reject) => {
-        pool.query('INSERT INTO user_tasks (taskname, curstate) VALUES ($1, $2) RETURNING *', [newTaskName, newState], (err, result) => {
+        pool.query(`INSERT INTO project${project_id} (taskname, curstate) VALUES ($1, $2) RETURNING *`, [newTaskName, newState], (err, result) => {
             if (!err) {
                 resolve(result.rows[0]);
             } else {
+                console.log(err)
                 reject(new Error('Error while creating a new task in the database'));
             }
         });
     });
 };
 
-const setTaskStateDB = async (taskId, newState) => {
+const setTaskStateDB = async (taskId, newState, project_id) => {
     return new Promise((resolve, reject) => {
-        pool.query('UPDATE user_tasks SET curstate = $1 WHERE id = $2 RETURNING *', [newState, taskId], (err, result) => {
+        pool.query(`UPDATE project${project_id} SET curstate = $1 WHERE id = $2 RETURNING *`, [newState, taskId], (err, result) => {
             if (!err) {
                 resolve(result.rows[0]);
             } else {
@@ -62,9 +63,9 @@ const setTaskStateDB = async (taskId, newState) => {
     });
 };
 
-const deleteTaskDB = async (taskId) => {
+const deleteTaskDB = async (taskId, project_id) => {
     return new Promise((resolve, reject) => {
-        pool.query('DELETE FROM user_tasks WHERE id = $1 RETURNING *', [taskId], (err, result) => {
+        pool.query(`DELETE FROM project${project_id} WHERE id = $1 RETURNING *`, [taskId], (err, result) => {
             if (!err) {
                 resolve(result.rows[0]);
             } else {
@@ -80,7 +81,6 @@ const insertUserDB = async (name, paswd, token) => {
             if (!err) {
                 resolve(result.rows[0]);
             } else {
-                // console.error(err);
                 reject(new Error('Error while getting data from database'));
             }
         });
@@ -91,7 +91,6 @@ const userExistsDB = async (name) => {
     return new Promise((resolve, reject) => {
         pool.query('SELECT exists (SELECT FROM users where username = $1)', [name], (err, result) => {
             if (!err) {
-                console.log(result.rows[0].exists);
                 resolve(result.rows[0].exists);
             } else {
                 reject(new Error('Error while checking user existence in the database'));
@@ -104,10 +103,8 @@ const checkPasswordDB = async (name) => {
     return new Promise((resolve, reject) => {
         pool.query('SELECT passwd FROM users where username = $1 limit 1', [name], (err, result) => {
             if (!err) {
-                // console.log(result.rows[0]);
                 resolve(result.rows[0]);
             } else {
-                // console.log(err.message);
                 reject(new Error('Error while checking password'));
             }
         });
@@ -118,7 +115,6 @@ const checkTokenDB = async (name) => {
     return new Promise((resolve, reject) => {
         pool.query('SELECT token FROM users where username = $1 limit 1', [name], (err, result) => {
             if (!err) {
-                // console.log(result.rows[0]);
                 resolve(result.rows[0]);
             } else {
                 reject(new Error('Error while checking token'));
@@ -146,7 +142,6 @@ const getUsersProjectsDB = async (userId) => {
                     where user_projects.user_id = $1 and
                     user_projects.project_id = projects.project_id`, [userId], (err, result) => {
             if (!err) {
-                // console.log(result);
                 resolve(result.rows);
             } else {
                 reject(new Error('Error while getting all users projects from database'));
@@ -194,9 +189,10 @@ const createTableProjectDB = async (projectName) => {
         const query = `
             CREATE TABLE ${tableName}
             (
-                task_id    serial primary key,
-                task_name  VARCHAR(40) not null,
-                task_state VARCHAR(40) not null,
+                id    serial primary key,
+                taskname  VARCHAR(40) not null,
+                curstate VARCHAR(40) not null,
+                description VARCHAR(255),
                 person     int
             );
         `;
@@ -230,24 +226,21 @@ const getUserIdByTokenDB = async (token) => {
     return new Promise((resolve, reject) => {
         pool.query('SELECT mytable_key FROM users where token = $1 limit 1', [token], (err, result) => {
             if (!err) {
-                // console.log(result.rows[0]);
                 resolve(result.rows[0]);
             } else {
-                // console.log(err.message);
                 reject(new Error('Error while getting user id'));
             }
         });
     });
 };
 
-const checkUserPermissionDB = async (userId, project_id) => {
+const checkUserPermissionDB = async (userId, projectId) => {
+    // console.log(userId, projectId)
     return new Promise((resolve, reject) => {
-        pool.query('SELECT exists(SELECT project_id  from user_projects where project_id = $1 and user_id = $2) ', [project_id, userId], (err, result) => {
+        pool.query('SELECT exists(SELECT project_id from user_projects where project_id = $1 and user_id = $2) ', [projectId, userId], (err, result) => {
             if (!err) {
-                // console.log(result.rows[0]);
                 resolve(result.rows[0]);
             } else {
-                // console.log(err.message);
                 reject(new Error('Error while check permission'));
             }
         });

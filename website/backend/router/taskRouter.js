@@ -8,11 +8,12 @@ router.post('/changeState', setTaskStateController);
 router.post('/deleteTask', deleteTaskController);
 
 async function getTasksController(req, res) {
-    const curToken = req.headers.token;
-    const projectId = req.body.ProjectName;
+    const curToken = req.body.userToken;
+    const projectId = req.body.projectToken;
     const result = await getTasksHandler(projectId, curToken);
+
     if (result) {
-        res.json(null);
+        res.json(result);
     } else {
         res.status(500).json({ error: 'Error while getting tasks from the database' });
     }
@@ -21,7 +22,8 @@ async function getTasksController(req, res) {
 async function createTaskController(req, res) {
     const newTaskName = req.body.taskName;
     const newState = req.body.newState;
-    const result = await createTaskHandler(newTaskName, newState);
+    const projectId = req.body.projectToken;
+    const result = await createTaskHandler(newTaskName, newState, projectId);
 
     if (result) {
         res.json(result);
@@ -33,7 +35,8 @@ async function createTaskController(req, res) {
 async function setTaskStateController(req, res) {
     const taskId = req.body.taskID;
     const newState = req.body.newState;
-    const result = await setTaskStateHandler(taskId, newState);
+    const projectId = req.body.projectToken;
+    const result = await setTaskStateHandler(taskId, newState, projectId);
 
     if (result) {
         res.json(result);
@@ -44,7 +47,8 @@ async function setTaskStateController(req, res) {
 
 async function deleteTaskController(req, res) {
     const taskId = req.body.taskID;
-    const result = await deleteTaskHandler(taskId);
+    const projectId = req.body.projectToken;
+    const result = await deleteTaskHandler(taskId, projectId);
 
     if (result) {
         res.json(result);

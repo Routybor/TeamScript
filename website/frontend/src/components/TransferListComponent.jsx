@@ -25,10 +25,12 @@ function TransferListComponent() {
     const inProgressChecked = intersection(intersection(checked, inProgress), done);
     const doneChecked = intersection(intersection(checked, toDo), inProgress);
     const [activePopup, setActivePopup] = useState(false);
+    const projectToken = localStorage.getItem('project');
 
     const receiveTasks = async () => {
         try {
-            const data = await taskAPI.getTasksDB();
+            const userToken = localStorage.getItem('token');
+            const data = await taskAPI.getTasksDB(userToken, projectToken);
             const todo_list = data.filter((item) => item.curstate === 'todo');
             const progress_list = data.filter((item) => item.curstate === 'prog');
             const done_list = data.filter((item) => item.curstate === 'done');
@@ -109,7 +111,7 @@ function TransferListComponent() {
         setInProgress(inProgress.concat(toDoChecked, doneChecked));
         setToDo(not(toDo, toDoChecked));
         setDone(not(done, doneChecked));
-        checked.forEach(task => taskAPI.updateTaskDB(task, 'prog'));
+        checked.forEach(task => taskAPI.updateTaskDB(task, 'prog', projectToken));
         setChecked(not3(checked, toDoChecked, doneChecked));
     };
 
@@ -117,7 +119,7 @@ function TransferListComponent() {
         setToDo(toDo.concat(inProgressChecked, doneChecked));
         setInProgress(not(inProgress, inProgressChecked));
         setDone(not(done, doneChecked));
-        checked.forEach(task => taskAPI.updateTaskDB(task, 'todo'));
+        checked.forEach(task => taskAPI.updateTaskDB(task, 'todo', projectToken));
         setChecked(not3(checked, inProgressChecked, doneChecked));
     };
 
@@ -125,12 +127,12 @@ function TransferListComponent() {
         setDone(done.concat(doneChecked));
         setInProgress(not(inProgress, inProgressChecked));
         setToDo(not(toDo, toDoChecked));
-        checked.forEach(task => taskAPI.updateTaskDB(task, 'done'));
+        checked.forEach(task => taskAPI.updateTaskDB(task, 'done', projectToken));
         setChecked(not3(checked, inProgressChecked, toDoChecked));
     };
 
     const addCardToDo = () => {
-        taskAPI.createTaskDB('Default', 'todo');
+        taskAPI.createTaskDB('Default', 'todo', projectToken);
         // toDo.push(toDo.at(toDo.length - 1) + 1);
         toDo.push(toDo.length + 1);
         setToDo(toDo);
@@ -138,7 +140,7 @@ function TransferListComponent() {
     };
 
     const addCardInProgress = () => {
-        taskAPI.createTaskDB('Default', 'prog');
+        taskAPI.createTaskDB('Default', 'prog', projectToken);
         // inProgress.push(inProgress.at(inProgress.length - 1) + 1);
         inProgress.push(inProgress.length + 100);
         setInProgress(inProgress);
@@ -146,7 +148,7 @@ function TransferListComponent() {
     };
 
     const addCardDone = () => {
-        taskAPI.createTaskDB('Default', 'done');
+        taskAPI.createTaskDB('Default', 'done', projectToken);
         // inProgress.push(inProgress.at(inProgress.length - 1) + 1);
         done.push(done.length + 100);
         setInProgress(done);

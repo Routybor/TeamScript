@@ -1,14 +1,14 @@
 const { sendUpdateToClients } = require("../socket");
 const { getTasksDB, createTaskDB, setTaskStateDB, deleteTaskDB, getUserIdByTokenDB, checkUserPermissionDB} = require('../database/dbQueries');
 
-async function getTasksHandler(project_id, token) {
+async function getTasksHandler(projectId, token) {
     try {
-        const userid = await getUserIdByTokenDB(token);
-        const check = await checkUserPermissionDB(project_id, userid);
+        const userId = await getUserIdByTokenDB(token);
+        const check = await checkUserPermissionDB(projectId, userId.mytable_key);
         if(check.exist == "f"){
             return null;
         }
-        const allTasks = await getTasksDB();
+        const allTasks = await getTasksDB(projectId);
         return allTasks;
     } catch (error) {
         console.error(error);
@@ -16,9 +16,9 @@ async function getTasksHandler(project_id, token) {
     }
 }
 
-async function createTaskHandler(newTaskName, newState) {
+async function createTaskHandler(newTaskName, newState, projectId) {
     try {
-        const createdTask = await createTaskDB(newTaskName, newState);
+        const createdTask = await createTaskDB(newTaskName, newState, projectId);
         sendUpdateToClients();
         return createdTask;
     } catch (error) {
@@ -27,9 +27,9 @@ async function createTaskHandler(newTaskName, newState) {
     }
 }
 
-async function setTaskStateHandler(taskId, newState) {
+async function setTaskStateHandler(taskId, newState, projectId) {
     try {
-        const changedTask = await setTaskStateDB(taskId, newState);
+        const changedTask = await setTaskStateDB(taskId, newState, projectId);
         sendUpdateToClients();
         return changedTask;
     } catch (error) {
@@ -38,9 +38,9 @@ async function setTaskStateHandler(taskId, newState) {
     }
 }
 
-async function deleteTaskHandler(taskId) {
+async function deleteTaskHandler(taskId, projectId) {
     try {
-        const deletedTask = await deleteTaskDB(taskId);
+        const deletedTask = await deleteTaskDB(taskId, projectId);
         sendUpdateToClients();
         return deletedTask;
     } catch (error) {

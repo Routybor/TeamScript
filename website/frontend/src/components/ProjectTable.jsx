@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Loader from '../helper/Loader';
 import TableComponent from '../components/TableComponent';
 import config from '../config';
-
+import RegularButton from "../components/CustomButtonComponent";
 
 import _ from 'lodash';
 
 
 const ProjectTable = () => {
   const [state, setState] = useState({ isLoad: true, data: [], sort: "asc", sortField: 'id' });
+  const token = localStorage.getItem('token');
 
   async function componentDidMounth(Token) {
     const response = await fetch(`${config.host}/project/getProjects`, {
@@ -19,7 +20,6 @@ const ProjectTable = () => {
       }
     });
     const data = await response.json();
-    console.log(data);
     // const strData = JSON.stringify(dataBD);
     // const data = JSON.parse(strData).Token;
     setState({
@@ -28,8 +28,34 @@ const ProjectTable = () => {
     })
   }
 
+  async function createProject() {
+    const response = await fetch(`${config.host}/project/createProject`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userToken: token, projectName: 'Default' }),
+    });
+
+    const data = await response.json();
+    setState({
+      isLoad: false,
+      data: data
+    })
+  }
+
+  useEffect(() => {
+    componentDidMounth(token);
+    config.socket.on('updateProject', (data) => {
+      componentDidMounth(token);
+    });
+
+    return () => {
+      config.socket.off('updateProject');
+    };
+  }, []);
   if (state.isLoad) {
-    componentDidMounth(localStorage.getItem('token'));
+    componentDidMounth(token);
   }
   return (
     <div className="container">
@@ -40,6 +66,11 @@ const ProjectTable = () => {
             data={state.data}
           />
       }
+      <form className="formm">
+        <RegularButton onClick={createProject} color="google">
+          Create
+        </RegularButton>
+      </form>
     </div>
   );
 

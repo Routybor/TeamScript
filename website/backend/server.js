@@ -1,7 +1,7 @@
 const express = require("express");
 const http = require("http");
-const jwt = require('jsonwebtoken'); 
-const bodyParser = require('body-parser'); 
+const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser');
 const cors = require("cors");
 const RateLimit = require('express-rate-limit');
 const limiter = RateLimit({
@@ -19,12 +19,13 @@ app.use(bodyParser.json());
 
 // --------------------------------------------------------------------------------------------------
 const projectRouter = require("./router/projectRouter");
-// const textRouter = require("./router/textRouter");
 const taskRouter = require("./router/taskRouter");
 const authRouter = require("./router/authRouter");
 
-app.use('/project', projectRouter)
+// const textRouter = require("./router/textRouter");
 // app.use('/text', textRouter);
+
+app.use('/project', projectRouter)
 app.use('/taskboard', taskRouter);
 app.use('/auth', authRouter)
 

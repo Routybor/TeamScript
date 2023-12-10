@@ -26,6 +26,10 @@ const sendUpdateToClients = () => {
     io.emit('updateTask', {});
 };
 
+const updateProjects = () => {
+    io.emit('updateProject', {});
+};
+
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 module.exports = {
@@ -33,4 +37,5 @@ module.exports = {
     getIO,
     sendUpdateToClients,
     sendTextToClients,
+    updateProjects,
 };

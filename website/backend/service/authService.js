@@ -4,18 +4,6 @@ const crypto = require('crypto');
 dotenv.config({ path: "../../../.env" });
 const secretKey = process.env.SECRETKEY;
 
-async function addUserHandler(name, password) {
-    try {
-        const userWithKey = name + secretKey;
-        const token = crypto.createHash('sha256').update(userWithKey).digest('hex');
-        await insertUserDB(name, password, token);
-        return token;
-    } catch (error) {
-        console.error(error);
-        return null;
-    }
-}
-
 async function checkUserHandler(username) {
     try {
         const exists = await userExistsDB(username);
@@ -54,7 +42,7 @@ async function registerHandler(username, password) {
 }
 
 module.exports = {
-    addUserHandler,
+    registerHandler,
     checkUserHandler,
     loginHandler
 };

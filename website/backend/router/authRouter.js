@@ -1,9 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const {loginHandler} = require('../service/authService')
+const { loginHandler } = require('../service/authService')
 
 router.post('/login', loginController);
-// router.get('/checkUser', checkUserController);
 
 async function loginController(req, res) {
     const name = req.body.Username;
@@ -16,6 +15,7 @@ async function loginController(req, res) {
     }
 }
 
+// router.get('/checkUser', checkUserController);
 // async function checkUserController(req, res) {
 //     const username = req.body.username;
 //     const result = await checkUserHandler(username);

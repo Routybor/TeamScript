@@ -6,20 +6,25 @@ import config from '../config';
 import RegularButton from "../components/CustomButtonComponent";
 
 const RegistrationPage = ({ setToken }) => {
-    const [username, setUserName] = useState();
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
+    const [Username, setUserName] = useState();
+    const [Email, setEmail] = useState();
+    const [Password, setPassword] = useState();
 
     async function loginUser(credentials) {
+
         try {
-            const response = await fetch(`${config.host}/auth/addNewUser`, {
+            const response = await fetch(`${config.host}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(credentials)
             });
-            const data = await response.json();
+
+            const dataBD = await response.json();
+            const strData = JSON.stringify(dataBD);
+            const data = JSON.parse(strData).Token;
+
             return data;
         } catch (error) {
             console.error('Error logging in:', error);
@@ -30,9 +35,9 @@ const RegistrationPage = ({ setToken }) => {
     const handleSubmit = async e => {
         e.preventDefault();
         const token = await loginUser({
-            username,
-            email,
-            password
+            Username,
+            Email,
+            Password
         });
         setToken(token);
         const now = new Date();
@@ -73,7 +78,7 @@ const RegistrationPage = ({ setToken }) => {
 
             <CustomInputComponent
                 labelText="Email"
-                id="email"
+                id="Email"
                 formControlProps={{
                     fullWidth: true
                 }}
@@ -83,7 +88,7 @@ const RegistrationPage = ({ setToken }) => {
 
             <CustomInputComponent
                 labelText="Password"
-                id="password"
+                id="Password"
                 formControlProps={{
                     fullWidth: true
                 }}
