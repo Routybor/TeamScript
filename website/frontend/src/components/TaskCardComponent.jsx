@@ -46,6 +46,7 @@ const TaskCardComponent = (props) => {
                 <CustomInputComponent
                     defaultValue={taskDescr}
                     bigInput={false}
+
                 />
             </CardContent>
             <CardActions>

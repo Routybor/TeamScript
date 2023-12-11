@@ -26,7 +26,7 @@ const CustomInputComponent = (props) => {
         handleChange,
         type,
         defaultValue,
-        bigInput
+        bigInput,
     } = props;
 
     const labelClasses = classNames({

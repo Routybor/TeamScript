@@ -26,6 +26,7 @@ function TransferListComponent() {
     const doneChecked = intersection(checked, done);
     const [activePopup, setActivePopup] = useState(false);
     const projectToken = localStorage.getItem('project');
+    const [name, setName] = useState('');
 
     const receiveTasks = async () => {
         try {
@@ -43,7 +44,7 @@ function TransferListComponent() {
     };
 
     const deleteTask = () => {
-        fetch(`${config.host}/project/deleteTask`, {
+        fetch(`${config.host}/taskBoard/deleteTask`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -137,7 +138,6 @@ function TransferListComponent() {
 
     const addCardToDo = () => {
         taskAPI.createTaskDB('Default', 'todo', projectToken);
-        // toDo.push(toDo.at(toDo.length - 1) + 1);
         toDo.push(toDo.length + 1);
         setToDo(toDo);
         handleCheckedToDo();
@@ -145,7 +145,6 @@ function TransferListComponent() {
 
     const addCardInProgress = () => {
         taskAPI.createTaskDB('Default', 'prog', projectToken);
-        // inProgress.push(inProgress.at(inProgress.length - 1) + 1);
         inProgress.push(inProgress.length + 100);
         setInProgress(inProgress);
         handleCheckedInProgress();
@@ -153,7 +152,6 @@ function TransferListComponent() {
 
     const addCardDone = () => {
         taskAPI.createTaskDB('Default', 'done', projectToken);
-        // inProgress.push(inProgress.at(inProgress.length - 1) + 1);
         done.push(done.length + 100);
         setInProgress(done);
         handleCheckedDone();
@@ -161,8 +159,8 @@ function TransferListComponent() {
 
 
     const customList = (title, items) => (
-        <Card sx={{zIndex: 'tooltip'}} className='card'>
-            <CardHeader sx={{ zIndex: 0 }}
+        <Card className='card'>
+            <CardHeader
 
                 avatar={
                     <Checkbox
@@ -180,11 +178,10 @@ function TransferListComponent() {
                 title={title}
                 subheader={`${numberOfChecked(items)}/${items.length} selected`}
                 action={
-                    // <a href="" onclick="window.open(this.href,'_self','width=100,height=50,popup=yes')">
+
                     <IconButton aria-label="settings">
                         <MoreVertIcon />
                     </IconButton>
-                    // </a>
                 }
             />
             < Divider />
@@ -208,7 +205,6 @@ function TransferListComponent() {
                             key={value}
                             role="listitem"
                             button
-
                         >
                             <ListItemIcon>
                                 <Checkbox
@@ -223,7 +219,8 @@ function TransferListComponent() {
                             </ListItemIcon>
                             <TaskCardComponent taskName={value.taskname}
                                 taskDescr={value.description}
-                                deleteTask={deleteTask}>
+                                deleteTask={deleteTask}
+                            >
 
                             </TaskCardComponent>
                         </ListItem>
@@ -240,7 +237,7 @@ function TransferListComponent() {
                 <IconButton aria-label="settings" onClick={addCardToDo}>
                     <AddIcon></AddIcon>
                 </IconButton>
-                <Grid item>{customList('to do', toDo)}</Grid>
+                <Grid sx={{ position: 'relative', zIndex: 1000 }} item>{customList('to do', toDo)}</Grid>
             </Grid>
             <Grid item>
                 <Grid container spacing={1} direction="column" alignItems="center">
