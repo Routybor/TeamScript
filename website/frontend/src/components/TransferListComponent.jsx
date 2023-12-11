@@ -21,9 +21,9 @@ function TransferListComponent() {
     const [toDo, setToDo] = useState([]);
     const [inProgress, setInProgress] = useState([]);
     const [done, setDone] = useState([]);
-    const toDoChecked = intersection(intersection(checked, toDo), done);
-    const inProgressChecked = intersection(intersection(checked, inProgress), done);
-    const doneChecked = intersection(intersection(checked, toDo), inProgress);
+    const toDoChecked = intersection(checked, toDo)
+    const inProgressChecked = intersection(checked, inProgress);
+    const doneChecked = intersection(checked, done);
     const [activePopup, setActivePopup] = useState(false);
     const projectToken = localStorage.getItem('project');
 
@@ -79,9 +79,10 @@ function TransferListComponent() {
     function intersection(a, b) {
         return a.filter((value) => b.indexOf(value) !== -1);
     };
-    function union(a, b, c) {
-        return [...a, ...not(b, a), ...not(c, a)];
+    function union(a, b) {
+        return [...a, ...not(b, a)];
     };
+
 
     const handleToggle = (value) => () => {
         const currentIndex = checked.indexOf(value);
@@ -100,9 +101,12 @@ function TransferListComponent() {
     const numberOfChecked = (items) => intersection(checked, items).length;
 
     const handleToggleAll = (items) => () => {
+        console.log(checked);
         if (numberOfChecked(items) === items.length) {
+            console.log(items);
             setChecked(not(checked, items));
         } else {
+            console.log(items);
             setChecked(union(checked, items));
         }
     };
@@ -157,8 +161,8 @@ function TransferListComponent() {
 
 
     const customList = (title, items) => (
-        <Card className='card'>
-            <CardHeader
+        <Card sx={{zIndex: 'tooltip'}} className='card'>
+            <CardHeader sx={{ zIndex: 0 }}
 
                 avatar={
                     <Checkbox
@@ -274,8 +278,8 @@ function TransferListComponent() {
                         sx={{ my: 0.5 }}
                         variant="outlined"
                         size="small"
-                        onClick={handleCheckedInProgress}
-                        disabled={toDoChecked.length === 0}
+                        onClick={handleCheckedDone}
+                        disabled={inProgressChecked.length === 0}
                         aria-label="move selected right"
                     >
                         &gt;
@@ -284,8 +288,8 @@ function TransferListComponent() {
                         sx={{ my: 0.5 }}
                         variant="outlined"
                         size="small"
-                        onClick={handleCheckedToDo}
-                        disabled={inProgressChecked.length === 0}
+                        onClick={handleCheckedInProgress}
+                        disabled={doneChecked.length === 0}
                         aria-label="move selected left"
                     >
                         &lt;

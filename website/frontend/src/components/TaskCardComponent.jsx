@@ -24,8 +24,9 @@ const TaskCardComponent = (props) => {
     return (
         <Card
             sx={{
-                width: 350,
-                height: 250
+                width: 200,
+                height: 250,
+
             }}
         >
 

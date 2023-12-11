@@ -22,6 +22,7 @@ const ProjectTable = () => {
     const data = await response.json();
     // const strData = JSON.stringify(dataBD);
     // const data = JSON.parse(strData).Token;
+    console.log(data);
     setState({
       isLoad: false,
       data: data
@@ -38,6 +39,8 @@ const ProjectTable = () => {
     });
 
     const data = await response.json();
+    data.push({ project_name: 'Default' });
+    console.log(data);
     setState({
       isLoad: false,
       data: data
