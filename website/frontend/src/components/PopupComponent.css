@@ -11,7 +11,7 @@
     opacity: 0;
     pointer-events: none;
     transition: 0.5s;
-    z-index: 1000;
+    z-index: 2000;
 }
 
 .popup.active {
@@ -27,7 +27,7 @@
     transition: 0.4s all;
     width: 50vw;
     position: fixed;
-    z-index: 2000;
+    z-index: 3000;
 }
 
 .popup-inner.active {

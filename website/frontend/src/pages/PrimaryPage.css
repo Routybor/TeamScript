@@ -1,0 +1,65 @@
+body {
+  background: #e0e0e0;
+}
+
+
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+}
+
+.text {
+  width: 29ch;
+  color: Black;
+  font-family: monospace;
+  font-size: 30px;
+  white-space: nowrap;
+  /* не переносить текст на другую строку */
+  overflow: hidden;
+  /* скрываем переполнение контентом */
+  border-right: 3px solid white;
+  /* рисуем курсор */
+  animation: cursor 0.75s step-end infinite, printed_text 4s steps(29);
+}
+
+
+@keyframes cursor {
+  0% {
+    border-color: black;
+  }
+
+  50% {
+    border-color: transparent;
+  }
+
+  100% {
+    border-color: white;
+  }
+}
+
+@keyframes printed_text {
+  from {
+    width: 0;
+  }
+}
+
+
+.formm button {
+  background: #b0adad;
+  font-size: 15px;
+  font-weight: bold;
+  border: 2px;
+  border-radius: 9%;
+  margin: 0 auto;
+  display: block;
+  margin-top: 7%;
+  width: 100px;
+  height: 35px;
+}
