@@ -2,7 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const TableComponent = (props) => {
-    
+    const handleLinkClick = (value) => {
+        localStorage.setItem('project', JSON.stringify(value));
+    };
+
     const {
         data,
         onSort,

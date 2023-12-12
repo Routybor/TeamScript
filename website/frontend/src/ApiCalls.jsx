@@ -37,7 +37,7 @@ const textAPI = {
 const taskAPI = {
     getTasksDB: async (userToken, projectToken) => {
         try {
-            const response = await fetch(`${config.host}/taskboard/getTasks`, {
+            const response = await fetch(`${config.host}/taskBoard/getTasks`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ const taskAPI = {
 
     updateTaskDB: async (task, newstate, projectToken) => {
         try {
-            const response = await fetch(`${config.host}/taskboard/changeState`, {
+            const response = await fetch(`${config.host}/taskBoard/changeState`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ const taskAPI = {
 
     createTaskDB: async (name, newstate, projectToken) => {
         try {
-            const response = await fetch(`${config.host}/taskboard/createTask`, {
+            const response = await fetch(`${config.host}/taskBoard/createTask`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ const taskAPI = {
 
     deleteTaskDB: async (taskId, projectToken) => {
         try {
-            const response = await fetch(`${config.host}/taskboard/deleteTask`, {
+            const response = await fetch(`${config.host}/taskBoard/deleteTask`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
