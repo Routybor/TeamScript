@@ -11,7 +11,7 @@ async function getTasksController(req, res) {
     const curToken = req.body.userToken;
     const projectId = req.body.projectToken;
     const result = await getTasksHandler(projectId, curToken);
-
+    // console.log(result);
     if (result) {
         res.json(result);
     } else {
@@ -37,7 +37,7 @@ async function setTaskStateController(req, res) {
     const newState = req.body.newState;
     const projectId = req.body.projectToken;
     const result = await setTaskStateHandler(taskId, newState, projectId);
-
+    console.log(result);
     if (result) {
         res.json(result);
     } else {
@@ -48,7 +48,10 @@ async function setTaskStateController(req, res) {
 async function deleteTaskController(req, res) {
     const taskId = req.body.taskID;
     const projectId = req.body.projectToken;
+    console.log(taskId);
+    console.log(projectId);
     const result = await deleteTaskHandler(taskId, projectId);
+    console.log(result);
 
     if (result) {
         res.json(result);

@@ -43,33 +43,17 @@ function TransferListComponent() {
         }
     };
 
-    const deleteTask = () => {
-        fetch(`${config.host}/taskBoard/deleteTask`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ taskID: taskId }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log('Task saved = ', data);
-            })
-            .catch((error) => {
-                console.error('ERROR saving text = ', error);
-            });
 
-    };
 
-    useEffect(() => {
-        receiveTasks();
-        config.socket.on('updateTask', (data) => {
-            receiveTasks();
-        });
-        return () => {
-            config.socket.off('updateTask');
-        };
-    }, []);
+    // useEffect(() => {
+    //     receiveTasks();
+    //     config.socket.on('updateTask', (data) => {
+    //         receiveTasks();
+    //     });
+    //     return () => {
+    //         config.socket.off('updateTask');
+    //     };
+    // }, []);
 
     function not(a, b) {
         return a.filter((value) => b.indexOf(value) === -1);
@@ -217,9 +201,8 @@ function TransferListComponent() {
                                     }}
                                 />
                             </ListItemIcon>
-                            <TaskCardComponent taskName={value.taskname}
-                                taskDescr={value.description}
-                                deleteTask={deleteTask}
+                            <TaskCardComponent
+                                taskId={value.id}
                             >
 
                             </TaskCardComponent>

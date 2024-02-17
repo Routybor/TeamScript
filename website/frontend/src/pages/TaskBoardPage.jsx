@@ -1,7 +1,8 @@
 import React from "react";
-import TransferListComponent from "../components/TransferListComponent";
+// import TransferListComponent from "../components/TransferListComponent";
 import { Button } from "@mui/material";
 import "./TaskBoardPage.css";
+import ColumnsComponent from "../components/ColumnsComponent";
 
 
 const TaskBoardPage = () => {
@@ -18,7 +19,7 @@ const TaskBoardPage = () => {
                     Log Out
                 </Button>
             </div>
-            <TransferListComponent />
+            <ColumnsComponent />
         </div>
     );
 }

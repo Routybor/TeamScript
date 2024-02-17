@@ -62,6 +62,7 @@ const taskAPI = {
                 body: JSON.stringify({ taskID: task.id, newState: newstate, projectToken: projectToken }),
             });
             const data = await response.json();
+            console.log(data);
         } catch (error) {
             console.error('ERROR saving text = ', error);
             throw error;
@@ -97,6 +98,23 @@ const taskAPI = {
             return data;
         } catch (error) {
             console.error('Error deleting task:', error);
+            throw error;
+        }
+    },
+
+    getStatesDB: async (projectToken) => {
+        try {
+            const response = await fetch(`${config.host}/taskBoard/getStates`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ ProjectId: projectToken }),
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error getting states:', error);
             throw error;
         }
     },
