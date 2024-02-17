@@ -1,20 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import io from 'socket.io-client';
-import TransferList from './components/TransferList';
-import TextFieldComponent from './components/TextFieldComponent';
-
-const host = 'http://localhost:5000'
-const socket = io(host);
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import AuthorizationPage from "./pages/AuthorizationPage";
+import TaskBoardPage from './pages/TaskBoardPage';
+import useToken from './helper/useToken';
+import ProjectsPage from './pages/ProjectsPage';
+import PrimaryPage from './pages/PrimaryPage';
+import RegistrationPage from './pages/RegistrationPage';
 
 function App() {
+  const { token, setToken } = useToken();
+
+  if (!token) {
+    return (
+      <div className='App'>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<PrimaryPage />}>
+            </Route>
+            <Route path="/authorization" element={<AuthorizationPage setToken={setToken} />}>
+            </Route>
+            <Route path="/registration" element={<RegistrationPage setToken = {setToken}/>}>
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </div >
+    );
+  }
+
   return (
-    <div className="App">
-      <TextFieldComponent socket={socket} host={host}/>
-      <h1> Задачи </h1>
-      <TransferList socket={socket} host={host}/>
-    </div>
+    <div className='App'>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<ProjectsPage />}>
+          </Route>
+          <Route path="/taskboard" element={<TaskBoardPage />}>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </div >
   );
+
 
 }
 
