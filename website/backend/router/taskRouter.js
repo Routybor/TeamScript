@@ -24,7 +24,6 @@ async function createTaskController(req, res) {
     const newState = req.body.newState;
     const projectId = req.body.projectToken;
     const result = await createTaskHandler(newTaskName, newState, projectId);
-
     if (result) {
         res.json(result);
     } else {

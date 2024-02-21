@@ -16,7 +16,8 @@ async function getProjectsController(req, res) {
 }
 
 async function createProjectController(req, res) {
-    const curToken = req.body.userToken;
+    // const curToken = req.body.userToken;
+    const curToken = req.headers.token;
     const projectName = req.body.projectName;
     const projectId = await createProjectHandler(curToken, projectName);
     if (curToken && projectName && projectId) {
