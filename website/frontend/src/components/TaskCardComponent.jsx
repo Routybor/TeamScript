@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
@@ -8,16 +7,8 @@ import PopupComponent from './PopupComponent';
 import { IconButton } from '@mui/material';
 import CustomInputComponent from "./CustomInputComponent";
 import "./TaskCardComponent.css";
-import { ListItemButton } from "@mui/material";
-import { ListItemIcon } from "@mui/material";
-import SendIcon from '@mui/icons-material/Send';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { List } from "@mui/material";
-import { ListItemText } from "@mui/material";
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
 import MenuComonent from "./MenuComponent";
-import { taskAPI } from "../ApiCalls";
 
 
 
@@ -78,10 +69,8 @@ const TaskCardComponent = (props) => {
     // };
     const {
         taskName,
-        setTaskName,
         taskId,
         taskState,
-        newTask,
         changeState,
         deleteTask,
         statuses
@@ -93,7 +82,7 @@ const TaskCardComponent = (props) => {
     const [anchorEl2, setAnchorEl2] = React.useState(null);
 
     const handleInputChange = (event) => {
-        setTaskName(event.target.value);
+        // setTaskName(event.target.value);
     }
 
     const handleClick2 = (event) => {
@@ -120,7 +109,7 @@ const TaskCardComponent = (props) => {
             id="changeState"
         >Change state
         </Button>,
-        <Button onClick={() => { deleteTask(taskId) }}>Delete</Button>,
+        <Button onClick={() => { deleteTask(taskId) }} id="delete">Delete</Button>,
     ];
 
     const handleClick = (event) => {
@@ -147,6 +136,10 @@ const TaskCardComponent = (props) => {
                 height: 250,
 
             }}
+            draggable="true"
+            className="card"
+            id={taskId}
+
         >
 
             <CardContent>

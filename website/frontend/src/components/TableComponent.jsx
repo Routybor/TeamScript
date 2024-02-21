@@ -1,3 +1,4 @@
+import { Button } from '@material-ui/core';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -11,7 +12,8 @@ const TableComponent = (props) => {
         onSort,
         sort,
         sortField,
-        onRowSelect
+        onRowSelect,
+        deleteProj
     } = props;
     return (
         <table className="table" style={{ cursor: "pointer" }}>
@@ -26,6 +28,7 @@ const TableComponent = (props) => {
                     <tr>
                         <td>{item.project_id}</td>
                         <td><Link to="./taskboard" onClick={() => handleLinkClick(item.project_id)}>{item.project_name}</Link></td>
+                        <td><Button onClick={() => { deleteProj(item.project_id) }}>Delete</Button></td>
                     </tr>
                 ))}
             </tbody>

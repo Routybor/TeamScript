@@ -141,4 +141,59 @@ const authAPI = {
     }
 };
 
-export { textAPI, taskAPI, authAPI };
+const projAPI = {
+    getProjs: async (userToken) => {
+        try {
+            const response = await fetch(`${config.host}/project/getProjects`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Token': userToken
+                }
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error getting projects:', error);
+            throw error;
+        }
+    },
+
+    createProj: async (userToken) => {
+        try {
+            const response = await fetch(`${config.host}/project/createProject`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userToken: userToken, projectName: 'Default' }),
+            });
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error creating project:', error);
+            throw error;
+        }
+    },
+
+    deleteProj: async (userToken, projectId) => {
+        try {
+            const response = await fetch(`${config.host}/project/deleteProject`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userToken: userToken, projectId: projectId }),
+            });
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error deleting project:', error);
+            throw error;
+        }
+    }
+}
+
+export { textAPI, taskAPI, authAPI, projAPI };
