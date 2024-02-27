@@ -260,6 +260,19 @@ const getStatesByProjectId = async (projectId) => {
     });
 };
 
+const addStatesByProjectId = async (projectId, stateName) => {
+    return new Promise((resolve, reject) => {
+        pool.query('INSERT INTO project_state (project_id, row_state) values($1, $2)', [projectId, stateName], (err, result) => {
+            if (!err) {
+                resolve(result.rows[0]);
+            } else {
+                // console.log(result);
+                reject(new Error('Error while getting project states'));
+            }
+        });
+    });
+};
+
 
 module.exports = {
     getTextDB,
@@ -281,4 +294,5 @@ module.exports = {
     getUserIdByTokenDB,
     checkUserPermissionDB,
     getStatesByProjectId,
+    addStatesByProjectId,
 };
