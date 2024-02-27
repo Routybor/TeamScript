@@ -1,11 +1,12 @@
 const express = require('express')
 const router = express.Router()
-const { getTasksHandler, createTaskHandler, setTaskStateHandler, deleteTaskHandler } = require('../service/taskService')
+const { getTasksHandler, createTaskHandler, setTaskStateHandler, deleteTaskHandler, getStateHandler} = require('../service/taskService')
 
 router.post('/getTasks', getTasksController);
 router.post('/createTask', createTaskController);
 router.post('/changeState', setTaskStateController);
 router.post('/deleteTask', deleteTaskController);
+router.post('/getStates', getStateController);
 
 async function getTasksController(req, res) {
     const curToken = req.body.userToken;
@@ -56,6 +57,18 @@ async function deleteTaskController(req, res) {
         res.json(result);
     } else {
         res.status(500).json({ error: 'Error while getting tasks from the database' });
+    }
+}
+
+async function getStateController(req, res) {
+    // const curToken = req..userToken;
+    const projectId = req.body.projectToken;
+    const result = await getStateHandler(projectId);
+    console.log(result);
+    if (result) {
+        res.json(result);
+    } else {
+        res.status(500).json({ error: 'Error while getting states from db' });
     }
 }
 
