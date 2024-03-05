@@ -8,6 +8,7 @@ router.post('/changeState', setTaskStateController);
 router.post('/deleteTask', deleteTaskController);
 router.post('/getStates', getStateController);
 router.post('/addStates', addStateController);
+router.post('/deleteStates', deletStateController);
 
 async function getTasksController(req, res) {
     const curToken = req.body.userToken;
@@ -78,6 +79,19 @@ async function addStateController(req, res) {
     const projectId = req.body.projectToken;
     const stateName = req.body.state;
     const result = await addStateHandler(projectId, stateName);
+    console.log(result);
+    if (result) {
+        res.json(result);
+    } else {
+        res.status(500).json({ error: 'Error while getting states from db' });
+    }
+}
+
+async function deletStateController(req, res) {
+    // const curToken = req..userToken;
+    const projectId = req.body.projectToken;
+    const stateName = req.body.state;
+    const result = await deleteStateHandler(projectId, stateName);
     console.log(result);
     if (result) {
         res.json(result);

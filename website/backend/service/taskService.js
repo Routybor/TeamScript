@@ -79,6 +79,21 @@ async function addStateHandler(projectId, stateName) {
     }
 }
 
+async function deleteStateHandler(projectId, stateName) {
+    try {
+        // const userId = await getUserIdByTokenDB(token);
+        // const check = await checkUserPermissionDB(projectId, userId.mytable_key);
+        // if(check.exist == "f"){
+        //     return null;
+        // }
+        const res = await deleteStatesByProjectId(projectId, stateName);
+        return res;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
 module.exports = {
     getTasksHandler,
     createTaskHandler,
@@ -86,4 +101,5 @@ module.exports = {
     deleteTaskHandler,
     getStateHandler,
     addStateHandler,
+    deleteStateHandler,
 };
