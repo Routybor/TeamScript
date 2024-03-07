@@ -10,6 +10,7 @@ import { taskAPI } from '../ApiCalls';
 import TaskCardComponent from './TaskCardComponent';
 import AddIcon from '@mui/icons-material/Add';
 import config from '../config';
+import DragAndDrop from '../helper/DragAndDrop';
 import './ColumnsComponent.css';
 
 
@@ -20,8 +21,7 @@ const ColumnsComponent = () => {
     const [tasks, setTasks] = useState([]);
     // const [states, setStates] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [currentElement, setCurrentElement] = useState();
-    const tasksListElement = document.querySelector('.tasklist');
+
     // const [taskName, setTaskName] = useState("");
 
 
@@ -50,9 +50,6 @@ const ColumnsComponent = () => {
             console.log(recTasks);
             setTasks(recTasks);
             setIsLoaded(true);
-            const tasksListElement = document.querySelector('.tasklist');
-
-            console.log(tasksListElement);
             config.socket.on('updateTask', (data) => {
                 receiveTasks();
             });
@@ -63,83 +60,7 @@ const ColumnsComponent = () => {
         })();
     }, [isLoaded]);
 
-
-    if (tasksListElement) {
-
-        tasksListElement.addEventListener(`dragstart`, (evt) => {
-            evt.target.classList.add(`selected`);
-        })
-
-        tasksListElement.addEventListener(`dragend`, (evt) => {
-            evt.target.classList.remove(`selected`);
-        });
-
-
-        tasksListElement.addEventListener(`dragover`, (evt) => {
-            evt.preventDefault();
-
-            const activeElement = tasksListElement.querySelector(`.selected`);
-            // setCurrentElement(activeElement)
-
-            if (activeElement) {
-                console.log(1);
-                const tmpElement = evt.target;
-                console.log(tmpElement);
-                if (tmpElement.classList.contains('card')) {
-                    console.log("I am card");
-                    setCurrentElement(tmpElement);
-                }
-                console.log(activeElement);
-                console.log(currentElement);
-                const activeElementId = activeElement.querySelector('.input').getElementsByTagName('input')[0].id;
-                const currentElementId = currentElement.querySelector('.input').getElementsByTagName('input')[0].id;
-
-                const isMoveable = activeElement !== currentElement &&
-                    currentElement.classList.contains(`card`);
-
-                if (!isMoveable) {
-                    return;
-                }
-                console.log(2);
-                let activeTaskElemInd = tasks.indexOf(tasks.filter(task => task.id == activeElementId)[0]);
-                let currentTaskElemInd = tasks.indexOf(tasks.filter(task => task.id == currentElementId)[0]);
-                let taskCopy = [...tasks];
-                [taskCopy[activeTaskElemInd], taskCopy[currentTaskElemInd]] = [taskCopy[currentTaskElemInd], taskCopy[activeTaskElemInd]];
-                setTasks(taskCopy);
-                console.log(tasks);
-
-
-            }
-
-        });
-
-    }
-
-
-
-    //     tasksListElement.insertBefore(activeElement, nextElement);
-    // });
-
-
-
-    //     // const getNextElement = (cursorPosition, currentElement) => {
-    //     //     // Получаем объект с размерами и координатами
-    //     //     const currentElementCoord = currentElement.getBoundingClientRect();
-    //     //     // Находим вертикальную координату центра текущего элемента
-    //     //     const currentElementCenter = currentElementCoord.y + currentElementCoord.height / 2;
-
-    //     //     // Если курсор выше центра элемента, возвращаем текущий элемент
-    //     //     // В ином случае — следующий DOM-элемент
-    //     //     const nextElement = (cursorPosition < currentElementCenter) ?
-    //     //         currentElement :
-    //     //         currentElement.nextElementSibling;
-
-    //     //     return nextElement;
-    //     // };
-
-
-    // }
-
+    DragAndDrop(tasks, setTasks);
 
     // useEffect(() => {
     //     (async () => {
@@ -196,7 +117,7 @@ const ColumnsComponent = () => {
             <List
                 sx={{
                     width: 400,
-                    height: 500,
+
                     bgcolor: 'background.paper',
                     overflow: 'auto',
                 }}
@@ -237,11 +158,6 @@ const ColumnsComponent = () => {
                 <AddIcon></AddIcon>
             </IconButton>
             <Grid >
-
-                {/* <IconButton aria-label="settings" onClick={addTask}>
-                    <AddIcon></AddIcon>
-                </IconButton> */}
-
                 <Grid className='tasklist' sx={{ position: 'relative', zIndex: 1000 }} item container
                     direction="row"
                 > {
