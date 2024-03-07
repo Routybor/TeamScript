@@ -71,7 +71,7 @@ const CustomInputComponent = (props) => {
                         {labelText}
                     </InputLabel>
                 ) : null}
-                <Input
+                <Input className="input"
                     classes={{
                         input: inputClasses,
                         root: marginTop,
