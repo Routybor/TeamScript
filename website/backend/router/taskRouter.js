@@ -6,12 +6,10 @@ router.post('/getTasks', getTasksController);
 router.post('/createTask', createTaskController);
 router.post('/changeState', setTaskStateController);
 router.post('/deleteTask', deleteTaskController);
-router.post('/getStates', getStateController);
-router.post('/addStates', addStateController);
-router.post('/deleteStates', deletStateController);
 
 async function getTasksController(req, res) {
-    const curToken = req.body.userToken;
+    const curToken = req.headers.token;
+    // const curToken = req.body.userToken;
     const projectId = req.body.projectToken;
     const result = await getTasksHandler(projectId, curToken);
     // console.log(result);
@@ -23,6 +21,7 @@ async function getTasksController(req, res) {
 }
 
 async function createTaskController(req, res) {
+    const curToken = req.headers.token;
     const newTaskName = req.body.taskName;
     const newState = req.body.newState;
     const projectId = req.body.projectToken;
@@ -35,6 +34,7 @@ async function createTaskController(req, res) {
 }
 
 async function setTaskStateController(req, res) {
+    const curToken = req.headers.token;
     const taskId = req.body.taskID;
     const newState = req.body.newState;
     const projectId = req.body.projectToken;
@@ -48,6 +48,7 @@ async function setTaskStateController(req, res) {
 }
 
 async function deleteTaskController(req, res) {
+    const curToken = req.headers.token;
     const taskId = req.body.taskID;
     const projectId = req.body.projectToken;
     console.log(taskId);
@@ -59,44 +60,6 @@ async function deleteTaskController(req, res) {
         res.json(result);
     } else {
         res.status(500).json({ error: 'Error while getting tasks from the database' });
-    }
-}
-
-async function getStateController(req, res) {
-    // const curToken = req..userToken;
-    const projectId = req.body.projectToken;
-    const result = await getStateHandler(projectId);
-    console.log(result);
-    if (result) {
-        res.json(result);
-    } else {
-        res.status(500).json({ error: 'Error while getting states from db' });
-    }
-}
-
-async function addStateController(req, res) {
-    // const curToken = req..userToken;
-    const projectId = req.body.projectToken;
-    const stateName = req.body.state;
-    const result = await addStateHandler(projectId, stateName);
-    console.log(result);
-    if (result) {
-        res.json(result);
-    } else {
-        res.status(500).json({ error: 'Error while getting states from db' });
-    }
-}
-
-async function deletStateController(req, res) {
-    // const curToken = req..userToken;
-    const projectId = req.body.projectToken;
-    const stateName = req.body.state;
-    const result = await deleteStateHandler(projectId, stateName);
-    console.log(result);
-    if (result) {
-        res.json(result);
-    } else {
-        res.status(500).json({ error: 'Error while getting states from db' });
     }
 }
 

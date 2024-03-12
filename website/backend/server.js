@@ -21,6 +21,7 @@ app.use(bodyParser.json());
 const projectRouter = require("./router/projectRouter");
 const taskRouter = require("./router/taskRouter");
 const authRouter = require("./router/authRouter");
+const rowRouter = require("./router/rowRouter");
 
 // const textRouter = require("./router/textRouter");
 // app.use('/text', textRouter);
@@ -28,6 +29,7 @@ const authRouter = require("./router/authRouter");
 app.use('/project', projectRouter)
 app.use('/taskboard', taskRouter);
 app.use('/auth', authRouter)
+app.use('/row', rowRouter)
 
 server.listen(port, () => {
     console.log(`Backend link is = http://localhost:${port}`);
