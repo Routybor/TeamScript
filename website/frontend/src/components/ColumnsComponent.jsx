@@ -19,10 +19,9 @@ const ColumnsComponent = () => {
     const statuses = ["no status", "todo", "done", "prog"];
     const projectToken = localStorage.getItem('project');
     const [tasks, setTasks] = useState([]);
-    // const [states, setStates] = useState([]);
+    const [states, setStates] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
-
-    // const [taskName, setTaskName] = useState("");
+    const [taskName, setTaskName] = useState("");
 
 
     const receiveTasks = async () => {
@@ -34,13 +33,13 @@ const ColumnsComponent = () => {
         }
     };
 
-    // const receiveStates = async () => {
-    //     try {
-    //         return await taskAPI.getStatesDB(projectToken);
-    //     } catch (error) {
-    //         console.error('Error in receive function:', error);
-    //     }
-    // };
+    const receiveStates = async () => {
+        try {
+            return await taskAPI.getStatesDB(projectToken);
+        } catch (error) {
+            console.error('Error in receive function:', error);
+        }
+    };
 
 
     useEffect(() => {
@@ -62,26 +61,30 @@ const ColumnsComponent = () => {
 
     DragAndDrop(tasks, setTasks);
 
-    // useEffect(() => {
-    //     (async () => {
-    //         const states = await receiveStates().then((val) => val);
-    //         setStates(states);
-    //         config.socket.on('updateStates', (data) => {
-    //             receiveStates();
-    //         });
-    //         console.log(states);
-    //         return () => {
-    //             config.socket.off('updateStates');
-    //         };
+    useEffect(() => {
+        (async () => {
+            const states = await receiveStates().then((val) => val);
+            setStates(states);
+            setIsLoaded(true);
+            config.socket.on('updateStates', (data) => {
+                receiveStates();
+            });
+            console.log(states);
+            return () => {
+                config.socket.off('updateStates');
+            };
 
 
-    //     })();
-    // }, []);
+        })();
+    }, [isLoaded]);
 
 
-    const addNewColumn = (newStateName) => {
-        statuses.indexOf(newStateName) == -1 ? statuses.push(newStateName) : console.log(1);
-    }
+    // const addNewColumn = (newStateName) => {
+    //     if (states.indexOf(newStateName) == -1) {
+    //         taskAPI.createStateDB("Default", projectToken);
+    //         setIsLoaded(false);
+    //     }
+    // }
 
     const newTask = (state) => {
         taskAPI.createTaskDB("Default", state, projectToken);
@@ -92,8 +95,8 @@ const ColumnsComponent = () => {
         const curTask = tasks.filter(task => task.id == taskId)[0];
         taskAPI.updateTaskDB(curTask, newState, projectToken);
         setIsLoaded(false);
-
     }
+
 
     const deleteTask = (taskId) => {
         taskAPI.deleteTaskDB(taskId, projectToken);
@@ -137,7 +140,6 @@ const ColumnsComponent = () => {
                         >
                             <TaskCardComponent
                                 taskName={value.taskname}
-                                // setTaskName={setTaskName}
                                 taskId={value.id}
                                 taskState={title}
                                 changeState={changeState}

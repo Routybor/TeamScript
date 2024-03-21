@@ -118,6 +118,40 @@ const taskAPI = {
             throw error;
         }
     },
+
+    getTaskNameDB: async () => {
+        try {
+            const response = await fetch(`${config.host}/text/getText`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('ERROR getting task name = ', error);
+        }
+    },
+
+    updateTaskNameDB: async (taskId, newTaskName) => {
+        try {
+            const response = await fetch(`${config.host}/text/saveText`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ textField: newTaskName }),
+            });
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('ERROR saving taskname = ', error);
+            throw error;
+        }
+    },
+
+
 };
 
 
@@ -159,7 +193,7 @@ const projAPI = {
         }
     },
 
-    createProj: async (userToken) => {
+    createProjDB: async (userToken) => {
         try {
             const response = await fetch(`${config.host}/project/createProject`, {
                 method: 'POST',
@@ -177,7 +211,7 @@ const projAPI = {
         }
     },
 
-    deleteProj: async (userToken, projectId) => {
+    deleteProjDB: async (userToken, projectId) => {
         try {
             const response = await fetch(`${config.host}/project/deleteProject`, {
                 method: 'POST',

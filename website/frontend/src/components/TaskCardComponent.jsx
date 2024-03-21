@@ -9,6 +9,8 @@ import CustomInputComponent from "./CustomInputComponent";
 import "./TaskCardComponent.css";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import MenuComonent from "./MenuComponent";
+import { taskAPI } from '../ApiCalls';
+
 
 
 
@@ -32,58 +34,56 @@ import MenuComonent from "./MenuComponent";
 
 // };
 
+
 const TaskCardComponent = (props) => {
-
-    // useEffect(() => {
-    //     const sendPendingTask = () => {
-    //         if (sendTaskNameEnabled) {
-    //             sendTaskName(pendingTaskName);
-    //         }
-    //     };
-    //     const sendToBackendTimer = setTimeout(sendPendingTask, 200);
-    //     return () => {
-    //         clearTimeout(sendToBackendTimer);
-    //     };
-    // }, [pendingTaskName, sendTaskNameEnabled]);
-
-    // const sendPendingTask = () => {
-    //     if (sendTaskNameEnabled) {
-    //         sendTaskName(pendingTaskName);
-    //     }
-    // };
-
-
-    // const handleInputChange = (event) => {
-    //     const tasks = receiveTask();
-    //     tasks.then((value) => {
-    //         setTaskName(event.target.value);
-    //         value.find(x => x.id == event.target.id).taskname = event.target.value;
-    //         sendTaskName(value.find(x => x.id == event.target.id));
-    //     });
-
-
-    //     // setPendingTaskName(event.target.value);
-    //     // setSendTaskNameEnabled(true);
-
-
-    // };
     const {
         taskName,
         taskId,
         taskState,
         changeState,
         deleteTask,
-        statuses
+        statuses,
     } = props;
 
-    const [activePopup, setActivePopup] = useState(false);
+    // const changeTaskName = async (taskId, event) => {
+    //     const curTaskName = event.target.value;
+    //     taskAPI.updateTaskDB(taskId, curTaskName);
+    //     setIsLoaded(false);
+    // }
 
+    // useEffect(() => {
+    //     (async () => {
+    //         changeTaskName(taskId);
+    //         setUpdated(true);
+    //         return () => {
+    //             config.socket.off('updateTaskName');
+    //         };
+    //     })();
+    // }, [updated]);
+
+    const [activePopup, setActivePopup] = useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [anchorEl2, setAnchorEl2] = React.useState(null);
+    // const [taskname, setTaskname] = useState(taskName);
+    // const [updated, setUpdated] = useState(false);
 
     const handleInputChange = (event) => {
-        // setTaskName(event.target.value);
+
     }
+
+    // const changeTaskName = async (taskId, taskname) => {
+
+    // }
+
+    // const handleInputChange = (event) => {
+    //     const tasks = getTaskNameDB();
+    //     tasks.then((value) => {
+    //         setTaskName(event.target.value);
+    //         value.find(x => x.id == event.target.id).taskname = event.target.value;
+    //         sendTaskName(value.find(x => x.id == event.target.id));
+    //     });
+
+    // };
 
     const handleClick2 = (event) => {
         setAnchorEl2(event.currentTarget);
@@ -127,8 +127,6 @@ const TaskCardComponent = (props) => {
     };
 
 
-
-
     return (
         <Card
             sx={{
@@ -139,7 +137,6 @@ const TaskCardComponent = (props) => {
             draggable="true"
             className="card"
             id={taskId}
-
         >
 
             <CardContent>
@@ -188,9 +185,7 @@ const TaskCardComponent = (props) => {
                     <CustomInputComponent
                         defaultValue="description"
                     />
-
                 </PopupComponent>
-
             </CardContent>
         </Card>
     );
