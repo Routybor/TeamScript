@@ -266,8 +266,7 @@ const addStatesByProjectId = async (projectId, stateName) => {
             if (!err) {
                 resolve(result.rows[0]);
             } else {
-                // console.log(result);
-                reject(new Error('Error while getting project states'));
+                reject(new Error('Error while add row project states'));
             }
         });
     });

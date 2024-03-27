@@ -4,6 +4,7 @@ const { getUsersProjectsDB,
     createNewProjectDB,
     addRelationUserProjectDB,
     createTableProjectDB,
+    addStatesByProjectId,
 } = require('../database/dbQueries');
 
 
@@ -24,6 +25,8 @@ async function createProjectHandler(token, projectName) {
         const newProjectID = await createNewProjectDB(projectName);
         await addRelationUserProjectDB(userId.mytable_key, newProjectID.project_id);
         await createTableProjectDB("Project" + newProjectID.project_id);
+        // console.log(newProjectID);
+        await addStatesByProjectId(newProjectID.project_id, 'No state');
         updateProjects();
         return newProjectID;
     } catch (error) {

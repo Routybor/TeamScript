@@ -4,6 +4,11 @@ const { loginHandler } = require('../service/authService')
 
 router.post('/login', loginController);
 
+/**
+ * обработчик login запросов
+ * @param {*} req 
+ * @param {*} res 
+ */
 async function loginController(req, res) {
     const name = req.body.Username;
     const password = req.body.Password;
