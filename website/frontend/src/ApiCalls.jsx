@@ -41,8 +41,9 @@ const taskAPI = {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'token': userToken
                 },
-                body: JSON.stringify({ userToken: userToken, projectToken: projectToken }),
+                body: JSON.stringify({ projectToken: projectToken }),
             });
             const data = await response.json();
             return data;
@@ -69,12 +70,14 @@ const taskAPI = {
         }
     },
 
-    createTaskDB: async (name, newstate, projectToken) => {
+    createTaskDB: async (name, newstate, projectToken, userToken) => {
         try {
             const response = await fetch(`${config.host}/taskBoard/createTask`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Token': userToken
+
                 },
                 body: JSON.stringify({ taskName: name, newState: newstate, projectToken: projectToken }),
             });
@@ -85,12 +88,13 @@ const taskAPI = {
         }
     },
 
-    deleteTaskDB: async (taskId, projectToken) => {
+    deleteTaskDB: async (taskId, projectToken, userToken) => {
         try {
             const response = await fetch(`${config.host}/taskBoard/deleteTask`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'token': userToken
                 },
                 body: JSON.stringify({ taskID: taskId, projectToken: projectToken }),
             });
@@ -102,14 +106,17 @@ const taskAPI = {
         }
     },
 
+};
+
+const stateAPI = {
     getStatesDB: async (projectToken) => {
         try {
-            const response = await fetch(`${config.host}/taskBoard/getStates`, {
+            const response = await fetch(`${config.host}/row/getStates`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ ProjectId: projectToken }),
+                body: JSON.stringify({ project_id: projectToken }),
             });
             const data = await response.json();
             return data;
@@ -118,7 +125,7 @@ const taskAPI = {
             throw error;
         }
     },
-};
+}
 
 
 const authAPI = {
@@ -165,8 +172,9 @@ const projAPI = {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'token': userToken
                 },
-                body: JSON.stringify({ userToken: userToken, projectName: 'Default' }),
+                body: JSON.stringify({ projectName: 'Default' }),
             });
 
             const data = await response.json();
@@ -196,4 +204,4 @@ const projAPI = {
     }
 }
 
-export { textAPI, taskAPI, authAPI, projAPI };
+export { textAPI, taskAPI, authAPI, projAPI, stateAPI };

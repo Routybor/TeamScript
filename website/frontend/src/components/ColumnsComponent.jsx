@@ -21,13 +21,12 @@ const ColumnsComponent = () => {
     const [tasks, setTasks] = useState([]);
     // const [states, setStates] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
-
+    const userToken = localStorage.getItem('token');
     // const [taskName, setTaskName] = useState("");
 
 
     const receiveTasks = async () => {
         try {
-            const userToken = localStorage.getItem('token');
             return await taskAPI.getTasksDB(userToken, projectToken);
         } catch (error) {
             console.error('Error in receive function:', error);
@@ -84,7 +83,7 @@ const ColumnsComponent = () => {
     }
 
     const newTask = (state) => {
-        taskAPI.createTaskDB("Default", state, projectToken);
+        taskAPI.createTaskDB("Default", state, projectToken, userToken);
         setIsLoaded(false);
     }
 

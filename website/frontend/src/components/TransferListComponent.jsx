@@ -27,10 +27,10 @@ function TransferListComponent() {
     const [activePopup, setActivePopup] = useState(false);
     const projectToken = localStorage.getItem('project');
     const [name, setName] = useState('');
+    const userToken = localStorage.getItem('token');
 
     const receiveTasks = async () => {
         try {
-            const userToken = localStorage.getItem('token');
             const data = await taskAPI.getTasksDB(userToken, projectToken);
             const todo_list = data.filter((item) => item.curstate === 'todo');
             const progress_list = data.filter((item) => item.curstate === 'prog');
@@ -121,21 +121,21 @@ function TransferListComponent() {
     };
 
     const addCardToDo = () => {
-        taskAPI.createTaskDB('Default', 'todo', projectToken);
+        taskAPI.createTaskDB('Default', 'todo', projectToken, userToken);
         toDo.push(toDo.length + 1);
         setToDo(toDo);
         handleCheckedToDo();
     };
 
     const addCardInProgress = () => {
-        taskAPI.createTaskDB('Default', 'prog', projectToken);
+        taskAPI.createTaskDB('Default', 'prog', projectToken, userToken);
         inProgress.push(inProgress.length + 100);
         setInProgress(inProgress);
         handleCheckedInProgress();
     };
 
     const addCardDone = () => {
-        taskAPI.createTaskDB('Default', 'done', projectToken);
+        taskAPI.createTaskDB('Default', 'done', projectToken, userToken);
         done.push(done.length + 100);
         setInProgress(done);
         handleCheckedDone();
