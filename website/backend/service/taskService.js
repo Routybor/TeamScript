@@ -72,6 +72,7 @@ async function addStateHandler(projectId, stateName) {
         //     return null;
         // }
         const res = await addStatesByProjectId(projectId, stateName);
+        console.log(res);
         return res;
     } catch (error) {
         console.error(error);
