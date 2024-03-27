@@ -7,7 +7,7 @@ router.post('/addStates', addStateController);
 // router.post('/deleteStates', deletStateController);
 
 async function getStateController(req, res) {
-    const projectId = req.body.projectToken;
+    const projectId = req.body.project_id;
     const result = await getStateHandler(projectId);
     console.log(result);
     if (result) {
@@ -18,7 +18,7 @@ async function getStateController(req, res) {
 }
 
 async function addStateController(req, res) {
-    const projectId = req.body.projectToken;
+    const projectId = req.body.project_id;
     const stateName = req.body.state;
     const result = await addStateHandler(projectId, stateName);
     console.log(result);
