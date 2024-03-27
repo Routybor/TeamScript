@@ -73,7 +73,7 @@ const TaskCardComponent = (props) => {
         taskState,
         changeState,
         deleteTask,
-        statuses
+        states
     } = props;
 
     const [activePopup, setActivePopup] = useState(false);
@@ -156,7 +156,7 @@ const TaskCardComponent = (props) => {
                         anchorEl={anchorEl}
                         open={open}
                     ></MenuComonent>
-                    <MenuComonent MyOptions={statuses}
+                    <MenuComonent MyOptions={states}
                         handleClose={handleClose2}
                         anchorEl={anchorEl2}
                         open={open2}

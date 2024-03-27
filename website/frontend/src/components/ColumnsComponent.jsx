@@ -6,7 +6,7 @@ import CardHeader from '@mui/material/CardHeader';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import { IconButton } from '@mui/material';
-import { taskAPI } from '../ApiCalls';
+import { taskAPI, stateAPI } from '../ApiCalls';
 import TaskCardComponent from './TaskCardComponent';
 import AddIcon from '@mui/icons-material/Add';
 import config from '../config';
@@ -16,10 +16,9 @@ import './ColumnsComponent.css';
 
 
 const ColumnsComponent = () => {
-    const statuses = ["no status", "todo", "done", "prog"];
     const projectToken = localStorage.getItem('project');
     const [tasks, setTasks] = useState([]);
-    // const [states, setStates] = useState([]);
+    const [states, setStates] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
     const userToken = localStorage.getItem('token');
     // const [taskName, setTaskName] = useState("");
@@ -33,20 +32,20 @@ const ColumnsComponent = () => {
         }
     };
 
-    // const receiveStates = async () => {
-    //     try {
-    //         return await taskAPI.getStatesDB(projectToken);
-    //     } catch (error) {
-    //         console.error('Error in receive function:', error);
-    //     }
-    // };
+    const receiveStates = async () => {
+        try {
+            return await stateAPI.getStatesDB(projectToken);
+        } catch (error) {
+            console.error('Error in receive function:', error);
+        }
+    };
 
 
     useEffect(() => {
         (async () => {
             const recTasks = await receiveTasks().then((val) => val);
-            console.log("effect");
-            console.log(recTasks);
+            // console.log("effect");
+            // console.log(recTasks);
             setTasks(recTasks);
             setIsLoaded(true);
             config.socket.on('updateTask', (data) => {
@@ -61,25 +60,28 @@ const ColumnsComponent = () => {
 
     DragAndDrop(tasks, setTasks);
 
-    // useEffect(() => {
-    //     (async () => {
-    //         const states = await receiveStates().then((val) => val);
-    //         setStates(states);
-    //         config.socket.on('updateStates', (data) => {
-    //             receiveStates();
-    //         });
-    //         console.log(states);
-    //         return () => {
-    //             config.socket.off('updateStates');
-    //         };
+    useEffect(() => {
+        (async () => {
+            const recStates = await receiveStates().then((val) => val);
+            console.log("effect");
+            console.log(recStates);
+            setStates(states);
+            setIsLoaded(true);
+            config.socket.on('updateStates', (data) => {
+                receiveStates();
+            });
+            console.log(states);
+            return () => {
+                config.socket.off('updateStates');
+            };
 
 
-    //     })();
-    // }, []);
+        })();
+    }, [isLoaded]);
 
 
     const addNewColumn = (newStateName) => {
-        statuses.indexOf(newStateName) == -1 ? statuses.push(newStateName) : console.log(1);
+        states.indexOf(newStateName) == -1 ? states.push(newStateName) : console.log(1);
     }
 
     const newTask = (state) => {
@@ -141,7 +143,7 @@ const ColumnsComponent = () => {
                                 taskState={title}
                                 changeState={changeState}
                                 deleteTask={deleteTask}
-                                statuses={statuses}
+                                states={states}
                             ></TaskCardComponent>
 
                         </ListItem>
@@ -160,7 +162,7 @@ const ColumnsComponent = () => {
                 <Grid className='tasklist' sx={{ position: 'relative', zIndex: 1000 }} item container
                     direction="row"
                 > {
-                        statuses.map(
+                        states.map(
                             (name) => customList(name, tasks.filter((task) => task.curstate == name))
                         )
                     }
