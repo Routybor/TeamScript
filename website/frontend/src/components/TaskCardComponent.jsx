@@ -106,20 +106,17 @@ const TaskCardComponent = (props) => {
         }
     };
 
-
-
     return (
         <Card
             sx={{
                 width: 200,
                 height: 220,
-
             }}
             draggable="true"
             className="card"
             id={taskId}
+            curstate={taskState}
         >
-
             <CardContent>
                 <Grid container justifyContent="right" alignItems="right">
                     <IconButton aria-label="more"
