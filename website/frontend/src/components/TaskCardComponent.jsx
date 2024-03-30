@@ -12,26 +12,6 @@ import MenuComonent from "./MenuComponent";
 
 
 
-// const projectToken = localStorage.getItem('project');
-
-// const deleteTask = (id) => {
-//     fetch(`${config.host}/taskBoard/deleteTask`, {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ taskID: id, projectToken: projectToken }),
-//     })
-//         .then((response) => response.json())
-//         .then((data) => {
-//             console.log('Task saved = ', data);
-//         })
-//         .catch((error) => {
-//             console.error('ERROR saving text = ', error);
-//         });
-
-// };
-
 const TaskCardComponent = (props) => {
 
     // useEffect(() => {
@@ -73,7 +53,7 @@ const TaskCardComponent = (props) => {
         taskState,
         changeState,
         deleteTask,
-        statuses
+        states
     } = props;
 
     const [activePopup, setActivePopup] = useState(false);
@@ -126,22 +106,17 @@ const TaskCardComponent = (props) => {
         }
     };
 
-
-
-
     return (
         <Card
             sx={{
                 width: 200,
-                height: 250,
-
+                height: 220,
             }}
             draggable="true"
             className="card"
             id={taskId}
-
+            curstate={taskState}
         >
-
             <CardContent>
                 <Grid container justifyContent="right" alignItems="right">
                     <IconButton aria-label="more"
@@ -156,7 +131,7 @@ const TaskCardComponent = (props) => {
                         anchorEl={anchorEl}
                         open={open}
                     ></MenuComonent>
-                    <MenuComonent MyOptions={statuses}
+                    <MenuComonent MyOptions={states}
                         handleClose={handleClose2}
                         anchorEl={anchorEl2}
                         open={open2}
@@ -165,8 +140,9 @@ const TaskCardComponent = (props) => {
                 <div className="task-name">
                     <CustomInputComponent
                         defaultValue={taskName}
+                        type="text"
+                        id="taskname"
                         bigInput={true}
-                        id={taskId}
                         handleChange={handleInputChange}
                     />
                 </div>
@@ -179,15 +155,18 @@ const TaskCardComponent = (props) => {
 
 
                 <Button onClick={activePopup ? undefined : () => setActivePopup(true)}>Смотреть задачу</Button>
-                <PopupComponent id={2} active={activePopup} setActive={setActivePopup}>
-                    <CustomInputComponent id={2}
+                <PopupComponent active={activePopup} setActive={setActivePopup}>
+                    <CustomInputComponent
                         defaultValue={taskName}
+                        type="text"
+                        id="taskname"
                         bigInput={true}
+                        // id={taskId}
                         handleChange={handleInputChange}
                     />
-                    <CustomInputComponent
+                    {/* <CustomInputComponent
                         defaultValue="description"
-                    />
+                    /> */}
 
                 </PopupComponent>
 

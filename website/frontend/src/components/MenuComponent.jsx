@@ -15,9 +15,9 @@ const MenuComonent = (props) => {
             onClose={handleClose}
             open={open}
         >
-            {MyOptions.map((option) => (
+            {MyOptions.map((option, index) => (
                 <MenuItem
-                    key={option}
+                    key={index}
                     onClick={handleClose}
                 >
                     {option}

@@ -251,9 +251,8 @@ const getStatesByProjectId = async (projectId) => {
     return new Promise((resolve, reject) => {
         pool.query('SELECT row_state from project_state where project_id = $1', [projectId], (err, result) => {
             if (!err) {
-                resolve(result.rows[0]);
+                resolve(result.rows);
             } else {
-                // console.log(result);
                 reject(new Error('Error while getting project states'));
             }
         });

@@ -25,7 +25,7 @@ async function addStateController(req, res) {
     if (result) {
         res.json(result);
     } else {
-        res.status(500).json({ error: 'Error while getting states from db' });
+        res.status(500).json({ error: 'Error while adding state to taskboard' });
     }
 }
 

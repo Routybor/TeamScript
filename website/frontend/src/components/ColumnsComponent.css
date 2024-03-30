@@ -1,6 +1,6 @@
 .column {
-    width: 20vw;
-    height: 150vh;
+    min-width: 20vw;
+    max-width: 25vw;
     margin-bottom: 10px;
     margin-right: 10px;
 

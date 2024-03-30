@@ -27,7 +27,7 @@ const CustomInputComponent = (props) => {
         handleChange,
         type,
         defaultValue,
-        bigInput,
+        bigInput
     } = props;
 
     const labelClasses = classNames({
@@ -83,6 +83,7 @@ const CustomInputComponent = (props) => {
                     {...inputProps}
                     type={type}
                     defaultValue={defaultValue}
+                    bigInput={bigInput}
 
                 />
             </FormControl>
@@ -99,7 +100,7 @@ CustomInputComponent.propTypes = {
     inputRootCustomClasses: PropTypes.string,
     error: PropTypes.bool,
     success: PropTypes.bool,
-    white: PropTypes.bool
+    white: PropTypes.bool,
 };
 
 export default CustomInputComponent;

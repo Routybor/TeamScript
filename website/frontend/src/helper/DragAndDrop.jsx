@@ -52,28 +52,56 @@ const DragAndDrop = (tasks, setTasks) => {
         }
 
         let curEl = evt.target;
-        const ans = isCard(curEl);
-        const fl = ans[0];
-        const card = ans[1];
-        if (!fl) {
+        let flCard = false;
+        let flColumn = false;
+        const ans = isCardOrColumn(curEl);
+        flCard = ans[0];
+        flColumn = ans[1];
+        const elem = ans[2];
+
+        if (!flCard && !flColumn) {
             return;
         }
         // if (card === currentElementRef.current) {
         //     return;
         // }
-        currentElementRef.current = card;
-        setCurrentElement(card);
-        console.log(currentElementRef.current);
-        const isMoveable = activeElement !== currentElementRef.current;
+        if (flCard) {
+            console.log("card");
+            currentElementRef.current = elem;
+            setCurrentElement(elem);
+            // console.log(currentElementRef.current);
+            const isMoveable = activeElement !== currentElementRef.current;
 
-        if (!isMoveable) {
-            return;
+            if (!isMoveable) {
+                return;
+            }
+
+            const crossedCeneter = crossedCenterFunc(evt.clientY, activeElement);
+            // console.log(crossedCeneter);
+            if (crossedCeneter) {
+                let isEnd = defineElement(evt.clientY, activeElement);
+                changeCardPlace(activeElement, isEnd);
+            }
         }
-        const crossedCeneter = crossedCenterFunc(evt.clientY, activeElement);
-        console.log(crossedCeneter);
-        if (crossedCeneter) {
-            let isEnd = defineElement(evt.clientY, activeElement);
-            changeCardPlace(activeElement, isEnd);
+        if (flColumn) {
+            console.log("column");
+            currentElementRef.current = elem;
+            setCurrentElement(elem);
+            // console.log(currentElementRef.current);
+            const isMoveable = activeElement !== currentElementRef.current;
+
+            if (!isMoveable) {
+                return;
+            }
+
+            const newState = currentElementRef.current.childNodes[0].childNodes[0].childNodes[0].innerText;
+            console.log(activeElement);
+            const activeElementId = activeElement.getAttribute('id');
+            console.log(activeElementId);
+            let activeTaskElem = tasks.filter(task => task.id == activeElementId)[0];
+            console.log(activeTaskElem);
+            activeTaskElem.curstate = newState;
+            console.log(tasks);
         }
 
     }
@@ -89,36 +117,37 @@ const DragAndDrop = (tasks, setTasks) => {
         tasksListElement.addEventListener(`dragover`, throttle(handleDragOver, 100));
     }
 
-    const isCard = (curEl) => {
-        let ans = true;
+    const isCardOrColumn = (curEl) => {
+        let isCard = true;
+        let isColumn = true;
         let k = 0;
         let tmpElement = curEl;
         while (true) {
-            if (tmpElement.classList.contains('card') || k > 10) {
+            if (tmpElement.classList.contains('card') || tmpElement.classList.contains('column') || k > 10) {
                 break;
             }
             tmpElement = tmpElement.parentNode;
             k++;
         }
         if (!(tmpElement.classList.contains('card'))) {
-            ans = false;
+            isCard = false;
         }
-
-        return [ans, tmpElement];
-
+        if (!(tmpElement.classList.contains('column'))) {
+            isColumn = false;
+        }
+        return [isCard, isColumn, tmpElement];
     }
 
     const defineElement = (cursorPosition, activeElement) => {
-
         let nextElement;
         let isEnd = !currentElementRef.current.parentNode.nextElementSibling;
         if (isEnd || currentElementRef.current.parentNode.nextElementSibling.childNodes[0] === activeElement) {
             nextElement = currentElementRef.current;
-            console.log("1");
+            // console.log("1");
         }
         else {
             nextElement = currentElementRef.current.parentNode.nextElementSibling.childNodes[0];
-            console.log("2");
+            // console.log("2");
         }
         currentElementRef.current = nextElement;
         setCurrentElement(nextElement);
@@ -130,12 +159,6 @@ const DragAndDrop = (tasks, setTasks) => {
         const currentElementCoord = currentElementRef.current.getBoundingClientRect();
         const activeElementCoord = activeElement.getBoundingClientRect();
         const currentElementCenter = currentElementCoord.y + currentElementCoord.height / 2;
-        console.log(activeElement);
-        console.log(activeElementCoord.y);
-        console.log(currentElementRef.current);
-        console.log(currentElementCoord.y);
-        console.log(cursorPosition);
-        console.log(currentElementCenter);
 
 
         if (activeElementCoord.y < currentElementCoord.y && cursorPosition >= currentElementCenter) {
@@ -148,8 +171,9 @@ const DragAndDrop = (tasks, setTasks) => {
     }
 
     const changeCardPlace = (activeElement, isEnd) => {
-        console.log("change place");
-        const activeElementId = activeElement.querySelector('.input').getElementsByTagName('input')[0].id;
+        // console.log("change place");
+        // const activeElementId = activeElement.querySelector('.input').getElementsByTagName('input')[0].id;
+        const activeElementId = activeElement.getAttribute('id');
         let activeTaskElem = tasks.filter(task => task.id == activeElementId)[0];
         let taskCopy = [...tasks];
         taskCopy = taskCopy.filter(task => task.id != activeElementId);
@@ -158,7 +182,7 @@ const DragAndDrop = (tasks, setTasks) => {
             taskCopy.push(activeTaskElem);
             setTasks(taskCopy);
 
-            console.log(tasks);
+            // console.log(tasks);
 
             return;
         }
@@ -170,7 +194,7 @@ const DragAndDrop = (tasks, setTasks) => {
         currentTaskElemInd == 0 ? taskCopy.splice(0, 0, activeTaskElem) : taskCopy.splice(currentTaskElemInd, 0, activeTaskElem);
 
         setTasks(taskCopy);
-        console.log(tasks);
+        // console.log(tasks);
         setMoved(true);
 
     }

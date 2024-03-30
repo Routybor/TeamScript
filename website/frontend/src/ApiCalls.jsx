@@ -125,6 +125,24 @@ const stateAPI = {
             throw error;
         }
     },
+
+    addStatesDB: async (userToken, projectToken, stateName) => {
+        try {
+            const response = await fetch(`${config.host}/row/addStates`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': userToken
+                },
+                body: JSON.stringify({ project_id: projectToken, state: stateName }),
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error getting states:', error);
+            throw error;
+        }
+    },
 }
 
 
