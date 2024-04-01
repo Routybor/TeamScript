@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 
 
-const DragAndDrop = (tasks, setTasks) => {
+const DragAndDrop = (tasks, setTasks, isLoaded, setIsLoaded, changeStateFunc) => {
     const [currentElement, setCurrentElement] = useState();
     const [isDragging, setIsDragging] = useState(false);
     const [moved, setMoved] = useState(false);
@@ -98,9 +98,11 @@ const DragAndDrop = (tasks, setTasks) => {
             console.log(activeElement);
             const activeElementId = activeElement.getAttribute('id');
             console.log(activeElementId);
-            let activeTaskElem = tasks.filter(task => task.id == activeElementId)[0];
-            console.log(activeTaskElem);
-            activeTaskElem.curstate = newState;
+            // let activeTaskElem = tasks.filter(task => task.id == activeElementId)[0];
+            // console.log(activeTaskElem);
+            // activeTaskElem.curstate = newState;
+            // setTasks(tasks);
+            changeStateFunc(activeElementId, newState);
             console.log(tasks);
         }
 
@@ -114,7 +116,7 @@ const DragAndDrop = (tasks, setTasks) => {
 
         tasksListElement.addEventListener(`dragstart`, handleDragStart);
         tasksListElement.addEventListener(`dragend`, handleDragStop);
-        tasksListElement.addEventListener(`dragover`, throttle(handleDragOver, 100));
+        tasksListElement.addEventListener(`dragover`, throttle(handleDragOver, 300));
     }
 
     const isCardOrColumn = (curEl) => {
@@ -194,7 +196,6 @@ const DragAndDrop = (tasks, setTasks) => {
         currentTaskElemInd == 0 ? taskCopy.splice(0, 0, activeTaskElem) : taskCopy.splice(currentTaskElemInd, 0, activeTaskElem);
 
         setTasks(taskCopy);
-        // console.log(tasks);
         setMoved(true);
 
     }

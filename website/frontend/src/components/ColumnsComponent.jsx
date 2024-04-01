@@ -70,7 +70,6 @@ const ColumnsComponent = () => {
         })();
     }, [isLoaded]);
 
-    DragAndDrop(tasks, setTasks);
 
     useEffect(() => {
         (async () => {
@@ -112,7 +111,6 @@ const ColumnsComponent = () => {
         const curTask = tasks.filter(task => task.id == taskId)[0];
         taskAPI.updateTaskDB(curTask, newState, projectToken);
         setIsLoaded(false);
-
     }
 
     const deleteTask = (taskId) => {
@@ -132,8 +130,10 @@ const ColumnsComponent = () => {
         setAnchorEl(null);
 
     };
+    
     const open = Boolean(anchorEl);
 
+    DragAndDrop(tasks, setTasks, isLoaded, setIsLoaded, changeState);
 
     const customList = (title, items) => (
 
