@@ -74,12 +74,10 @@ const ColumnsComponent = () => {
     useEffect(() => {
         (async () => {
             const recStates = await receiveStates().then((val) => val);
-            console.log("effect");
             let recStatesNames = [];
             recStates.forEach((element) => recStatesNames.push(element.row_state));
             setStates(recStatesNames);
             setIsLoaded(true);
-            console.log(states);
             config.socket.on('updateStates', (data) => {
                 receiveStates();
             });
@@ -102,7 +100,6 @@ const ColumnsComponent = () => {
     }
 
     const newTask = (state) => {
-        console.log(states);
         taskAPI.createTaskDB("Default", state, projectToken, userToken);
         setIsLoaded(false);
     }
@@ -130,7 +127,7 @@ const ColumnsComponent = () => {
         setAnchorEl(null);
 
     };
-    
+
     const open = Boolean(anchorEl);
 
     DragAndDrop(tasks, setTasks, isLoaded, setIsLoaded, changeState);

@@ -62,9 +62,9 @@ const DragAndDrop = (tasks, setTasks, isLoaded, setIsLoaded, changeStateFunc) =>
         if (!flCard && !flColumn) {
             return;
         }
-        // if (card === currentElementRef.current) {
-        //     return;
-        // }
+        if (elem === currentElementRef.current) {
+            return;
+        }
         if (flCard) {
             console.log("card");
             currentElementRef.current = elem;
@@ -95,15 +95,12 @@ const DragAndDrop = (tasks, setTasks, isLoaded, setIsLoaded, changeStateFunc) =>
             }
 
             const newState = currentElementRef.current.childNodes[0].childNodes[0].childNodes[0].innerText;
-            console.log(activeElement);
             const activeElementId = activeElement.getAttribute('id');
-            console.log(activeElementId);
             // let activeTaskElem = tasks.filter(task => task.id == activeElementId)[0];
             // console.log(activeTaskElem);
             // activeTaskElem.curstate = newState;
             // setTasks(tasks);
             changeStateFunc(activeElementId, newState);
-            console.log(tasks);
         }
 
     }
