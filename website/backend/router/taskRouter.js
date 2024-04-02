@@ -39,11 +39,11 @@ async function setTaskStateController(req, res) {
     const newState = req.body.newState;
     const projectId = req.body.projectToken;
     const result = await setTaskStateHandler(taskId, newState, projectId);
-    console.log(result);
+    // console.log(result);
     if (result) {
         res.json(result);
     } else {
-        res.status(500).json({ error: 'Error while getting tasks from the database' });
+        res.status(500).json({ error: 'Error while changing state of task' });
     }
 }
 
@@ -51,11 +51,10 @@ async function deleteTaskController(req, res) {
     const curToken = req.headers.token;
     const taskId = req.body.taskID;
     const projectId = req.body.projectToken;
-    console.log(taskId);
-    console.log(projectId);
+    // console.log(taskId);
+    // console.log(projectId);
     const result = await deleteTaskHandler(taskId, projectId);
-    console.log(result);
-
+    // console.log(result);
     if (result) {
         res.json(result);
     } else {
