@@ -29,8 +29,17 @@ async function createTaskHandler(newTaskName, newState, projectId) {
 
 async function setTaskStateHandler(taskId, newState, projectId) {
     try {
+        // Получаем список всех состояний для проекта
+        const allStates = await getStatesByProjectId(projectId);
+        // Проверяем, существует ли newState в полученных состояниях
+        const newStateExists = allStates.some(stateObj => stateObj.row_state === newState);
+        if (!newStateExists) {
+            console.log(`State '${newState}' does not exist.`);
+            return null;
+        }
+        // Если состояние существует, меняем его
         const changedTask = await setTaskStateDB(taskId, newState, projectId);
-        sendUpdateToClients();
+        // sendUpdateToClients();
         return changedTask;
     } catch (error) {
         console.error(error);
@@ -72,7 +81,7 @@ async function addStateHandler(projectId, stateName) {
         //     return null;
         // }
         const res = await addStatesByProjectId(projectId, stateName);
-        console.log(res);
+        // console.log(res);
         return res;
     } catch (error) {
         console.error(error);

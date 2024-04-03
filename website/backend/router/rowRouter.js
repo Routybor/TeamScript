@@ -9,7 +9,6 @@ router.post('/addStates', addStateController);
 async function getStateController(req, res) {
     const projectId = req.body.project_id;
     const result = await getStateHandler(projectId);
-    console.log(result);
     if (result) {
         res.json(result);
     } else {
@@ -21,7 +20,6 @@ async function addStateController(req, res) {
     const projectId = req.body.project_id;
     const stateName = req.body.state;
     const result = await addStateHandler(projectId, stateName);
-    console.log(result);
     if (result) {
         res.json(result);
     } else {
