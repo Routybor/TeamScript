@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import Card from '@mui/material/Card';
@@ -20,7 +20,20 @@ import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutli
 import RemoveIcon from '@mui/icons-material/Remove';
 import './ColumnsComponent.css';
 
+function stringToHash(string) {
 
+    let hash = 0;
+
+    if (string.length == 0) return hash;
+
+    for (let i = 0; i < string.length; i++) {
+        const char = string.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+    }
+
+    return hash;
+}
 
 const ColumnsComponent = () => {
     const projectToken = localStorage.getItem('project');
@@ -56,20 +69,18 @@ const ColumnsComponent = () => {
     useEffect(() => {
         (async () => {
             const recTasks = await receiveTasks().then((val) => val);
-            // console.log("effect");
             // console.log(recTasks);
             setTasks(recTasks);
             setIsLoaded(true);
-            config.socket.on('updateTask', (data) => {
-                receiveTasks();
-            });
-            return () => {
-                config.socket.off('updateTask');
-            };
+            // config.socket.on('updateTask', (data) => {
+            //     receiveTasks();
+            // });
+            // return () => {
+            //     config.socket.off('updateTask');
+            // };
 
         })();
     }, [isLoaded]);
-
 
     useEffect(() => {
         (async () => {
@@ -78,16 +89,17 @@ const ColumnsComponent = () => {
             recStates.forEach((element) => recStatesNames.push(element.row_state));
             setStates(recStatesNames);
             setIsLoaded(true);
-            config.socket.on('updateStates', (data) => {
-                receiveStates();
-            });
-            return () => {
-                config.socket.off('updateStates');
-            };
+            // config.socket.on('updateStates', (data) => {
+            //     receiveStates();
+            // });
+            // return () => {
+            //     config.socket.off('updateStates');
+            // };
 
 
         })();
     }, [isLoaded]);
+
 
     const checkStateName = (statename) => {
         states.indexOf(statename) == -1 ? addNewState(statename) : setErrorName(true);
@@ -130,11 +142,15 @@ const ColumnsComponent = () => {
 
     const open = Boolean(anchorEl);
 
-    DragAndDrop(tasks, setTasks, isLoaded, setIsLoaded, changeState);
+    const tasksDD = DragAndDrop(tasks);
+    console.log("!!!!!!!!!");
+    console.log(tasksDD);
 
-    const customList = (title, items) => (
 
-        <Card className='column' >
+    const customList = (key, title, items) => (
+
+        <Card className='column'
+            key={key}>
             <CardHeader
                 title={title}
                 action={
@@ -229,7 +245,7 @@ const ColumnsComponent = () => {
                     direction="row"
                 > {
                         states.map(
-                            (name) => customList(name, tasks.filter((task) => task.curstate == name))
+                            (name) => customList(stringToHash(name), name, tasks.filter((task) => task.curstate == name))
                         )
                     }
                 </Grid>
@@ -240,4 +256,4 @@ const ColumnsComponent = () => {
 
 }
 
-export default ColumnsComponent;
+export default memo(ColumnsComponent);
