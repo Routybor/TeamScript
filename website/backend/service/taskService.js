@@ -1,5 +1,5 @@
 const { sendUpdateToClients } = require("../socket");
-const { getTasksDB, createTaskDB, setTaskStateDB, deleteTaskDB, getUserIdByTokenDB, checkUserPermissionDB, getStatesByProjectId, addStatesByProjectId} = require('../database/dbQueries');
+const { getTasksDB, createTaskDB, setTaskStateDB, deleteTaskDB, getUserIdByTokenDB, checkUserPermissionDB, getStatesByProjectId, addStatesByProjectId, setTaskPriorityDB} = require('../database/dbQueries');
 
 async function getTasksHandler(projectId, token) {
     try {
@@ -16,9 +16,9 @@ async function getTasksHandler(projectId, token) {
     }
 }
 
-async function createTaskHandler(newTaskName, newState, projectId) {
+async function createTaskHandler(newTaskName, newState, priority, projectId) {
     try {
-        const createdTask = await createTaskDB(newTaskName, newState, projectId);
+        const createdTask = await createTaskDB(newTaskName, newState, priority, projectId);
         sendUpdateToClients();
         return createdTask;
     } catch (error) {
@@ -104,6 +104,17 @@ async function deleteStateHandler(projectId, stateName) {
     }
 }
 
+async function setTaskPriorityHandler(taskId, priority, projectId) {
+    try {
+        const changedTask = await setTaskPriorityDB(taskId, priority, projectId);
+        // sendUpdateToClients();
+        return changedTask;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
 module.exports = {
     getTasksHandler,
     createTaskHandler,
@@ -112,4 +123,5 @@ module.exports = {
     getStateHandler,
     addStateHandler,
     deleteStateHandler,
+    setTaskPriorityHandler,
 };

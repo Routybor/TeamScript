@@ -38,9 +38,9 @@ const getTasksDB = async (project_id) => {
     });
 };
 
-const createTaskDB = async (newTaskName, newState, project_id) => {
+const createTaskDB = async (newTaskName, newState, priority, project_id) => {
     return new Promise((resolve, reject) => {
-        pool.query(`INSERT INTO project${project_id} (taskname, curstate) VALUES ($1, $2) RETURNING *`, [newTaskName, newState], (err, result) => {
+        pool.query(`INSERT INTO project${project_id} (taskname, curstate, priority) VALUES ($1, $2, $3) RETURNING *`, [newTaskName, newState, priority], (err, result) => {
             if (!err) {
                 resolve(result.rows[0]);
             } else {
@@ -193,7 +193,8 @@ const createTableProjectDB = async (projectName) => {
                 taskname  VARCHAR(40) not null,
                 curstate VARCHAR(40) not null,
                 description VARCHAR(255),
-                person     int
+                person     int,
+                priority int
             );
         `;
         pool.query(query, (err, result) => {
@@ -271,6 +272,18 @@ const addStatesByProjectId = async (projectId, stateName) => {
     });
 };
 
+const setTaskPriorityDB = async (taskId, priority, project_id) => {
+    return new Promise((resolve, reject) => {
+        pool.query(`UPDATE project${project_id} SET priority = $1 WHERE id = $2 RETURNING *`, [priority, taskId], (err, result) => {
+            if (!err) {
+                resolve(result.rows[0]);
+            } else {
+                reject(new Error('Error while updating task priority in the database'));
+            }
+        });
+    });
+};
+
 
 module.exports = {
     getTextDB,
@@ -293,4 +306,5 @@ module.exports = {
     checkUserPermissionDB,
     getStatesByProjectId,
     addStatesByProjectId,
+    setTaskPriorityDB,
 };

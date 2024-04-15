@@ -1,11 +1,12 @@
 const express = require('express')
 const router = express.Router()
-const { getTasksHandler, createTaskHandler, setTaskStateHandler, deleteTaskHandler, getStateHandler, addStateHandler} = require('../service/taskService')
+const { getTasksHandler, createTaskHandler, setTaskStateHandler, deleteTaskHandler, getStateHandler, addStateHandler, setTaskPriorityHandler} = require('../service/taskService')
 
 router.post('/getTasks', getTasksController);
 router.post('/createTask', createTaskController);
 router.post('/changeState', setTaskStateController);
 router.post('/deleteTask', deleteTaskController);
+router.post('/changePriority', setTaskPriorityController);
 
 async function getTasksController(req, res) {
     const curToken = req.headers.token;
@@ -25,7 +26,8 @@ async function createTaskController(req, res) {
     const newTaskName = req.body.taskName;
     const newState = req.body.newState;
     const projectId = req.body.projectToken;
-    const result = await createTaskHandler(newTaskName, newState, projectId);
+    const priority = req.body.priority;
+    const result = await createTaskHandler(newTaskName, newState, priority, projectId);
     if (result) {
         res.json(result);
     } else {
@@ -59,6 +61,20 @@ async function deleteTaskController(req, res) {
         res.json(result);
     } else {
         res.status(500).json({ error: 'Error while getting tasks from the database' });
+    }
+}
+
+async function setTaskPriorityController(req, res) {
+    const curToken = req.headers.token;
+    const taskId = req.body.taskID;
+    const priority = req.body.priority;
+    const projectId = req.body.projectToken;
+    const result = await setTaskPriorityHandler(taskId, priority, projectId);
+    console.log(result);
+    if (result) {
+        res.json(result);
+    } else {
+        res.status(500).json({ error: 'Error while changing priority of task' });
     }
 }
 
