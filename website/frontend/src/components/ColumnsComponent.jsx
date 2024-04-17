@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, memo, useMemo } from 'react';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import Card from '@mui/material/Card';
@@ -35,19 +35,24 @@ function stringToHash(string) {
     return hash;
 }
 
+function tasksEqual(prevTasks, nextTasks) {
+    const res = prevTasks.tasks === nextTasks.tasks && prevTasks.states === nextTasks.states;
+    console.log(res);
+    return res;
+}
+
 const ColumnsComponent = () => {
     const projectToken = localStorage.getItem('project');
     const [tasks, setTasks] = useState([]);
     const [states, setStates] = useState([]);
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [updateTasks, setUpdateTasks] = useState();
+    const [updateStates, setUpdateStates] = useState();
     const userToken = localStorage.getItem('token');
     const [activePopup, setActivePopup] = useState(false);
     const [activePopup1, setActivePopup1] = useState(false);
     const [errorName, setErrorName] = useState(false);
     const [stateName, setStateName] = useState("");
     const [anchorEl, setAnchorEl] = React.useState(null);
-
-
 
     const receiveTasks = async () => {
         try {
@@ -66,39 +71,46 @@ const ColumnsComponent = () => {
     };
 
 
+
     useEffect(() => {
         (async () => {
+            if (updateTasks) { return; }
             const recTasks = await receiveTasks().then((val) => val);
-            // console.log(recTasks);
             setTasks(recTasks);
-            setIsLoaded(true);
-            // config.socket.on('updateTask', (data) => {
-            //     receiveTasks();
-            // });
-            // return () => {
-            //     config.socket.off('updateTask');
-            // };
+            console.log(tasks);
+            setUpdateTasks(true);
+            console.log("eff1");
+
+            config.socket.on('updateTask', (data) => {
+                receiveTasks();
+            });
+            return () => {
+                config.socket.off('updateTask');
+            };
 
         })();
-    }, [isLoaded]);
+    }, [updateTasks]);
 
     useEffect(() => {
         (async () => {
+            if (updateStates) { return; }
             const recStates = await receiveStates().then((val) => val);
             let recStatesNames = [];
             recStates.forEach((element) => recStatesNames.push(element.row_state));
             setStates(recStatesNames);
-            setIsLoaded(true);
-            // config.socket.on('updateStates', (data) => {
-            //     receiveStates();
-            // });
-            // return () => {
-            //     config.socket.off('updateStates');
-            // };
+            setUpdateStates(true);
+            console.log("eff2");
+
+            config.socket.on('updateStates', (data) => {
+                receiveStates();
+            });
+            return () => {
+                config.socket.off('updateStates');
+            };
 
 
         })();
-    }, [isLoaded]);
+    }, [updateStates]);
 
 
     const checkStateName = (statename) => {
@@ -108,23 +120,28 @@ const ColumnsComponent = () => {
     const addNewState = (statename) => {
         setErrorName(false);
         stateAPI.addStatesDB(userToken, projectToken, statename);
-        setIsLoaded(false);
+        setUpdateStates(false);
     }
 
     const newTask = (state) => {
-        taskAPI.createTaskDB("Default", state, projectToken, userToken);
-        setIsLoaded(false);
+        taskAPI.createTaskDB("Default", state, 1, projectToken, userToken);
+        setUpdateTasks(false);
     }
 
     const changeState = async (taskId, newState) => {
         const curTask = tasks.filter(task => task.id == taskId)[0];
         taskAPI.updateTaskDB(curTask, newState, projectToken);
-        setIsLoaded(false);
+        setUpdateTasks(false);
     }
 
     const deleteTask = (taskId) => {
         taskAPI.deleteTaskDB(taskId, projectToken);
-        setIsLoaded(false);
+        setUpdateTasks(false);
+    }
+
+    const changePriorityTask = (taskId, priority, projectToken) => {
+        taskAPI.changePriorityTaskDB(taskId, priority, projectToken, userToken);
+        // setUpdateTasks(false);
     }
 
     const handleStateName = (event) => {
@@ -142,9 +159,9 @@ const ColumnsComponent = () => {
 
     const open = Boolean(anchorEl);
 
-    const tasksDD = DragAndDrop(tasks);
+    DragAndDrop(tasks, changeState, changePriorityTask, setUpdateTasks);
+
     console.log("!!!!!!!!!");
-    console.log(tasksDD);
 
 
     const customList = (key, title, items) => (
@@ -222,7 +239,7 @@ const ColumnsComponent = () => {
     );
 
     return (
-        <Grid container spacing={1} direction="column" justifyContent="center" alignItems="center" >
+        <Grid container spacing={1} direction="column" justifyContent="center" alignItems="center" className='main'>
             <IconButton aria-label="settings" onClick={activePopup ? undefined : () => setActivePopup(true)}>
                 <AddIcon></AddIcon>
                 Add new state
@@ -245,7 +262,7 @@ const ColumnsComponent = () => {
                     direction="row"
                 > {
                         states.map(
-                            (name) => customList(stringToHash(name), name, tasks.filter((task) => task.curstate == name))
+                            (name) => customList(stringToHash(name), name, tasks.filter((task) => task.curstate == name).sort((a, b) => a.priority > b.priority ? 1 : -1))
                         )
                     }
                 </Grid>
@@ -254,6 +271,6 @@ const ColumnsComponent = () => {
         </Grid>
     );
 
-}
+};
 
-export default memo(ColumnsComponent);
+export default ColumnsComponent;
