@@ -38,28 +38,25 @@ const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksF
 
     const handleDragStop = (evt) => {
         if (s1) {
-            console.log("s1");
+            // console.log("s1");
             changeCardPlace(isEnd);
+            setUpdateTasksFunc(false);
         }
         if (s2) {
-            console.log("s2");
+            // console.log("s2");
             const currentState = currentColumn.childNodes[0].childNodes[0].childNodes[0].innerText;
             const activeElementId = activeCard.getAttribute('id');
+            changePriorityFunc(activeElementId, 1, projectToken);
             changeStateFunc(activeElementId, currentState);
-            changePriorityFunc(activeElementId, 1000, projectToken);
         }
-
         evt.target.classList.remove(`selected`);
     }
 
-
     const handleDragOver = (evt) => {
         evt.preventDefault();
-
         const activeElement = tasksListElement.querySelector(`.selected`);
         activeCardRef.current = activeElement;
         setActiveCard(activeElement);
-        // console.log(activeCard);
         s1 = false;
         s2 = false;
         isEnd = false;
@@ -88,22 +85,20 @@ const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksF
 
         currentColumnRef.current = column;
         setCurrentColumn(column);
-        // console.log(column);
 
         if (!(cardsInColumn(column) && card === undefined)) {
-            console.log("1");
+            // console.log("1");
             currentCardRef.current = card;
             setCurrentCard(card);
         }
         else {
             console.log("2");
-            console.log(lastCardInColumn(column));
+            // console.log(lastCardInColumn(column));
             const lastCard = defineElemByName(lastCardInColumn(column), "card")[1];
             console.log(lastCard);
             currentCardRef.current = lastCard;
             setCurrentCard(lastCard);
         }
-        // console.log(currentCardRef.current);
 
         if (activeState == currentState) {
             const isMoveable = activeCard !== currentCardRef.current;
@@ -120,13 +115,10 @@ const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksF
 
         }
         else {
-            if (!flCard && flColumn) {
-                console.log("123");
-                s2 = true;
-            }
-            else if (flCard && flColumn) {
-                console.log("456");
-            }
+            // console.log("123");
+            s2 = true;
+            // console.log(currentCard);
+            // console.log(currentColumn);
         }
 
 
@@ -184,19 +176,12 @@ const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksF
     }
 
     const cardsInColumn = (column) => {
-        try {
-            const childsCards = column.childNodes;
-            return true;
-        }
-        catch {
-            return false;
-        }
+        const childsCards = column.childNodes[2].childNodes;
+        return childsCards.length == 0 ? false : true;
     }
 
     const lastCardInColumn = (column) => {
         const tasksInColumn = column.childNodes[column.childNodes.length - 1].childNodes;
-        // console.log(tasksInColumn);
-        // console.log(tasksInColumn[tasksInColumn.length - 1]);
         return tasksInColumn[tasksInColumn.length - 1].childNodes[0];
     }
 
@@ -205,19 +190,11 @@ const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksF
         let activeTaskElem = tasks.filter(task => task.id == activeElementId)[0];
         let taskCopy = [...tasks];
         taskCopy = taskCopy.filter(task => task.id != activeElementId);
-        console.log("taskCopy");
-        console.log(taskCopy);
+        // console.log("taskCopy");
+        // console.log(taskCopy);
         if (isEnd) {
             taskCopy.push(activeTaskElem);
             changePriorityFunc(activeElementId, taskCopy.length, projectToken);
-            setUpdateTasksFunc(false);
-            // setTasks(taskCopy);
-            // cardsRef.current = taskCopy;
-            // setCards(taskCopy);
-            // console.log("tasks");
-            // console.log(tasks);
-            // console.log("cards");
-            // console.log(cardsRef.current);
             return;
         }
 
@@ -229,10 +206,6 @@ const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksF
         for (let i = 0; i < taskCopy.length; i++) {
             changePriorityFunc(taskCopy[i].id, i + 1, projectToken);
         }
-        setUpdateTasksFunc(false);
-        // setTasks(taskCopy);
-        // cardsRef.current = taskCopy;
-        // setCards(taskCopy);
 
     }
 
