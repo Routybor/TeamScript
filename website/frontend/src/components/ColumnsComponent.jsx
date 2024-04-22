@@ -75,8 +75,9 @@ const ColumnsComponent = () => {
     useEffect(() => {
         (async () => {
             if (updateTasks) { return; }
+
             const recTasks = await receiveTasks().then((val) => val);
-            setTasks(recTasks);
+            setTasks(recTasks.sort((a, b) => a.priority > b.priority ? 1 : -1));
             console.log(tasks);
             setUpdateTasks(true);
             console.log("eff1");
@@ -129,6 +130,7 @@ const ColumnsComponent = () => {
     }
 
     const changeState = async (taskId, newState) => {
+        console.log("change state");
         const curTask = tasks.filter(task => task.id == taskId)[0];
         taskAPI.updateTaskDB(curTask, newState, projectToken);
         setUpdateTasks(false);
@@ -159,7 +161,7 @@ const ColumnsComponent = () => {
 
     const open = Boolean(anchorEl);
 
-    DragAndDrop(tasks, changeState, changePriorityTask, setUpdateTasks);
+    if (updateTasks) { DragAndDrop(tasks, changeState, changePriorityTask, setUpdateTasks); }
 
     console.log("!!!!!!!!!");
 
