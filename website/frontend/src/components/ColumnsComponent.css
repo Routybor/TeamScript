@@ -1,8 +1,15 @@
+.main {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
 .column {
     min-width: 20vw;
     max-width: 25vw;
     margin-bottom: 10px;
     margin-right: 10px;
+    display: inline-block;
 
 }
 

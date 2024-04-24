@@ -37,7 +37,7 @@ const textAPI = {
 const taskAPI = {
     getTasksDB: async (userToken, projectToken) => {
         try {
-            const response = await fetch(`${config.host}/taskBoard/getTasks`, {
+            const response = await fetch(`${config.host}/taskboard/getTasks`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ const taskAPI = {
         }
     },
 
-    createTaskDB: async (name, newstate, projectToken, userToken) => {
+    createTaskDB: async (name, newstate, priority, projectToken, userToken) => {
         try {
             const response = await fetch(`${config.host}/taskBoard/createTask`, {
                 method: 'POST',
@@ -79,7 +79,7 @@ const taskAPI = {
                     'Token': userToken
 
                 },
-                body: JSON.stringify({ taskName: name, newState: newstate, projectToken: projectToken }),
+                body: JSON.stringify({ taskName: name, newState: newstate, priority: priority, projectToken: projectToken }),
             });
             const data = await response.json();
         } catch (error) {
@@ -105,6 +105,24 @@ const taskAPI = {
             throw error;
         }
     },
+
+    changePriorityTaskDB: async (taskId, priority, projectToken, userToken) => {
+        try {
+            const response = await fetch(`${config.host}/taskBoard/changePriority`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': userToken
+                },
+                body: JSON.stringify({ taskID: taskId, priority: priority, projectToken: projectToken }),
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error deleting task:', error);
+            throw error;
+        }
+    }
 
 };
 
@@ -219,7 +237,26 @@ const projAPI = {
             console.error('Error deleting project:', error);
             throw error;
         }
-    }
+    },
+
+    invitePers: async (userToken, projId, persToken) => {
+        try {
+            const response = await fetch(`${config.host}/project/invitePerson`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': userToken
+                },
+                body: JSON.stringify({ ProjectId: projId, newToken: persToken }),
+            });
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error inviting person:', error);
+            throw error;
+        }
+    },
 }
 
 export { textAPI, taskAPI, authAPI, projAPI, stateAPI };

@@ -52,7 +52,7 @@ const createUserProjects = (pool) => {
 const createProjectsTable = (pool) => {
     pool.query(`
         CREATE TABLE IF NOT EXISTS projects (
-            project_id  integer,
+            project_id  SERIAL PRIMARY KEY,
             project_name varchar(40),
             creator varchar(40),
             date date

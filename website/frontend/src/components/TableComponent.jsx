@@ -1,5 +1,5 @@
 import { Button } from '@material-ui/core';
-import React from 'react';
+import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 
 const TableComponent = (props) => {
@@ -25,7 +25,7 @@ const TableComponent = (props) => {
             </thead>
             <tbody>
                 {data.map(item => (
-                    <tr>
+                    <tr key={item.project_id}>
                         <td>{item.project_id}</td>
                         <td><Link to="./taskboard" onClick={() => handleLinkClick(item.project_id)}>{item.project_name}</Link></td>
                         <td><Button onClick={() => { deleteProj(item.project_id) }}>Delete</Button></td>
@@ -36,4 +36,4 @@ const TableComponent = (props) => {
     );
 };
 
-export default TableComponent;
+export default memo(TableComponent);

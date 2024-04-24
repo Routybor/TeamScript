@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import CardContent from '@mui/material/CardContent';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
@@ -175,4 +175,4 @@ const TaskCardComponent = (props) => {
     );
 }
 
-export default TaskCardComponent;
+export default memo(TaskCardComponent);

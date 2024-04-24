@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo, useMemo } from 'react';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import Card from '@mui/material/Card';
@@ -20,21 +20,39 @@ import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutli
 import RemoveIcon from '@mui/icons-material/Remove';
 import './ColumnsComponent.css';
 
+function stringToHash(string) {
 
+    let hash = 0;
+
+    if (string.length == 0) return hash;
+
+    for (let i = 0; i < string.length; i++) {
+        const char = string.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+    }
+
+    return hash;
+}
+
+function tasksEqual(prevTasks, nextTasks) {
+    const res = prevTasks.tasks === nextTasks.tasks && prevTasks.states === nextTasks.states;
+    console.log(res);
+    return res;
+}
 
 const ColumnsComponent = () => {
     const projectToken = localStorage.getItem('project');
     const [tasks, setTasks] = useState([]);
     const [states, setStates] = useState([]);
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [updateTasks, setUpdateTasks] = useState();
+    const [updateStates, setUpdateStates] = useState();
     const userToken = localStorage.getItem('token');
     const [activePopup, setActivePopup] = useState(false);
     const [activePopup1, setActivePopup1] = useState(false);
     const [errorName, setErrorName] = useState(false);
     const [stateName, setStateName] = useState("");
     const [anchorEl, setAnchorEl] = React.useState(null);
-
-
 
     const receiveTasks = async () => {
         try {
@@ -53,13 +71,17 @@ const ColumnsComponent = () => {
     };
 
 
+
     useEffect(() => {
         (async () => {
+            if (updateTasks) { return; }
+
             const recTasks = await receiveTasks().then((val) => val);
-            // console.log("effect");
-            // console.log(recTasks);
-            setTasks(recTasks);
-            setIsLoaded(true);
+            setTasks(recTasks.sort((a, b) => a.priority > b.priority ? 1 : -1));
+            console.log(tasks);
+            setUpdateTasks(true);
+            console.log("eff1");
+
             config.socket.on('updateTask', (data) => {
                 receiveTasks();
             });
@@ -68,19 +90,18 @@ const ColumnsComponent = () => {
             };
 
         })();
-    }, [isLoaded]);
-
-    DragAndDrop(tasks, setTasks);
+    }, [updateTasks]);
 
     useEffect(() => {
         (async () => {
+            if (updateStates) { return; }
             const recStates = await receiveStates().then((val) => val);
-            console.log("effect");
             let recStatesNames = [];
             recStates.forEach((element) => recStatesNames.push(element.row_state));
             setStates(recStatesNames);
-            setIsLoaded(true);
-            console.log(states);
+            setUpdateStates(true);
+            console.log("eff2");
+
             config.socket.on('updateStates', (data) => {
                 receiveStates();
             });
@@ -90,7 +111,8 @@ const ColumnsComponent = () => {
 
 
         })();
-    }, [isLoaded]);
+    }, [updateStates]);
+
 
     const checkStateName = (statename) => {
         states.indexOf(statename) == -1 ? addNewState(statename) : setErrorName(true);
@@ -99,25 +121,29 @@ const ColumnsComponent = () => {
     const addNewState = (statename) => {
         setErrorName(false);
         stateAPI.addStatesDB(userToken, projectToken, statename);
-        setIsLoaded(false);
+        setUpdateStates(false);
     }
 
     const newTask = (state) => {
-        console.log(states);
-        taskAPI.createTaskDB("Default", state, projectToken, userToken);
-        setIsLoaded(false);
+        taskAPI.createTaskDB("Default", state, 1, projectToken, userToken);
+        setUpdateTasks(false);
     }
 
     const changeState = async (taskId, newState) => {
+        console.log("change state");
         const curTask = tasks.filter(task => task.id == taskId)[0];
         taskAPI.updateTaskDB(curTask, newState, projectToken);
-        setIsLoaded(false);
-
+        setUpdateTasks(false);
     }
 
     const deleteTask = (taskId) => {
         taskAPI.deleteTaskDB(taskId, projectToken);
-        setIsLoaded(false);
+        setUpdateTasks(false);
+    }
+
+    const changePriorityTask = (taskId, priority, projectToken) => {
+        taskAPI.changePriorityTaskDB(taskId, priority, projectToken, userToken);
+        // setUpdateTasks(false);
     }
 
     const handleStateName = (event) => {
@@ -132,12 +158,18 @@ const ColumnsComponent = () => {
         setAnchorEl(null);
 
     };
+
     const open = Boolean(anchorEl);
 
+    if (updateTasks) { DragAndDrop(tasks, changeState, changePriorityTask, setUpdateTasks); }
 
-    const customList = (title, items) => (
+    console.log("!!!!!!!!!");
 
-        <Card className='column' >
+
+    const customList = (key, title, items) => (
+
+        <Card className='column'
+            key={key}>
             <CardHeader
                 title={title}
                 action={
@@ -209,7 +241,7 @@ const ColumnsComponent = () => {
     );
 
     return (
-        <Grid container spacing={1} direction="column" justifyContent="center" alignItems="center" >
+        <Grid container spacing={1} direction="column" justifyContent="center" alignItems="center" className='main'>
             <IconButton aria-label="settings" onClick={activePopup ? undefined : () => setActivePopup(true)}>
                 <AddIcon></AddIcon>
                 Add new state
@@ -232,7 +264,7 @@ const ColumnsComponent = () => {
                     direction="row"
                 > {
                         states.map(
-                            (name) => customList(name, tasks.filter((task) => task.curstate == name))
+                            (name) => customList(stringToHash(name), name, tasks.filter((task) => task.curstate == name).sort((a, b) => a.priority > b.priority ? 1 : -1))
                         )
                     }
                 </Grid>
@@ -241,6 +273,6 @@ const ColumnsComponent = () => {
         </Grid>
     );
 
-}
+};
 
 export default ColumnsComponent;
