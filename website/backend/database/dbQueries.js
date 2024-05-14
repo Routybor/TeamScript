@@ -352,6 +352,31 @@ const changeStateNameInDB = async (projectId, newStateName, oldStateName) => {
     }
 };
 
+const deleteStateFromDB = async (projectId, stateToDelete) => {
+    try {
+        // Удаляем состояние проекта из таблицы project_state
+        await pool.query('DELETE FROM project_state WHERE project_id = $1 AND row_state = $2', [projectId, stateToDelete]);
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+};
+
+const deleteTasksWithStateFromProjectTable = async (projectId, stateToDelete) => {
+    try {
+        // Формируем имя таблицы
+        const tableName = `project${projectId}`;
+        
+        // Удаляем строки с указанным состоянием из таблицы
+        await pool.query(`DELETE FROM ${tableName} WHERE curstate = $1`, [stateToDelete]);
+        
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+};
 
 
 module.exports = {
@@ -380,4 +405,6 @@ module.exports = {
     deleteProjectFromProjects,
     changeProjectNameInDB,
     changeStateNameInDB,
+    deleteStateFromDB,
+    deleteTasksWithStateFromProjectTable,
 };
