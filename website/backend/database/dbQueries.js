@@ -321,6 +321,17 @@ const deleteProjectFromProjects = async (projectId) => {
     }
 };
 
+const changeProjectNameInDB = async (projectId, newName) => {
+    try {
+        await pool.query('UPDATE projects SET project_name = $1 WHERE project_id = $2', [newName, projectId]);
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+};
+
+
 
 module.exports = {
     getTextDB,
@@ -346,4 +357,5 @@ module.exports = {
     setTaskPriorityDB,
     deleteProjectFromUserProjects,
     deleteProjectFromProjects,
+    changeProjectNameInDB,
 };

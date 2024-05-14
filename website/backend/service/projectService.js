@@ -8,6 +8,7 @@ const { getUsersProjectsDB,
     deleteProjectFromDB,
     deleteProjectFromUserProjects,
     deleteProjectFromProjects,
+    changeProjectNameInDB,
 } = require('../database/dbQueries');
 
 
@@ -71,9 +72,22 @@ const deleteProjectHandler = async (projectId) => {
     }
 };
 
+const changeProjectNameHandler = async (projectId, newName) => {
+    try {
+        // Выполняем запрос к базе данных для изменения имени проекта
+        const success = await changeProjectNameInDB(projectId, newName);
+        return success;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+};
+
+
 module.exports = {
     getProjectsHandler,
     createProjectHandler,
     invitePersonHandler,
-    deleteProjectHandler
+    deleteProjectHandler,
+    changeProjectNameHandler,
 };

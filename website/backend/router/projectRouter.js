@@ -1,11 +1,12 @@
 const express = require('express')
 const router = express.Router()
-const {getProjectsHandler, createProjectHandler, invitePersonHandler, deleteProjectHandler} = require('../service/projectService')
+const {getProjectsHandler, createProjectHandler, invitePersonHandler, deleteProjectHandler, changeProjectNameHandler} = require('../service/projectService')
 
 router.get('/getProjects', getProjectsController);
 router.post('/createProject', createProjectController);
 router.post('/invitePerson', invitePersonController);
 router.delete('/deleteProject', deleteProjectController);
+router.post('/changeName', changeNameController);
 
 async function getProjectsController(req, res) {
     const curToken = req.headers.token;
@@ -51,6 +52,18 @@ async function deleteProjectController(req, res) {
         res.json({ message: 'Project deleted successfully' });
     } else {
         res.status(500).json({ error: 'Something wrong while deleting the project' });
+    }
+}
+
+// обработчик для изменения имени проекта
+async function changeNameController(req, res) {
+    const projectId = req.body.projectId;
+    const newName = req.body.newName;
+    const success = await changeProjectNameHandler(projectId, newName);
+    if (success) {
+        res.json({ message: 'Project name changed successfully' });
+    } else {
+        res.status(500).json({ error: 'Something wrong while changing the project name' });
     }
 }
 
