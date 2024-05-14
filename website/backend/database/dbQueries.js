@@ -208,20 +208,37 @@ const createTableProjectDB = async (projectName) => {
 };
 
 
-// запрос на удаление новой таблицы для проекта
+// запрос на удаление таблицы для проекта
 // вопросы безопастни как и функции выше
 
-const deleteTableProjectDB = async (projectName) => {
+const deleteProjectFromDB = async (projectId) => {
     return new Promise((resolve, reject) => {
-        pool.query('drop TABLE $1', [projectName], (err, result) => {
-            if (!err) {
-                resolve(result.rows[0]);
-            } else {
-                reject(new Error('Error while deleting table'));
+        // Проверяем, существует ли таблица для данного проекта
+        pool.query(`SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'project${projectId}')`, (err, result) => {
+            if (err) {
+                reject(new Error('Error checking if table exists'));
+                return;
             }
+
+            const tableExists = result.rows[0].exists;
+
+            if (!tableExists) {
+                reject(new Error('Table for the project does not exist'));
+                return;
+            }
+
+            // Удаляем таблицу проекта
+            pool.query(`DROP TABLE project${projectId}`, (err, result) => {
+                if (!err) {
+                    resolve('Project deleted successfully');
+                } else {
+                    reject(new Error('Error while deleting table'));
+                }
+            });
         });
     });
 };
+
 
 const getUserIdByTokenDB = async (token) => {
     return new Promise((resolve, reject) => {
@@ -284,6 +301,26 @@ const setTaskPriorityDB = async (taskId, priority, project_id) => {
     });
 };
 
+const deleteProjectFromUserProjects = async (projectId) => {
+    try {
+        await pool.query('DELETE FROM user_projects WHERE project_id = $1', [projectId]);
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+};
+
+const deleteProjectFromProjects = async (projectId) => {
+    try {
+        await pool.query('DELETE FROM projects WHERE project_id = $1', [projectId]);
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+};
+
 
 module.exports = {
     getTextDB,
@@ -299,7 +336,7 @@ module.exports = {
     addRelationUserProjectDB,
     createNewProjectDB,
     createTableProjectDB,
-    deleteTableProjectDB,
+    deleteProjectFromDB,
     checkPasswordDB,
     checkTokenDB,
     getUserIdByTokenDB,
@@ -307,4 +344,6 @@ module.exports = {
     getStatesByProjectId,
     addStatesByProjectId,
     setTaskPriorityDB,
+    deleteProjectFromUserProjects,
+    deleteProjectFromProjects,
 };

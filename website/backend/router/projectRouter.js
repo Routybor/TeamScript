@@ -1,10 +1,11 @@
 const express = require('express')
 const router = express.Router()
-const {getProjectsHandler, createProjectHandler, invitePersonHandler} = require('../service/projectService')
+const {getProjectsHandler, createProjectHandler, invitePersonHandler, deleteProjectHandler} = require('../service/projectService')
 
 router.get('/getProjects', getProjectsController);
 router.post('/createProject', createProjectController);
 router.post('/invitePerson', invitePersonController);
+router.delete('/deleteProject', deleteProjectController);
 
 async function getProjectsController(req, res) {
     const curToken = req.headers.token;
@@ -38,6 +39,18 @@ async function invitePersonController(req, res) {
         res.json(projectId);
     } else {
         res.status(500).json({ error: 'Something wrong while creating new project' });
+    }
+}
+
+// Обработчик для удаления проекта
+async function deleteProjectController(req, res) {
+    const curToken = req.headers.token;
+    const projectId = req.body.ProjectId;
+    const success = await deleteProjectHandler(projectId);
+    if (success) {
+        res.json({ message: 'Project deleted successfully' });
+    } else {
+        res.status(500).json({ error: 'Something wrong while deleting the project' });
     }
 }
 

@@ -5,6 +5,9 @@ const { getUsersProjectsDB,
     addRelationUserProjectDB,
     createTableProjectDB,
     addStatesByProjectId,
+    deleteProjectFromDB,
+    deleteProjectFromUserProjects,
+    deleteProjectFromProjects,
 } = require('../database/dbQueries');
 
 
@@ -48,8 +51,29 @@ async function invitePersonHandler(token, projectId, toInviteToken) {
     }
 }
 
+const deleteProjectHandler = async (projectId) => {
+    try {
+        // Выполняем запрос на удаление таблицы проекта
+        await deleteProjectFromDB(projectId);
+        
+        // Удаляем все строки из таблицы user_projects, где project_id равен удаляемому projectId
+        await deleteProjectFromUserProjects(projectId);
+
+        // Удаляем проект из таблицы projects
+        await deleteProjectFromProjects(projectId);
+
+        // Возвращаем true, если удаление прошло успешно
+        return true;
+    } catch (error) {
+        // В случае ошибки выводим её в консоль и возвращаем false
+        console.error(error);
+        return false;
+    }
+};
+
 module.exports = {
     getProjectsHandler,
     createProjectHandler,
-    invitePersonHandler
+    invitePersonHandler,
+    deleteProjectHandler
 };
