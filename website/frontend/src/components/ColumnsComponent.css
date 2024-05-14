@@ -5,11 +5,12 @@
 }
 
 .column {
-    min-width: 20vw;
-    max-width: 25vw;
+    min-width: 15vw;
+    max-width: 18vw;
     margin-bottom: 10px;
     margin-right: 10px;
     display: inline-block;
+    border: 2px dashed #D9D9D9;
 
 }
 

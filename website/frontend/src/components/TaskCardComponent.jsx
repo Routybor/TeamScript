@@ -110,16 +110,17 @@ const TaskCardComponent = (props) => {
         <Card
             sx={{
                 width: 200,
-                height: 220,
+                height: 90,
+                border: '1px solid rgba(0, 0, 0, 0.05)'
             }}
             draggable="true"
             className="card"
             id={taskId}
             curstate={taskState}
         >
-            <CardContent>
+            <CardContent className="cardcont">
                 <Grid container justifyContent="right" alignItems="right">
-                    <IconButton aria-label="more"
+                    <IconButton className="cardcont-butt" aria-label="more"
                         onClick={handleClick}
                         aria-haspopup="true"
                         aria-controls="long-menu"
@@ -137,14 +138,15 @@ const TaskCardComponent = (props) => {
                         open={open2}
                     ></MenuComonent>
                 </Grid>
-                <div className="task-name">
-                    <CustomInputComponent
+                <div className="cardcont-taskname">
+                    {/* <CustomInputComponent
                         defaultValue={taskName}
                         type="text"
                         id="taskname"
                         bigInput={true}
                         handleChange={handleInputChange}
-                    />
+                    /> */}
+                    <p style={{ fontFamily: "Exo 2" }} onChange={handleInputChange} id="taskname">{taskName}</p>
                 </div>
 
                 {/* <CustomInputComponent
@@ -154,7 +156,7 @@ const TaskCardComponent = (props) => {
                 /> */}
 
 
-                <Button onClick={activePopup ? undefined : () => setActivePopup(true)}>Смотреть задачу</Button>
+                <Button className="cardcont-opentask" onClick={activePopup ? undefined : () => setActivePopup(true)}>open task</Button>
                 <PopupComponent active={activePopup} setActive={setActivePopup}>
                     <CustomInputComponent
                         defaultValue={taskName}

@@ -1,4 +1,6 @@
 import React, { useState, useEffect, memo, useMemo } from 'react';
+import Typography from '@mui/material/Typography';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import Card from '@mui/material/Card';
@@ -41,7 +43,11 @@ function tasksEqual(prevTasks, nextTasks) {
     return res;
 }
 
-const ColumnsComponent = () => {
+const ColumnsComponent = (props) => {
+    const {
+        clicked,
+        updClkd
+    } = props;
     const projectToken = localStorage.getItem('project');
     const [tasks, setTasks] = useState([]);
     const [states, setStates] = useState([]);
@@ -54,9 +60,12 @@ const ColumnsComponent = () => {
     const [stateName, setStateName] = useState("");
     const [anchorEl, setAnchorEl] = React.useState(null);
 
+
     const receiveTasks = async () => {
         try {
-            return await taskAPI.getTasksDB(userToken, projectToken);
+            // return await taskAPI.getTasksDB(userToken, projectToken);
+            const recTasks = await taskAPI.getTasksDB(userToken, projectToken).then((val) => val);
+            setTasks(recTasks.sort((a, b) => a.priority > b.priority ? 1 : -1));
         } catch (error) {
             console.error('Error in receive function:', error);
         }
@@ -64,54 +73,72 @@ const ColumnsComponent = () => {
 
     const receiveStates = async () => {
         try {
-            return await stateAPI.getStatesDB(projectToken);
+            const recStates = await stateAPI.getStatesDB(projectToken).then((val) => val);
+            let recStatesNames = [];
+            recStates.forEach((element) => recStatesNames.push(element.row_state));
+            setStates(recStatesNames);
         } catch (error) {
             console.error('Error in receive function:', error);
         }
     };
+
+    useEffect(() =>
+        window.addEventListener("storage", e => {
+            setUpdateTasks(false);
+            setUpdateStates(false);
+        }
+        ));
 
 
 
     useEffect(() => {
         (async () => {
             if (updateTasks) { return; }
-
-            const recTasks = await receiveTasks().then((val) => val);
-            setTasks(recTasks.sort((a, b) => a.priority > b.priority ? 1 : -1));
-            console.log(tasks);
+            receiveTasks();
             setUpdateTasks(true);
+            updClkd(false);
             console.log("eff1");
 
-            config.socket.on('updateTask', (data) => {
+            const receiveTasksMessage = () => {
                 receiveTasks();
-            });
+                setUpdateTasks(true);
+            }
+
+            config.socket.on("updateTask", receiveTasksMessage);
+
             return () => {
-                config.socket.off('updateTask');
+                config.socket.off("updateTask", receiveTasksMessage);
             };
 
+
         })();
-    }, [updateTasks]);
+    }, [updateTasks, clicked]);
 
     useEffect(() => {
         (async () => {
             if (updateStates) { return; }
-            const recStates = await receiveStates().then((val) => val);
-            let recStatesNames = [];
-            recStates.forEach((element) => recStatesNames.push(element.row_state));
-            setStates(recStatesNames);
+            // const recStates = await receiveStates().then((val) => val);
+            // let recStatesNames = [];
+            // recStates.forEach((element) => recStatesNames.push(element.row_state));
+            // setStates(recStatesNames);
+            receiveStates();
             setUpdateStates(true);
+            updClkd(false);
             console.log("eff2");
 
-            config.socket.on('updateStates', (data) => {
+            const receiveStateMessage = () => {
                 receiveStates();
-            });
+                setUpdateStates(true);
+            }
+
+            config.socket.on('updateStates', receiveStateMessage);
             return () => {
-                config.socket.off('updateStates');
+                config.socket.off('updateStates', receiveStateMessage);
             };
 
 
         })();
-    }, [updateStates]);
+    }, [updateStates, clicked]);
 
 
     const checkStateName = (statename) => {
@@ -171,7 +198,12 @@ const ColumnsComponent = () => {
         <Card className='column'
             key={key}>
             <CardHeader
-                title={title}
+                // title={title}
+                title={<Typography sx={{
+                    color: '#1C1D22',
+                    opacity: 0.5
+                }}>{<div><MoreVertIcon></MoreVertIcon>
+                    {title}</div>}</Typography>}
                 action={
                     <div>
                         <MenuList>
@@ -181,20 +213,20 @@ const ColumnsComponent = () => {
                                     Add task
                                 </ListItemIcon>
                             </MenuItem>
-                            <MenuItem onClick={handleClose} disableRipple>
+                            {/* <MenuItem onClick={handleClose} disableRipple>
                                 <ListItemIcon onClick={() => console.log(title)}>
                                     <RemoveIcon />
                                     Delete state
                                 </ListItemIcon>
 
-                            </MenuItem>
-                            <MenuItem onClick={handleClose} disableRipple>
+                            </MenuItem> */}
+                            {/* <MenuItem onClick={handleClose} disableRipple>
                                 <ListItemIcon onClick={activePopup1 ? undefined : () => setActivePopup1(true)}>
                                     <DriveFileRenameOutlineIcon />
                                     Rename state
                                 </ListItemIcon>
 
-                            </MenuItem>
+                            </MenuItem> */}
                         </MenuList>
 
                     </div>
