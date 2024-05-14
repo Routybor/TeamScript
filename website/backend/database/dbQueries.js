@@ -331,6 +331,27 @@ const changeProjectNameInDB = async (projectId, newName) => {
     }
 };
 
+const changeStateNameInDB = async (projectId, newStateName, oldStateName) => {
+    try {
+        // Проверяем, существует ли состояние для данного проекта с таким же названием
+        const stateExists = await pool.query('SELECT project_id FROM project_state WHERE project_id = $1 AND row_state = $2', [projectId, newStateName]);
+        
+        // Если состояние уже существует для данного проекта, возвращаем false
+        if (stateExists.rows.length > 0) {
+            console.error('State with the same name already exists for this project');
+            return false;
+        }
+
+        // Если состояние с таким же названием не существует, продолжаем обновление или вставку записи
+        await pool.query('UPDATE project_state SET row_state = $1 WHERE project_id = $2 AND row_state = $3', [newStateName, projectId, oldStateName]);
+
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+};
+
 
 
 module.exports = {
@@ -358,4 +379,5 @@ module.exports = {
     deleteProjectFromUserProjects,
     deleteProjectFromProjects,
     changeProjectNameInDB,
+    changeStateNameInDB,
 };
