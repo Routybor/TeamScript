@@ -1,5 +1,17 @@
 const { sendUpdateToClients } = require("../socket");
-const { getTasksDB, createTaskDB, setTaskStateDB, deleteTaskDB, getUserIdByTokenDB, checkUserPermissionDB, getStatesByProjectId, addStatesByProjectId, setTaskPriorityDB} = require('../database/dbQueries');
+const { getTasksDB, 
+    createTaskDB, 
+    setTaskStateDB, 
+    deleteTaskDB, 
+    getUserIdByTokenDB, 
+    checkUserPermissionDB, 
+    getStatesByProjectId, 
+    addStatesByProjectId, 
+    setTaskPriorityDB,
+    changeStateNameInDB,
+    deleteStateFromDB,
+    deleteTasksWithStateFromProjectTable,
+} = require('../database/dbQueries');
 
 async function getTasksHandler(projectId, token) {
     try {
@@ -89,20 +101,23 @@ async function addStateHandler(projectId, stateName) {
     }
 }
 
-async function deleteStateHandler(projectId, stateName) {
+const deleteStateHandler = async (projectId, stateToDelete) => {
     try {
-        // const userId = await getUserIdByTokenDB(token);
-        // const check = await checkUserPermissionDB(projectId, userId.mytable_key);
-        // if(check.exist == "f"){
-        //     return null;
-        // }
-        const res = await deleteStatesByProjectId(projectId, stateName);
-        return res;
+        // Удаляем состояние проекта из базы данных
+        const success = await deleteStateFromDB(projectId, stateToDelete);
+        
+        // Удаляем все строки с указанным текущим состоянием из таблицы проекта
+        const tasksDeleted = await deleteTasksWithStateFromProjectTable(projectId, stateToDelete);
+
+        // Возвращаем результат удаления состояния и задач
+        return success && tasksDeleted;
     } catch (error) {
         console.error(error);
-        return null;
+        return false;
     }
-}
+};
+
+
 
 async function setTaskPriorityHandler(taskId, priority, projectId) {
     try {
@@ -115,6 +130,19 @@ async function setTaskPriorityHandler(taskId, priority, projectId) {
     }
 }
 
+const changeStateNameHandler = async (projectId, newStateName, oldStateName) => {
+    try {
+        // Выполняем запрос к базе данных для изменения имени состояния проекта
+        const success = await changeStateNameInDB(projectId, newStateName, oldStateName);
+        return success;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+};
+
+
+
 module.exports = {
     getTasksHandler,
     createTaskHandler,
@@ -124,4 +152,5 @@ module.exports = {
     addStateHandler,
     deleteStateHandler,
     setTaskPriorityHandler,
+    changeStateNameHandler,
 };
