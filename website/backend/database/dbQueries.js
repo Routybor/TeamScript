@@ -378,6 +378,17 @@ const deleteTasksWithStateFromProjectTable = async (projectId, stateToDelete) =>
     }
 };
 
+const deleteAllStateByProjectIdinDB = async (projectId) => {
+    try {
+        // Удаляем состояние проекта из таблицы project_state
+        await pool.query('DELETE FROM project_state WHERE project_id = $1', [projectId]);
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+};
+
 
 module.exports = {
     getTextDB,
@@ -407,4 +418,5 @@ module.exports = {
     changeStateNameInDB,
     deleteStateFromDB,
     deleteTasksWithStateFromProjectTable,
+    deleteAllStateByProjectIdinDB,
 };
