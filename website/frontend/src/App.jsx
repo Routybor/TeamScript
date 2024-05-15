@@ -15,7 +15,7 @@ function App() {
   return (
     <div className='App'>
       <Routes>
-        <Route path="/" element={token ? <ProjectsPage /> : <PrimaryPage />} />
+        <Route path="/" element={token ? <TaskBoardPage /> : <PrimaryPage />} />
         {/* <Route path="/primarypage" element={<PrimaryPage />} /> */}
         <Route path="/authorization" element={<AuthorizationPage setToken={setToken} />}>
         </Route>

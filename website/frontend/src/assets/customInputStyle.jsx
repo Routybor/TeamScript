@@ -69,14 +69,14 @@ const customInputStyle = {
         height: "unset",
         "&,&::placeholder": {
             fontSize: '14px !important',
-            fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-            fontWeight: "400",
+            fontFamily: 'Exo 2',
+            fontWeight: "600",
             lineHeight: "1.42857",
-            opacity: "1"
+            opacity: "1",
         },
         "&::placeholder": {
             color: "#AAAAAA"
-        }
+        },
     },
     resize: {
         fontSize: '24px !important'

@@ -1,5 +1,84 @@
+.TaskBoardPage {
+    background: #FFFFFF;
+    height: 100vh;
+    overflow-y: auto;
+}
+
 .log-out-button {
     display: flex;
     justify-content: flex-end;
     margin-right: auto;
+}
+
+
+.rectangle {
+    position: fixed;
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 7vw;
+    height: 100vh;
+    background: #D9D9D9;
+}
+
+.rectangle-logo {
+    position: fixed;
+    top: 0vh;
+}
+
+.rectangle-projs {
+    position: fixed;
+    top: 20vh;
+}
+
+.rectangle-mems {
+    position: fixed;
+    top: 35vh;
+}
+
+.projects {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    top: 0;
+    left: 7vw;
+    width: 15vw;
+    height: 100vh;
+    overflow-y: auto;
+    /* background: red; */
+}
+
+.projects-header {
+    font-family: sans-serif;
+    font-size: 30px;
+    font-weight: bold;
+    position: fixed;
+    left: 10vw;
+    top: 5vh;
+}
+
+.projects-list {
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    top: 20vh;
+}
+
+.mainsect {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    width: 80vw;
+    left: 22vw;
+    top: 0;
+    /* background: blue; */
+    background: linear-gradient(#FAFAFA, #F0F0F0);
+}
+
+.tasks {
+    position: fixed;
+    justify-content: center;
 }

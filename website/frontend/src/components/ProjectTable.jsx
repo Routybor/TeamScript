@@ -15,7 +15,8 @@ const ProjectTable = () => {
 
   const receiveProjects = async () => {
     try {
-      return await projAPI.getProjs(token);
+      const recProjs = await projAPI.getProjs(token).then((val) => val);
+      setProjs(recProjs);
     } catch (error) {
       console.log('Error in receive function:', error);
     }
@@ -34,14 +35,17 @@ const ProjectTable = () => {
 
   useEffect(() => {
     (async () => {
-      const recProjs = await receiveProjects().then((val) => val);
-      setProjs(recProjs);
+      receiveProjects();
       setIsLoaded(true);
-      config.socket.on('updateProject', (data) => {
+
+      const receiveProjsMessage = () => {
         receiveProjects();
-      });
+        setIsLoaded(true);
+      }
+
+      config.socket.on('updateProject', receiveProjsMessage);
       return () => {
-        config.socket.off('updateProject');
+        config.socket.off('updateProject', receiveProjsMessage);
       };
     })();
 

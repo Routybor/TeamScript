@@ -3,8 +3,32 @@
 
 }
 
-.task-name {
+.cardcont {
+    position: relative;
     display: flex;
-    margin: 0%;
-    padding-top: 0;
+    overflow: auto;
+    /* justify-content: center; */
+}
+
+.cardcont-taskname {
+    position: absolute;
+    opacity: 0.8;
+    top: 10px;
+    left: 10px;
+    font-family: sans-serif;
+    font-weight: 600;
+    float: left;
+}
+
+.cardcont-butt {
+    position: absolute;
+    top: -15px;
+    left: 80px;
+    float: right;
+}
+
+.cardcont-opentask {
+    position: absolute;
+    top: 20px;
+    left: -50px;
 }
