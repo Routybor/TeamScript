@@ -53,14 +53,15 @@ const taskAPI = {
         }
     },
 
-    updateTaskDB: async (task, newstate, projectToken) => {
+    changeTaskStateDB: async (userToken, taskID, newstate, projectToken) => {
         try {
             const response = await fetch(`${config.host}/taskBoard/changeState`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'token': userToken
                 },
-                body: JSON.stringify({ taskID: task.id, newState: newstate, projectToken: projectToken }),
+                body: JSON.stringify({ taskID: taskID, newState: newstate, projectToken: projectToken }),
             });
             const data = await response.json();
             console.log(data);
@@ -224,11 +225,12 @@ const projAPI = {
     deleteProj: async (userToken, projectId) => {
         try {
             const response = await fetch(`${config.host}/project/deleteProject`, {
-                method: 'POST',
+                method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
+                    'token': userToken
                 },
-                body: JSON.stringify({ userToken: userToken, projectId: projectId }),
+                body: JSON.stringify({ ProjectId: projectId }),
             });
 
             const data = await response.json();

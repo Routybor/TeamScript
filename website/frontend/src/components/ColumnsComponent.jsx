@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo, useMemo } from 'react';
+import React, { useState, useEffect, memo, useMemo, useCallback } from 'react';
 import Typography from '@mui/material/Typography';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Grid from '@mui/material/Grid';
@@ -43,12 +43,25 @@ function tasksEqual(prevTasks, nextTasks) {
     return res;
 }
 
+function throttle(callee, timeout) {
+    let timer = null
+    return function perform(...args) {
+
+        if (timer) return
+        timer = setTimeout(() => {
+            callee(...args)
+            clearTimeout(timer)
+            timer = null
+        }, timeout)
+    }
+}
+
 const ColumnsComponent = (props) => {
     const {
         clicked,
         updClkd
     } = props;
-    const projectToken = localStorage.getItem('project');
+    let projectToken = localStorage.getItem('project');
     const [tasks, setTasks] = useState([]);
     const [states, setStates] = useState([]);
     const [updateTasks, setUpdateTasks] = useState();
@@ -86,6 +99,7 @@ const ColumnsComponent = (props) => {
         window.addEventListener("storage", e => {
             setUpdateTasks(false);
             setUpdateStates(false);
+            projectToken = window.localStorage.getItem('project');
         }
         ));
 
@@ -93,8 +107,8 @@ const ColumnsComponent = (props) => {
 
     useEffect(() => {
         (async () => {
-            if (updateTasks) { return; }
-            receiveTasks();
+            if (updateTasks && !clicked) { return; }
+            await receiveTasks();
             setUpdateTasks(true);
             updClkd(false);
             console.log("eff1");
@@ -116,12 +130,12 @@ const ColumnsComponent = (props) => {
 
     useEffect(() => {
         (async () => {
-            if (updateStates) { return; }
+            if (updateStates && !clicked) { return; }
             // const recStates = await receiveStates().then((val) => val);
             // let recStatesNames = [];
             // recStates.forEach((element) => recStatesNames.push(element.row_state));
             // setStates(recStatesNames);
-            receiveStates();
+            await receiveStates();
             setUpdateStates(true);
             updClkd(false);
             console.log("eff2");
@@ -157,10 +171,12 @@ const ColumnsComponent = (props) => {
     }
 
     const changeState = async (taskId, newState) => {
-        console.log("change state");
+        // console.log("change state");
         const curTask = tasks.filter(task => task.id == taskId)[0];
-        taskAPI.updateTaskDB(curTask, newState, projectToken);
+        // console.log(curTask);
+        await taskAPI.changeTaskStateDB(userToken, taskId, newState, projectToken);
         setUpdateTasks(false);
+
     }
 
     const deleteTask = (taskId) => {
@@ -188,8 +204,8 @@ const ColumnsComponent = (props) => {
 
     const open = Boolean(anchorEl);
 
-    if (updateTasks) { DragAndDrop(tasks, changeState, changePriorityTask, setUpdateTasks); }
 
+    if (updateTasks) { DragAndDrop(tasks, changeState, changePriorityTask, setUpdateTasks); }
     console.log("!!!!!!!!!");
 
 

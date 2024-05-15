@@ -2,6 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 // import TransferListComponent from "../components/TransferListComponent";
 import { Button } from "@mui/material";
 import List from '@mui/material/List';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import MenuComonent from "../components/MenuComponent";
+import { IconButton } from '@mui/material';
+
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -19,6 +23,60 @@ import ColumnsComponent from "../components/ColumnsComponent";
 
 const TaskBoardPage = () => {
     const [clicked, setClicked] = React.useState(false);
+
+    // 
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl2, setAnchorEl2] = React.useState(null);
+
+    const handleInputChange = (event) => {
+        // setTaskName(event.target.value);
+    }
+
+    const handleClick2 = (event) => {
+        setAnchorEl2(event.currentTarget);
+    };
+    const open2 = Boolean(anchorEl2);
+    const handleClose2 = (event) => {
+        const newState = event.target.innerHTML.split('<')[0];
+        changeState(taskId, newState);
+        setAnchorEl2(null);
+        setAnchorEl(null);
+
+    };
+
+    const renameState = (event) => {
+        handleClick2(event);
+    }
+
+    const handleDeleteClick = (e) => {
+        console.log(e.currentTarget.parentNode.parentNode.parentNode);
+    }
+
+    const MyOptions = [
+        // <Button
+        //     onClick={renameState}
+        //     id="renameState"
+        // >rename state
+        // </Button>,
+        <Button onClick={handleDeleteClick} id="delete">Delete</Button>,
+    ];
+
+    const handleClick3 = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+
+    const open3 = Boolean(anchorEl);
+
+
+    const handleClose = (event) => {
+        if (event.target.id != "changeState") {
+            setAnchorEl(null);
+        }
+    };
+
+    // 
 
     const updateClicked = (cld) => {
         setClicked(cld);
@@ -56,20 +114,24 @@ const TaskBoardPage = () => {
         }
     }
 
-    const createProject = () => {
-        projAPI.createProj(token);
+    const createProject = async () => {
+        await projAPI.createProj(token);
         setIsLoaded(false);
     }
 
-    const deleteProject = (projectId) => {
+    const deleteProject = async (projectId) => {
         console.log(projectId);
-        console.log(projAPI.deleteProj(token, projectId));
+        await projAPI.deleteProj(token, projectId);
+        if (projectId == window.localStorage.getItem('project')) {
+            window.localStorage.removeItem('project');
+            window.dispatchEvent(new Event("storage"));
+        }
         setIsLoaded(false);
     }
 
     useEffect(() => {
         (async () => {
-            receiveProjects();
+            await receiveProjects();
             setIsLoaded(true);
 
             const receiveProjsMessage = () => {
@@ -108,25 +170,42 @@ const TaskBoardPage = () => {
                         {open ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
                     <Collapse in={open} timeout="auto" unmountOnExit>
+
                         <List>
                             {(projsRef.current).map((value) => {
                                 const labelId = `${value.project_id}-label`;
                                 return (
-                                    <ListItem
-                                        sx={{ pl: 3 }}
-                                        key={value.id}
-                                        role="listitem"
-                                        button
-                                    >
-                                        <p onClick={() => handleLinkClick(value.project_id)}>{value.project_name}</p>
-                                    </ListItem>
+                                    <div>
+                                        <ListItem
+                                            sx={{ pl: 3 }}
+                                            key={value.project_id}
+                                            role="listitem"
+                                            button
+                                        >
+                                            <p onClick={() => handleLinkClick(value.project_id)}>{value.project_name}</p>
+
+                                            <IconButton aria-label="more"
+                                                onClick={handleClick3}
+                                                aria-haspopup="true"
+                                                aria-controls="long-menu"
+                                                id={value.project_id}>
+                                                <MoreVertIcon id={value.project_id}></MoreVertIcon>
+
+                                            </IconButton>
+                                            <MenuComonent MyOptions={[<Button onClick={() => deleteProject(value.project_id)} id="delete">Delete</Button>]}
+                                                handleClose={handleClose}
+                                                anchorEl={anchorEl}
+                                                open={open3}
+                                                id={value.project_id}
+                                            ></MenuComonent>
+
+                                        </ListItem>
+                                    </div>
                                 );
                             })}
-                            {/* <ListItemButton sx={{ pl: 3 }}>
-                                <ListItemText primary="|------- Project 1" />
-                            </ListItemButton> */}
                         </List>
                     </Collapse>
+                    <Button onClick={createProject}>new project</Button>
                 </div>
             </div>
             <div className='log-out-button'>

@@ -100,7 +100,7 @@ function TransferListComponent() {
         setInProgress(inProgress.concat(toDoChecked, doneChecked));
         setToDo(not(toDo, toDoChecked));
         setDone(not(done, doneChecked));
-        checked.forEach(task => taskAPI.updateTaskDB(task, 'prog', projectToken));
+        checked.forEach(task => taskAPI.changeTaskStateDB(userToken, task, 'prog', projectToken));
         setChecked(not3(checked, toDoChecked, doneChecked));
     };
 
@@ -108,7 +108,7 @@ function TransferListComponent() {
         setToDo(toDo.concat(inProgressChecked, doneChecked));
         setInProgress(not(inProgress, inProgressChecked));
         setDone(not(done, doneChecked));
-        checked.forEach(task => taskAPI.updateTaskDB(task, 'todo', projectToken));
+        checked.forEach(task => taskAPI.changeTaskStateDB(userToken, task, 'todo', projectToken));
         setChecked(not3(checked, inProgressChecked, doneChecked));
     };
 
@@ -116,7 +116,7 @@ function TransferListComponent() {
         setDone(done.concat(doneChecked));
         setInProgress(not(inProgress, inProgressChecked));
         setToDo(not(toDo, toDoChecked));
-        checked.forEach(task => taskAPI.updateTaskDB(task, 'done', projectToken));
+        checked.forEach(task => taskAPI.changeTaskStateDB(userToken, task, 'done', projectToken));
         setChecked(not3(checked, inProgressChecked, toDoChecked));
     };
 

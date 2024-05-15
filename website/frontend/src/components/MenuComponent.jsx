@@ -6,7 +6,8 @@ const MenuComonent = (props) => {
         MyOptions,
         handleClose,
         anchorEl,
-        open
+        open,
+        id
     } = props;
     return (
         <Menu
@@ -14,6 +15,7 @@ const MenuComonent = (props) => {
             keepMounted
             onClose={handleClose}
             open={open}
+            id={id}
         >
             {MyOptions.map((option, index) => (
                 <MenuItem

@@ -48,17 +48,17 @@ const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksF
             return;
         }
 
-        console.log(activeCard);
-        console.log(taskCopyNew);
+        // console.log(activeCard);
+        // console.log(taskCopyNew);
         // const currentElementId = currentCardRef.current.getAttribute('id');
         const currentElementId = currentCard.getAttribute('id');
-        console.log(currentCard);
+        // console.log(currentCard);
 
         let currentTaskElemInd = taskCopyNew.indexOf(taskCopyNew.filter(task => task.id == currentElementId)[0]);
-        console.log(currentTaskElemInd);
+        // console.log(currentTaskElemInd);
 
         currentTaskElemInd == 0 ? taskCopyNew.splice(0, 0, activeTaskElem) : taskCopyNew.splice(currentTaskElemInd, 0, activeTaskElem);
-        console.log(taskCopyNew);
+        // console.log(taskCopyNew);
         for (let i = 0; i < taskCopyNew.length; i++) {
             changePriorityFunc(taskCopyNew[i].id, i + 1, projectToken);
         }
@@ -84,8 +84,8 @@ const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksF
             changePriorityFunc(activeElementId, 1, projectToken);
             // console.log("after priority");
             // console.log(tasks);
-            console.log(currentColumn);
-            console.log(currentState);
+            // console.log(currentColumn);
+            // console.log(currentState);
             changeStateFunc(activeElementId, currentState);
             // console.log("after state");
             // console.log(tasks);
@@ -139,7 +139,7 @@ const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksF
             // console.log("2");
             // console.log(lastCardInColumn(column));
             const lastCard = defineElemByName(lastCardInColumn(column), "card")[1];
-            console.log(lastCard);
+            // console.log(lastCard);
             // currentCardRef.current = lastCard;
             // setCurrentCard(lastCard);
             currentCard = lastCard;
@@ -160,6 +160,12 @@ const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksF
             }
         }
         else {
+            const isMoveable = activeCard !== currentCard;
+            // const isMoveable = activeCard !== currentCardRef.current;
+
+            if (!isMoveable) {
+                return;
+            }
             s2 = true;
         }
     }
