@@ -9,6 +9,7 @@ const { getUsersProjectsDB,
     deleteProjectFromUserProjects,
     deleteProjectFromProjects,
     changeProjectNameInDB,
+    deleteAllStateByProjectIdinDB,
 } = require('../database/dbQueries');
 
 
@@ -62,6 +63,9 @@ const deleteProjectHandler = async (projectId) => {
 
         // Удаляем проект из таблицы projects
         await deleteProjectFromProjects(projectId);
+
+        // удаляем state 
+        await deleteAllStateByProjectIdinDB(projectId);
 
         // Возвращаем true, если удаление прошло успешно
         return true;
