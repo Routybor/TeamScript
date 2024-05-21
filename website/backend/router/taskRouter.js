@@ -8,6 +8,7 @@ const { getTasksHandler,
     addStateHandler, 
     setTaskPriorityHandler,
     renameTaskHandler,
+    changeTaskDescriptionHandler
 } = require('../service/taskService')
 
 router.post('/getTasks', getTasksController);
@@ -16,6 +17,7 @@ router.post('/changeState', setTaskStateController);
 router.post('/deleteTask', deleteTaskController);
 router.post('/changePriority', setTaskPriorityController);
 router.post('/renameTask', renameTaskController);
+router.post('/changeDescription', changeTaskDescriptionController);
 
 async function getTasksController(req, res) {
     const curToken = req.headers.token;
@@ -97,6 +99,19 @@ async function renameTaskController(req, res) {
         res.json(result);
     } else {
         res.status(500).json({ error: 'Error while renaming the task' });
+    }
+}
+
+async function changeTaskDescriptionController(req, res) {
+    const curToken = req.headers.token;
+    const taskId = req.body.taskID;
+    const newDescription = req.body.newDescription;
+    const projectId = req.body.projectToken;
+    const result = await changeTaskDescriptionHandler(taskId, newDescription, projectId);
+    if (result) {
+        res.json(result);
+    } else {
+        res.status(500).json({ error: 'Error while changing task description' });
     }
 }
 

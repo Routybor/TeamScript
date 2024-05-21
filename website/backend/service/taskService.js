@@ -12,6 +12,7 @@ const { getTasksDB,
     deleteStateFromDB,
     deleteTasksWithStateFromProjectTable,
     renameTaskInDB,
+    changeTaskDescriptionInDB,
 } = require('../database/dbQueries');
 
 async function getTasksHandler(projectId, token) {
@@ -154,6 +155,16 @@ const renameTaskHandler = async (taskId, newName, projectId) => {
 };
 
 
+const changeTaskDescriptionHandler = async (taskId, newDescription, projectId) => {
+    try {
+        const updatedTask = await changeTaskDescriptionInDB(taskId, newDescription, projectId);
+        sendUpdateToClients();
+        return updatedTask;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
 
 
 module.exports = {
@@ -167,4 +178,5 @@ module.exports = {
     setTaskPriorityHandler,
     changeStateNameHandler,
     renameTaskHandler,
+    changeTaskDescriptionHandler,
 };

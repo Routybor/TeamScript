@@ -404,6 +404,21 @@ async function renameTaskInDB(taskId, newName, projectId) {
     }
 }
 
+async function changeTaskDescriptionInDB(taskId, newDescription, projectId) {
+    // Формируем имя таблицы
+    const tableName = `project${projectId}`;
+
+    const query = `UPDATE ${tableName} SET description = $1 WHERE id = $2 RETURNING *`;
+    const values = [newDescription, taskId];
+    try {
+        const res = await pool.query(query, values);
+        return res.rows[0]; // Возвращаем обновленную задачу
+    } catch (error) {
+        console.error('Error changing task description in database', error);
+        throw error;
+    }
+}
+
 module.exports = {
     getTextDB,
     saveTextDB,
@@ -434,4 +449,5 @@ module.exports = {
     deleteTasksWithStateFromProjectTable,
     deleteAllStateByProjectIdinDB,
     renameTaskInDB,
+    changeTaskDescriptionInDB,
 };
