@@ -259,6 +259,25 @@ const projAPI = {
             throw error;
         }
     },
+
+    changeProjectName: async (userToken, projId, newProjName) => {
+        try {
+            const response = await fetch(`${config.host}/project/changeName`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': userToken
+                },
+                body: JSON.stringify({ projectId: projId, newName: newProjName }),
+            });
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error change name:', error);
+            throw error;
+        }
+    },
 }
 
 export { textAPI, taskAPI, authAPI, projAPI, stateAPI };
