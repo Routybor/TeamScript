@@ -1,12 +1,21 @@
 const express = require('express')
 const router = express.Router()
-const { getTasksHandler, createTaskHandler, setTaskStateHandler, deleteTaskHandler, getStateHandler, addStateHandler, setTaskPriorityHandler} = require('../service/taskService')
+const { getTasksHandler, 
+    createTaskHandler, 
+    setTaskStateHandler, 
+    deleteTaskHandler, 
+    getStateHandler, 
+    addStateHandler, 
+    setTaskPriorityHandler,
+    renameTaskHandler,
+} = require('../service/taskService')
 
 router.post('/getTasks', getTasksController);
 router.post('/createTask', createTaskController);
 router.post('/changeState', setTaskStateController);
 router.post('/deleteTask', deleteTaskController);
 router.post('/changePriority', setTaskPriorityController);
+router.post('/renameTask', renameTaskController);
 
 async function getTasksController(req, res) {
     const curToken = req.headers.token;
@@ -75,6 +84,19 @@ async function setTaskPriorityController(req, res) {
         res.json(result);
     } else {
         res.status(500).json({ error: 'Error while changing priority of task' });
+    }
+}
+
+async function renameTaskController(req, res) {
+    const curToken = req.headers.token;
+    const taskId = req.body.taskID;
+    const newName = req.body.newName;
+    const projectId = req.body.projectToken;
+    const result = await renameTaskHandler(taskId, newName, projectId);
+    if (result) {
+        res.json(result);
+    } else {
+        res.status(500).json({ error: 'Error while renaming the task' });
     }
 }
 
