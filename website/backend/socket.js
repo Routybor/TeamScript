@@ -30,6 +30,9 @@ const updateProjects = () => {
     io.emit('updateProject', {});
 };
 
+const updateStates = () => {
+    io.emit('updateStates', {});
+};
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 module.exports = {
@@ -38,4 +41,5 @@ module.exports = {
     sendUpdateToClients,
     sendTextToClients,
     updateProjects,
+    updateStates,
 };

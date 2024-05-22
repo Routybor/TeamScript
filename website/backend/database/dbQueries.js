@@ -281,7 +281,7 @@ const addStatesByProjectId = async (projectId, stateName) => {
     return new Promise((resolve, reject) => {
         pool.query('INSERT INTO project_state (project_id, row_state) values($1, $2)', [projectId, stateName], (err, result) => {
             if (!err) {
-                resolve(result.rows[0]);
+                resolve(result.rows);
             } else {
                 reject(new Error('Error while add row project states'));
             }
@@ -389,6 +389,35 @@ const deleteAllStateByProjectIdinDB = async (projectId) => {
     }
 };
 
+async function renameTaskInDB(taskId, newName, projectId) {
+    // Формируем имя таблицы
+    const tableName = `project${projectId}`;
+
+    const query = `UPDATE ${tableName} SET taskname = $1 WHERE id = $2 RETURNING *`;
+    const values = [newName, taskId];
+    try {
+        const res = await pool.query(query, values);
+        return res.rows[0]; // Возвращаем обновленную задачу
+    } catch (error) {
+        console.error('Error renaming task in database', error);
+        throw error;
+    }
+}
+
+async function changeTaskDescriptionInDB(taskId, newDescription, projectId) {
+    // Формируем имя таблицы
+    const tableName = `project${projectId}`;
+
+    const query = `UPDATE ${tableName} SET description = $1 WHERE id = $2 RETURNING *`;
+    const values = [newDescription, taskId];
+    try {
+        const res = await pool.query(query, values);
+        return res.rows[0]; // Возвращаем обновленную задачу
+    } catch (error) {
+        console.error('Error changing task description in database', error);
+        throw error;
+    }
+}
 
 module.exports = {
     getTextDB,
@@ -419,4 +448,6 @@ module.exports = {
     deleteStateFromDB,
     deleteTasksWithStateFromProjectTable,
     deleteAllStateByProjectIdinDB,
+    renameTaskInDB,
+    changeTaskDescriptionInDB,
 };
