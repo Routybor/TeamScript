@@ -7,6 +7,7 @@ import MenuComonent from "../components/MenuComponent";
 import { IconButton } from '@mui/material';
 
 import ListItemButton from '@mui/material/ListItemButton';
+import TextField from '@mui/material/TextField';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
@@ -23,6 +24,11 @@ import ColumnsComponent from "../components/ColumnsComponent";
 
 const TaskBoardPage = () => {
     const [clicked, setClicked] = React.useState(false);
+    const token = localStorage.getItem('token');
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [projs, setProjs] = useState([]);
+    const [name, setName] = useState();
+    const projsRef = useRef(projs);
 
     // 
 
@@ -38,29 +44,33 @@ const TaskBoardPage = () => {
     };
     const open2 = Boolean(anchorEl2);
     const handleClose2 = (event) => {
-        const newState = event.target.innerHTML.split('<')[0];
-        changeState(taskId, newState);
-        setAnchorEl2(null);
-        setAnchorEl(null);
+        if (event.target.id != "renameField") {
+            changeName(token, name);
+            setAnchorEl2(null);
+            setAnchorEl(null);
+        }
 
     };
 
-    const renameState = (event) => {
-        handleClick2(event);
-    }
+    // const renameState = (event) => {
+    //     handleClick2(event);
+    // }
 
-    const handleDeleteClick = (e) => {
-        console.log(e.currentTarget.parentNode.parentNode.parentNode);
+    const handleDeleteClick = () => {
+        const projToken = window.localStorage.getItem('project');
+        deleteProject(projToken);
+
     }
 
     const MyOptions = [
-        // <Button
-        //     onClick={renameState}
-        //     id="renameState"
-        // >rename state
-        // </Button>,
-        <Button onClick={handleDeleteClick} id="delete">Delete</Button>,
+        <Button onClick={() => changeName(token, "Proj")} id="rename">Rename</Button>,
+        <Button onClick={() => handleDeleteClick} id="delete">Delete</Button>,
     ];
+
+    const changeNameHandle = (e) => {
+        console.log("GHGHJHK");
+        handleClick2(e);
+    }
 
     const handleClick3 = (event) => {
         setAnchorEl(event.currentTarget);
@@ -71,7 +81,7 @@ const TaskBoardPage = () => {
 
 
     const handleClose = (event) => {
-        if (event.target.id != "changeState") {
+        if (event.target.id != "rename") {
             setAnchorEl(null);
         }
     };
@@ -99,11 +109,6 @@ const TaskBoardPage = () => {
         updateClicked(true);
     };
 
-    const token = localStorage.getItem('token');
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [projs, setProjs] = useState([]);
-    const projsRef = useRef(projs);
-
     const receiveProjects = async () => {
         try {
             const recProjs = await projAPI.getProjs(token).then((val) => val);
@@ -126,6 +131,12 @@ const TaskBoardPage = () => {
             window.localStorage.removeItem('project');
             window.dispatchEvent(new Event("storage"));
         }
+        setIsLoaded(false);
+    }
+
+    const changeName = async (userToken, newProjName) => {
+        const projToken = window.localStorage.getItem('project');
+        await projAPI.changeProjectName(userToken, projToken, newProjName);
         setIsLoaded(false);
     }
 
@@ -189,14 +200,30 @@ const TaskBoardPage = () => {
                                                 aria-haspopup="true"
                                                 aria-controls="long-menu"
                                                 id={value.project_id}>
-                                                <MoreVertIcon id={value.project_id}></MoreVertIcon>
+                                                <MoreVertIcon id={value.project_id}
+                                                    onClick={() => handleLinkClick(value.project_id)}></MoreVertIcon>
 
                                             </IconButton>
-                                            <MenuComonent MyOptions={[<Button onClick={() => deleteProject(value.project_id)} id="delete">Delete</Button>]}
+                                            <MenuComonent MyOptions={[<Button onClick={() => deleteProject(value.project_id)} id="delete">Delete</Button>,
+                                            <Button
+                                                aria-haspopup="true"
+                                                aria-controls="long-menu"
+                                                onClick={changeNameHandle}
+                                                id="rename"
+                                            >Rename</Button>]}
                                                 handleClose={handleClose}
                                                 anchorEl={anchorEl}
                                                 open={open3}
-                                                id={value.project_id}
+                                            ></MenuComonent>
+                                            <MenuComonent MyOptions={[
+                                                <TextField
+                                                    onChange={(event) => { setName(event.target.value); }}
+                                                    id="renameField"
+                                                    label="Standard"
+                                                    variant="standard" />]}
+                                                handleClose={handleClose2}
+                                                anchorEl={anchorEl2}
+                                                open={open2}
                                             ></MenuComonent>
 
                                         </ListItem>

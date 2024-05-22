@@ -158,10 +158,45 @@ const stateAPI = {
             const data = await response.json();
             return data;
         } catch (error) {
-            console.error('Error getting states:', error);
+            console.error('Error adding states:', error);
             throw error;
         }
     },
+
+    deleteStateDB: async (projectToken, stateName) => {
+        try {
+            const response = await fetch(`${config.host}/row/deleteStates`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ projectId: projectToken, stateToDelete: stateName }),
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error delete state:', error);
+            throw error;
+        }
+    },
+
+    changeStateNameDB: async (projectToken, newName, oldName) => {
+        try {
+            const response = await fetch(`${config.host}/row/changeStateName`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ projectId: projectToken, newStateName: newName, oldStateName: oldName }),
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error changing state name:', error);
+            throw error;
+        }
+    },
+
 }
 
 
@@ -256,6 +291,25 @@ const projAPI = {
             return data;
         } catch (error) {
             console.error('Error inviting person:', error);
+            throw error;
+        }
+    },
+
+    changeProjectName: async (userToken, projId, newProjName) => {
+        try {
+            const response = await fetch(`${config.host}/project/changeName`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': userToken
+                },
+                body: JSON.stringify({ projectId: projId, newName: newProjName }),
+            });
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error change name:', error);
             throw error;
         }
     },
