@@ -45,7 +45,7 @@ async function invitePersonHandler(token, projectId, toInviteToken) {
     try {
         const userId = await getUserIdByTokenDB(toInviteToken);
         await addRelationUserProjectDB(userId.mytable_key, projectId);
-        // updateProjects();
+        updateProjects();
         return true;
     } catch (error) {
         console.error(error);
@@ -66,7 +66,7 @@ const deleteProjectHandler = async (projectId) => {
 
         // удаляем state 
         await deleteAllStateByProjectIdinDB(projectId);
-
+        updateProjects();
         // Возвращаем true, если удаление прошло успешно
         return true;
     } catch (error) {
@@ -80,6 +80,7 @@ const changeProjectNameHandler = async (projectId, newName) => {
     try {
         // Выполняем запрос к базе данных для изменения имени проекта
         const success = await changeProjectNameInDB(projectId, newName);
+        updateProjects();
         return success;
     } catch (error) {
         console.error(error);
