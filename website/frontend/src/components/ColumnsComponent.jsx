@@ -10,6 +10,7 @@ import Divider from '@mui/material/Divider';
 import { Button, IconButton, dialogTitleClasses } from '@mui/material';
 import { taskAPI, stateAPI } from '../ApiCalls';
 import TaskCardComponent from './TaskCardComponent';
+import TextField from '@mui/material/TextField';
 import AddIcon from '@mui/icons-material/Add';
 import config from '../config';
 import DragAndDrop from '../helper/DragAndDrop';
@@ -17,6 +18,7 @@ import PopupComponent from './PopupComponent';
 import CustomInputComponent from './CustomInputComponent';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
+import MenuComonent from './MenuComponent';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -56,6 +58,10 @@ function throttle(callee, timeout) {
     }
 }
 
+function timeout(delay) {
+    return new Promise(res => setTimeout(res, delay));
+}
+
 const ColumnsComponent = (props) => {
     const {
         clicked,
@@ -72,7 +78,41 @@ const ColumnsComponent = (props) => {
     const [errorName, setErrorName] = useState(false);
     const [stateName, setStateName] = useState("");
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl2, setAnchorEl2] = React.useState(null);
+    const [anchorEl3, setAnchorEl3] = React.useState(null);
 
+    const open2 = Boolean(anchorEl2);
+    const open3 = Boolean(anchorEl3);
+
+    const handleClick2 = (event) => {
+        setAnchorEl2(event.currentTarget);
+    };
+
+    const handleClick3 = (event) => {
+        setAnchorEl3(event.currentTarget);
+    };
+
+    const handleClose2 = (event) => {
+        if (event.target.id != "renameState") {
+            setAnchorEl2(null);
+        }
+    };
+
+    const handleClose3 = async (event, oldName, tasks) => {
+        if (event.target.id != "renameField") {
+            await changeStateName(stateName, oldName);
+            // timeout(2000);
+            for (let task of tasks) {
+                changeState(task.id, stateName);
+            }
+            setAnchorEl2(null);
+            setAnchorEl3(null);
+        }
+    };
+
+    const enterState = (event) => {
+        handleClick3(event);
+    }
 
     const receiveTasks = async () => {
         try {
@@ -184,9 +224,19 @@ const ColumnsComponent = (props) => {
         setUpdateTasks(false);
     }
 
-    const changePriorityTask = (taskId, priority, projectToken) => {
-        taskAPI.changePriorityTaskDB(taskId, priority, projectToken, userToken);
+    const changePriorityTask = async (taskId, priority, projectToken) => {
+        await taskAPI.changePriorityTaskDB(taskId, priority, projectToken, userToken);
         // setUpdateTasks(false);
+    }
+
+    const changeStateName = async (newName, oldName) => {
+        await stateAPI.changeStateNameDB(projectToken, newName, oldName);
+        setUpdateStates(false);
+    }
+
+    const deleteState = async (stateName) => {
+        await stateAPI.deleteStateDB(projectToken, stateName);
+        setUpdateStates(false);
     }
 
     const handleStateName = (event) => {
@@ -218,7 +268,36 @@ const ColumnsComponent = (props) => {
                 title={<Typography sx={{
                     color: '#1C1D22',
                     opacity: 0.5
-                }}>{<div><MoreVertIcon></MoreVertIcon>
+                }}>{<div>
+                    <IconButton aria-label="more"
+                        onClick={handleClick2}
+                        aria-haspopup="true"
+                        aria-controls="long-menu"
+                    >
+                        <MoreVertIcon></MoreVertIcon>
+                    </IconButton>
+                    <MenuComonent MyOptions={[<Button id="deleteState" onClick={() => deleteState(title)}>Delete</Button>,
+                    <Button
+                        onClick={enterState}
+                        aria-haspopup="true"
+                        aria-controls="long-menu"
+                        id="renameState"
+                    >Rename</Button>]}
+                        handleClose={handleClose2}
+                        anchorEl={anchorEl2}
+                        open={open2}
+                    >
+                    </MenuComonent>
+                    <MenuComonent MyOptions={[<TextField
+                        onChange={handleStateName}
+                        id="renameField"
+                        label="Standard"
+                        variant="standard" />]}
+                        handleClose={(e) => handleClose3(e, title, items)}
+                        anchorEl={anchorEl3}
+                        open={open3}
+                    >
+                    </MenuComonent>
                     {title}</div>}</Typography>}
                 action={
                     <div>
