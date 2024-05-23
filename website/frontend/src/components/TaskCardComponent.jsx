@@ -8,7 +8,9 @@ import { IconButton } from '@mui/material';
 import CustomInputComponent from "./CustomInputComponent";
 import "./TaskCardComponent.css";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import TextField from '@mui/material/TextField';
 import MenuComonent from "./MenuComponent";
+import { taskAPI } from "../ApiCalls";
 
 
 
@@ -53,6 +55,7 @@ const TaskCardComponent = (props) => {
         taskState,
         changeState,
         deleteTask,
+        changeTaskName,
         states
     } = props;
 
@@ -60,15 +63,30 @@ const TaskCardComponent = (props) => {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [anchorEl2, setAnchorEl2] = React.useState(null);
+    const [anchorEl3, setAnchorEl3] = React.useState(null);
+    const [name, setName] = useState(taskName);
+
 
     const handleInputChange = (event) => {
         // setTaskName(event.target.value);
     }
 
+    const handleTaskName = (event) => {
+        setName(event.target.value);
+    }
+
     const handleClick2 = (event) => {
         setAnchorEl2(event.currentTarget);
     };
+
+    const handleClick3 = (event) => {
+        setAnchorEl3(event.currentTarget);
+    };
+
     const open2 = Boolean(anchorEl2);
+    const open3 = Boolean(anchorEl3);
+
+
     const handleClose2 = (event) => {
         const newState = event.target.innerHTML.split('<')[0];
         changeState(taskId, newState);
@@ -77,8 +95,22 @@ const TaskCardComponent = (props) => {
 
     };
 
+    const handleClose3 = async (event, taskId) => {
+        if (event.target.id != "renameField") {
+            await changeTaskName(taskId, name);
+            setAnchorEl(null);
+            setAnchorEl2(null);
+            setAnchorEl3(null);
+        }
+    };
+
+
     const chooseState = (event) => {
         handleClick2(event);
+    }
+
+    const enterTask = (event) => {
+        handleClick3(event);
     }
 
     const MyOptions = [
@@ -90,6 +122,12 @@ const TaskCardComponent = (props) => {
         >Change state
         </Button>,
         <Button onClick={() => { deleteTask(taskId) }} id="delete">Delete</Button>,
+        <Button
+            onClick={enterTask}
+            aria-haspopup="true"
+            aria-controls="long-menu"
+            id="renameTask"
+        >Rename</Button>
     ];
 
     const handleClick = (event) => {
@@ -137,6 +175,16 @@ const TaskCardComponent = (props) => {
                         anchorEl={anchorEl2}
                         open={open2}
                     ></MenuComonent>
+                    <MenuComonent MyOptions={[<TextField
+                        onChange={handleTaskName}
+                        id="renameField"
+                        label="Standard"
+                        variant="standard" />]}
+                        handleClose={(e) => handleClose3(e, taskId)}
+                        anchorEl={anchorEl3}
+                        open={open3}
+                    >
+                    </MenuComonent>
                 </Grid>
                 <div className="cardcont-taskname">
                     {/* <CustomInputComponent

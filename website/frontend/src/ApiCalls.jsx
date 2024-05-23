@@ -123,6 +123,24 @@ const taskAPI = {
             console.error('Error deleting task:', error);
             throw error;
         }
+    },
+
+    changeTaskNameDB: async (taskId, name, projectToken, userToken) => {
+        try {
+            const response = await fetch(`${config.host}/taskBoard/renameTask`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': userToken
+                },
+                body: JSON.stringify({ taskID: taskId, newName: name, projectToken: projectToken }),
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error renaming task:', error);
+            throw error;
+        }
     }
 
 };

@@ -142,12 +142,14 @@ const TaskBoardPage = () => {
 
     useEffect(() => {
         (async () => {
+            if (isLoaded) { return; }
             await receiveProjects();
             setIsLoaded(true);
 
-            const receiveProjsMessage = () => {
-                receiveProjects();
+            const receiveProjsMessage = async () => {
+                await receiveProjects();
                 setIsLoaded(true);
+                console.log("upd");
             }
 
             config.socket.on('updateProject', receiveProjsMessage);

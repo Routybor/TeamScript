@@ -80,6 +80,7 @@ const ColumnsComponent = (props) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [anchorEl2, setAnchorEl2] = React.useState(null);
     const [anchorEl3, setAnchorEl3] = React.useState(null);
+    const [taskName, setTaskName] = useState();
 
     const open2 = Boolean(anchorEl2);
     const open3 = Boolean(anchorEl3);
@@ -199,14 +200,14 @@ const ColumnsComponent = (props) => {
         states.indexOf(statename) == -1 ? addNewState(statename) : setErrorName(true);
     }
 
-    const addNewState = (statename) => {
+    const addNewState = async (statename) => {
         setErrorName(false);
-        stateAPI.addStatesDB(userToken, projectToken, statename);
+        await stateAPI.addStatesDB(userToken, projectToken, statename);
         setUpdateStates(false);
     }
 
-    const newTask = (state) => {
-        taskAPI.createTaskDB("Default", state, 1, projectToken, userToken);
+    const newTask = async (state) => {
+        await taskAPI.createTaskDB("Default", state, 1, projectToken, userToken);
         setUpdateTasks(false);
     }
 
@@ -219,8 +220,8 @@ const ColumnsComponent = (props) => {
 
     }
 
-    const deleteTask = (taskId) => {
-        taskAPI.deleteTaskDB(taskId, projectToken);
+    const deleteTask = async (taskId) => {
+        await taskAPI.deleteTaskDB(taskId, projectToken);
         setUpdateTasks(false);
     }
 
@@ -238,6 +239,12 @@ const ColumnsComponent = (props) => {
         await stateAPI.deleteStateDB(projectToken, stateName);
         setUpdateStates(false);
     }
+
+    const changeTaskName = async (taskId, newName) => {
+        await taskAPI.changeTaskNameDB(taskId, newName, projectToken, userToken);
+        setUpdateTasks(false);
+    }
+
 
     const handleStateName = (event) => {
         setStateName(event.target.value);
@@ -352,11 +359,11 @@ const ColumnsComponent = (props) => {
                         >
                             <TaskCardComponent
                                 taskName={value.taskname}
-                                // setTaskName={setTaskName}
                                 taskId={value.id}
                                 taskState={title}
                                 changeState={changeState}
                                 deleteTask={deleteTask}
+                                changeTaskName={changeTaskName}
                                 states={states}
                             ></TaskCardComponent>
 
