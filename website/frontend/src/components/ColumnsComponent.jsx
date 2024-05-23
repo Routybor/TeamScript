@@ -298,7 +298,7 @@ const ColumnsComponent = (props) => {
                     <MenuComonent MyOptions={[<TextField
                         onChange={handleStateName}
                         id="renameField"
-                        label="Standard"
+                        label="Enter state name"
                         variant="standard" />]}
                         handleClose={(e) => handleClose3(e, title, items)}
                         anchorEl={anchorEl3}

@@ -178,7 +178,7 @@ const TaskCardComponent = (props) => {
                     <MenuComonent MyOptions={[<TextField
                         onChange={handleTaskName}
                         id="renameField"
-                        label="Standard"
+                        label="Enter new name"
                         variant="standard" />]}
                         handleClose={(e) => handleClose3(e, taskId)}
                         anchorEl={anchorEl3}
