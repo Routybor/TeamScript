@@ -1,8 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const { loginHandler } = require('../service/authService')
+const { loginHandler, getLoginHandler } = require('../service/authService')
 
 router.post('/login', loginController);
+router.post('/getLogin', getLoginController);
 
 /**
  * обработчик login запросов
@@ -31,5 +32,15 @@ async function loginController(req, res) {
 //         res.status(500).json({ error: 'Error while getting data from database' });
 //     }
 // }
+
+async function getLoginController(req, res) {
+    const userId = req.body.userId;
+    const result = await getLoginHandler(userId);
+    if (result) {
+        res.json(result);
+    } else {
+        res.status(500).json({ error: 'Something wrong while getting login' });
+    }
+}
 
 module.exports = router

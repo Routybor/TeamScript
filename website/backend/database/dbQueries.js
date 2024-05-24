@@ -433,6 +433,18 @@ const getUserIdByProjectsDB = async (projectId) => {
     });
 };
 
+const getLoginByUserIdDB = async (userId) => {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT username FROM users where mytable_key = $1 limit 1', [userId], (err, result) => {
+            if (!err) {
+                resolve(result.rows[0]);
+            } else {
+                reject(new Error('Error while getting login'));
+            }
+        });
+    });
+};
+
 module.exports = {
     getTextDB,
     saveTextDB,
@@ -465,4 +477,5 @@ module.exports = {
     renameTaskInDB,
     changeTaskDescriptionInDB,
     getUserIdByProjectsDB,
+    getLoginByUserIdDB,
 };

@@ -1,4 +1,4 @@
-const { insertUserDB, userExistsDB, checkPasswordDB, checkTokenDB } = require('../database/dbQueries');
+const { insertUserDB, userExistsDB, checkPasswordDB, checkTokenDB, getLoginByUserIdDB } = require('../database/dbQueries');
 const dotenv = require("dotenv");
 const crypto = require('crypto');
 dotenv.config({ path: "../../../.env" });
@@ -41,8 +41,19 @@ async function registerHandler(username, password) {
     return null;
 }
 
+async function getLoginHandler(userId) {
+    try {
+        const login = await getLoginByUserIdDB(userId);
+        return login;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
 module.exports = {
     registerHandler,
     checkUserHandler,
-    loginHandler
+    loginHandler,
+    getLoginHandler,
 };
