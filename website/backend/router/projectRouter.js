@@ -1,12 +1,19 @@
 const express = require('express')
 const router = express.Router()
-const {getProjectsHandler, createProjectHandler, invitePersonHandler, deleteProjectHandler, changeProjectNameHandler} = require('../service/projectService')
+const {getProjectsHandler, 
+    createProjectHandler, 
+    invitePersonHandler, 
+    deleteProjectHandler, 
+    changeProjectNameHandler,
+    getUserByProjectHandler,
+} = require('../service/projectService')
 
 router.get('/getProjects', getProjectsController);
 router.post('/createProject', createProjectController);
 router.post('/invitePerson', invitePersonController);
 router.delete('/deleteProject', deleteProjectController);
 router.post('/changeName', changeNameController);
+router.post('/members', getUserByProjectController);
 
 async function getProjectsController(req, res) {
     const curToken = req.headers.token;
@@ -64,6 +71,17 @@ async function changeNameController(req, res) {
         res.json({ message: 'Project name changed successfully' });
     } else {
         res.status(500).json({ error: 'Something wrong while changing the project name' });
+    }
+}
+
+async function getUserByProjectController(req, res) {
+    const curToken = req.headers.token;
+    const projectId = req.body.projectId;
+    const result = await getUserByProjectHandler(projectId);
+    if (result) {
+        res.json(result);
+    } else {
+        res.status(500).json({ error: 'Something wrong while getting members of project' });
     }
 }
 

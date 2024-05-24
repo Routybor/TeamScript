@@ -419,6 +419,20 @@ async function changeTaskDescriptionInDB(taskId, newDescription, projectId) {
     }
 }
 
+const getUserIdByProjectsDB = async (projectId) => {
+    return new Promise((resolve, reject) => {
+        pool.query(`SELECT DISTINCT user_id 
+                    FROM user_projects
+                    where project_id = $1`, [projectId], (err, result) => {
+            if (!err) {
+                resolve(result.rows);
+            } else {
+                reject(new Error('Error while getting all users By project from database'));
+            }
+        });
+    });
+};
+
 module.exports = {
     getTextDB,
     saveTextDB,
@@ -450,4 +464,5 @@ module.exports = {
     deleteAllStateByProjectIdinDB,
     renameTaskInDB,
     changeTaskDescriptionInDB,
+    getUserIdByProjectsDB,
 };

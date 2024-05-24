@@ -10,6 +10,7 @@ const { getUsersProjectsDB,
     deleteProjectFromProjects,
     changeProjectNameInDB,
     deleteAllStateByProjectIdinDB,
+    getUserIdByProjectsDB,
 } = require('../database/dbQueries');
 
 
@@ -88,6 +89,16 @@ const changeProjectNameHandler = async (projectId, newName) => {
     }
 };
 
+const getUserByProjectHandler = async (projectId) => {
+    try {
+        // Выполняем запрос к базе данных для получения всех участников проекта
+        const success = await getUserIdByProjectsDB(projectId);
+        return success;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+};
 
 module.exports = {
     getProjectsHandler,
@@ -95,4 +106,5 @@ module.exports = {
     invitePersonHandler,
     deleteProjectHandler,
     changeProjectNameHandler,
+    getUserByProjectHandler,
 };
