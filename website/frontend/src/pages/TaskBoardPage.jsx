@@ -244,7 +244,7 @@ const TaskBoardPage = () => {
             </div>
             <div className="mainsect">
                 <div className="tasks">
-                    <ColumnsComponent clicked={clicked} updClkd={() => updateClicked} />
+                    <ColumnsComponent />
                 </div>
             </div>
         </div>
