@@ -257,7 +257,7 @@ const ColumnsComponent = (props) => {
             tasksListElement.current.removeEventListener(`dragend`, handleDragStop);
             tasksListElement.current.removeEventListener(`dragover`, handleDragOver);
         }
-    }, [handleDragOver,handleDragStart,handleDragStop])
+    }, [handleDragOver, handleDragStart, handleDragStop])
 
     const defineElemByName = (curEl, name) => {
         let fl = true;
@@ -398,16 +398,16 @@ const ColumnsComponent = (props) => {
         // updClkd(false);
         // console.log("eff1");
 
-        // const receiveTasksMessage = () => {
-        //     receiveTasks();
-        //     setUpdateTasks(true);
-        // }
+        const receiveTasksMessage = () => {
+            receiveTasks();
+            setUpdateTasks(true);
+        }
 
-        // config.socket.on("updateTask", receiveTasksMessage);
+        config.socket.on("updateTask", receiveTasksMessage);
 
-        // return () => {
-        //     config.socket.off("updateTask", receiveTasksMessage);
-        // };
+        return () => {
+            config.socket.off("updateTask", receiveTasksMessage);
+        };
     }, [updateTasks]);
 
     useEffect(() => {
