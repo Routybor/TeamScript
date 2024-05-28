@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, memo } from 'react';
+import useRunOnce from './useRunOnce';
 
 
 function throttle(func, limit) {
@@ -13,7 +14,7 @@ function throttle(func, limit) {
 }
 
 
-const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksFunc) => {
+const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, updateTasks) => {
     // const [currentCard, setCurrentCard] = useState();
     // const [currentColumn, setCurrentColumn] = useState();
     // const [activeCard, setActiveCard] = useState();
@@ -23,19 +24,22 @@ const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksF
     let currentCard;
     let currentColumn;
     let activeCard;
+    let flCard = false;
+    let flColumn = false;
 
-    // const [cards, setCards] = useState();
     let s1;
     let s2;
     let isEnd;
     let crossedCeneter;
+    let start = false;
+    let dragging = false;
+    let end = false;
 
-    // const cardsRef = useRef(cards);
     let tasksListElement = document.querySelector('.tasklist');
     const blankCanvas = document.createElement('canvas');
     const projectToken = localStorage.getItem('project');
 
-    const changeCardPlace = (isEnd, cardState) => {
+    const changeCardPlace = async (isEnd, cardState) => {
         const activeElementId = activeCard.getAttribute('id');
         let activeTaskElem = tasks.filter(task => task.id == activeElementId)[0];
         let taskCopy = [...tasks.filter(task => task.curstate === cardState)];
@@ -43,9 +47,12 @@ const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksF
         // console.log("taskCopy");
         // console.log(taskCopy);
         if (isEnd) {
-            changePriorityFunc(activeElementId, taskCopyNew[taskCopyNew.length - 1].priority + 1, projectToken);
+            if (updateTasks) {
+                await changePriorityFunc(activeElementId, taskCopyNew[taskCopyNew.length - 1].priority + 1, projectToken);
+            }
             taskCopyNew.push(activeTaskElem);
             return;
+
         }
 
         // console.log(activeCard);
@@ -59,115 +66,205 @@ const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksF
 
         currentTaskElemInd == 0 ? taskCopyNew.splice(0, 0, activeTaskElem) : taskCopyNew.splice(currentTaskElemInd, 0, activeTaskElem);
         // console.log(taskCopyNew);
-        for (let i = 0; i < taskCopyNew.length; i++) {
-            changePriorityFunc(taskCopyNew[i].id, i + 1, projectToken);
+        if (updateTasks) {
+            for (let i = 0; i < taskCopyNew.length; i++) {
+                await changePriorityFunc(taskCopyNew[i].id, i + 1, projectToken);
+            }
         }
 
     }
 
     const handleDragStart = (evt) => {
+        end = false;
+        start = true;
         evt.target.classList.add(`selected`);
         evt.dataTransfer.setDragImage(blankCanvas, 0, 0);
     }
 
-    const handleDragStop = (evt) => {
-        if (s1) {
-            // console.log("s1");
-            const activeState = activeCard.getAttribute('curstate');
-            changeCardPlace(isEnd, activeState);
-            setUpdateTasksFunc(false);
+    const handleDragStop = async (evt) => {
+        dragging = false;
+        end = true;
+        console.log("drag stop");
+        isEnd = false;
+        crossedCeneter = false;
+
+
+        // if (!((flCard && flColumn) || (!flCard && flColumn))) {
+        //     return;
+        // }
+        if (!flCard && !flColumn) {
+            return;
         }
-        if (s2) {
-            // console.log("s2");
+        const activeState = activeCard.getAttribute('curstate');
+
+        const currentState = currentColumn.childNodes[0].childNodes[0].childNodes[0].innerText;
+        // console.log(currentCard);
+        // console.log(currentColumn);
+        // console.log(activeState);
+        // console.log(currentState);
+
+        // currentColumnRef.current = column;
+        // setCurrentColumn(column);
+        if (activeState === currentState) {
+            // const curStateTasks = tasks.filter((task) => task.curstate == currentState)
+            if (!flCard) {
+                const columnTop = currentColumn.getBoundingClientRect().top;
+                if (Math.abs(columnTop - evt.clientY) <= 50) {
+                    currentCard = firstCardInColumn(currentColumn);
+                    changeCardPlace(false, currentState);
+                }
+                else {
+                    currentCard = lastCardInColumn(currentColumn);
+                    changeCardPlace(true, currentState);
+                }
+            }
+            else {
+                if (activeCard === currentCard) {
+                    return;
+                }
+                crossedCeneter = crossedCenterFunc(evt.clientY);
+                if (crossedCeneter) {
+                    isEnd = defineCard();
+                    // const activeState = activeCard.getAttribute('curstate');
+                    changeCardPlace(isEnd, activeState);
+                    // setUpdateTasksFunc(false);
+                }
+            }
+        }
+        else {
+            console.log("change column");
+            console.log(currentCard);
+            // console.log(card);
             const currentState = currentColumn.childNodes[0].childNodes[0].childNodes[0].innerText;
             const activeElementId = activeCard.getAttribute('id');
-            changePriorityFunc(activeElementId, 1, projectToken);
-            // console.log("after priority");
-            // console.log(tasks);
-            // console.log(currentColumn);
-            // console.log(currentState);
-            changeStateFunc(activeElementId, currentState);
-            // console.log("after state");
-            // console.log(tasks);
+            if (!flCard) {
+                console.log("no cur card");
+                if (!cardsInColumn(currentColumn)) {
+                    console.log("no cards in column");
+                    if (updateTasks) {
+                        await changePriorityFunc(activeElementId, 1, projectToken);
+                        await changeStateFunc(activeElementId, currentState);
+                    }
+                }
+                else {
+                    console.log("cards in column");
+                    const columnTop = currentColumn.getBoundingClientRect().top;
+                    if (Math.abs(columnTop - evt.clientY) <= 50) {
+                        console.log("to begin");
+                        currentCard = firstCardInColumn(currentColumn);
+                        changeCardPlace(false, currentState);
+                        if (updateTasks) {
+                            await changeStateFunc(activeElementId, currentState);
+                        }
+                    }
+                    else {
+                        console.log("to end");
+                        currentCard = lastCardInColumn(currentColumn);
+                        changeCardPlace(true, currentState);
+                        if (updateTasks) {
+                            await changeStateFunc(activeElementId, currentState);
+                        }
+                    }
+                }
+            }
+            if (activeCard === currentCard) {
+                return;
+            }
+            // changePriorityFunc(activeElementId, 1, projectToken);
+            // changeStateFunc(activeElementId, currentState);
         }
-        // console.log(tasks);
+
+        // if (s1) {
+        //     const activeState = activeCard.getAttribute('curstate');
+        //     changeCardPlace(isEnd, activeState);
+        //     setUpdateTasksFunc(false);
+        // }
+        // if (s2) {
+        //     const currentState = currentColumn.childNodes[0].childNodes[0].childNodes[0].innerText;
+        //     const activeElementId = activeCard.getAttribute('id');
+        //     changePriorityFunc(activeElementId, 1, projectToken);
+        //     changeStateFunc(activeElementId, currentState);
+        // }
         evt.target.classList.remove(`selected`);
     }
 
     const handleDragOver = (evt) => {
+        start = false;
+        dragging = true;
         evt.preventDefault();
         const activeElement = tasksListElement.querySelector(`.selected`);
         // activeCardRef.current = activeElement;
         // setActiveCard(activeElement);
         activeCard = activeElement;
-        s1 = false;
-        s2 = false;
-        isEnd = false;
-        crossedCeneter = false;
+        // s1 = false;
+        // s2 = false;
+        // isEnd = false;
+        // crossedCeneter = false;
 
         if (activeCard === undefined) {
             return;
         }
 
         let curEl = evt.target;
-        let flCard = false;
-        let flColumn = false;
+        console.log(curEl);
         const ans1 = defineElemByName(curEl, 'card');
         const ans2 = defineElemByName(curEl, 'column');
         flCard = ans1[0];
         flColumn = ans2[0];
         const card = ans1[1];
         const column = ans2[1];
-
-        if (!((flCard && flColumn) || (!flCard && flColumn))) {
-            return;
-        }
-        const activeState = activeCard.getAttribute('curstate');
-
-        const currentState = column.childNodes[0].childNodes[0].childNodes[0].innerText;
-
-        // currentColumnRef.current = column;
-        // setCurrentColumn(column);
+        currentCard = card;
         currentColumn = column;
-        if (!(cardsInColumn(column) && card === undefined)) {
-            // console.log("1");
-            // currentCardRef.current = card;
-            // setCurrentCard(card);
-            currentCard = card;
-        }
-        else {
-            // console.log("2");
-            // console.log(lastCardInColumn(column));
-            const lastCard = defineElemByName(lastCardInColumn(column), "card")[1];
-            // console.log(lastCard);
-            // currentCardRef.current = lastCard;
-            // setCurrentCard(lastCard);
-            currentCard = lastCard;
-        }
 
-        if (activeState == currentState) {
-            const isMoveable = activeCard !== currentCard;
-            // const isMoveable = activeCard !== currentCardRef.current;
+        // if (!((flCard && flColumn) || (!flCard && flColumn))) {
+        //     return;
+        // }
+        // const activeState = activeCard.getAttribute('curstate');
 
-            if (!isMoveable) {
-                return;
-            }
+        // const currentState = column.childNodes[0].childNodes[0].childNodes[0].innerText;
 
-            crossedCeneter = crossedCenterFunc(evt.clientY);
-            if (crossedCeneter) {
-                isEnd = defineCard();
-                s1 = true;
-            }
-        }
-        else {
-            const isMoveable = activeCard !== currentCard;
-            // const isMoveable = activeCard !== currentCardRef.current;
+        // // currentColumnRef.current = column;
+        // // setCurrentColumn(column);
+        // currentColumn = column;
+        // if (!(cardsInColumn(column) && card === undefined)) {
+        //     // console.log("1");
+        //     // currentCardRef.current = card;
+        //     // setCurrentCard(card);
+        //     currentCard = card;
+        // }
+        // else {
+        //     // console.log("2");
+        //     // console.log(lastCardInColumn(column));
+        //     const lastCard = defineElemByName(lastCardInColumn(column), "card")[1];
+        //     // console.log(lastCard);
+        //     // currentCardRef.current = lastCard;
+        //     // setCurrentCard(lastCard);
+        //     currentCard = lastCard;
+        // }
 
-            if (!isMoveable) {
-                return;
-            }
-            s2 = true;
-        }
+        // if (activeState == currentState) {
+        //     const isMoveable = activeCard !== currentCard;
+        //     // const isMoveable = activeCard !== currentCardRef.current;
+
+        //     if (!isMoveable) {
+        //         return;
+        //     }
+
+        //     crossedCeneter = crossedCenterFunc(evt.clientY);
+        //     if (crossedCeneter) {
+        //         isEnd = defineCard();
+        //         s1 = true;
+        //     }
+        // }
+        // else {
+        //     const isMoveable = activeCard !== currentCard;
+        //     // const isMoveable = activeCard !== currentCardRef.current;
+
+        //     if (!isMoveable) {
+        //         return;
+        //     }
+        //     s2 = true;
+        // }
     }
 
     const setDDEvents = () => {
@@ -178,7 +275,7 @@ const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksF
 
         tasksListElement.addEventListener(`dragstart`, handleDragStart);
         tasksListElement.addEventListener(`dragend`, handleDragStop);
-        tasksListElement.addEventListener(`dragover`, throttle(handleDragOver, 300));
+        tasksListElement.addEventListener(`dragover`, handleDragOver);
 
     }
 
@@ -243,6 +340,11 @@ const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksF
         return tasksInColumn[tasksInColumn.length - 1].childNodes[0];
     }
 
+    const firstCardInColumn = (column) => {
+        const tasksInColumn = column.childNodes[column.childNodes.length - 1].childNodes;
+        return tasksInColumn[0].childNodes[0];
+    }
+
 
     const crossedCenterFunc = (cursorPosition) => {
         // console.log(currentCardRef.current);
@@ -261,7 +363,10 @@ const DragAndDrop = (tasks, changeStateFunc, changePriorityFunc, setUpdateTasksF
         return false;
     }
 
-    setDDEvents();
+    if (!start && !dragging && !end) { throttle(setDDEvents(), 600); }
+    // useRunOnce({
+    //     fn: () => setDDEvents()
+    // });
 }
 
 export default DragAndDrop;
